@@ -3,1754 +3,1504 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Serene Shores: Coastal Defense</title>
+    <title>Coastal Defense</title>
     <style>
-        /* --- General Styles & Scene Setup (Mostly Unchanged) --- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            transition: all 0.3s ease;
+            font-family: sans-serif;
         }
 
         body {
-            background-color: #e6f7ff;
+            background-color: #87CEEB;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
             height: 100vh;
-            overflow: hidden;
+        }
+        #game-container{
             position: relative;
+            width: 800px;
+            height: 600px;
+            background-color: #f0e68c;
+            border: 2px solid #a0522d;
+            margin: 20px auto;
         }
 
-        .scene {
-            position: relative;
-            flex-grow: 1;
-            overflow: hidden;
-            background: linear-gradient(to bottom, #87CEEB, #e6f7ff);
-        }
-
-        .sky {
+        #player {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 60%;
-            background: linear-gradient(to bottom, #87CEEB, #c9e9f6);
-            z-index: 1;
-        }
-
-        .sun {
-            position: absolute;
-            top: 50px;
-            left: 80%;
-            width: 80px;
-            height: 80px;
-            background: radial-gradient(circle, #ffff99, #ffcc00);
-            border-radius: 50%;
-            z-index: 2;
-            box-shadow: 0 0 20px #ffff99;
-        }
-
-        .cloud {
-            position: absolute;
-            background: white;
-            border-radius: 50px;
-            z-index: 3;
-            opacity: 0.8;
-        }
-
-        .cloud1 {
-            top: 100px;
-            left: 200px;
-            width: 100px;
-            height: 40px;
-            animation: cloudMove 100s linear infinite;
-        }
-
-        .cloud2 {
-            top: 150px;
-            left: 600px;
-            width: 150px;
-            height: 50px;
-            animation: cloudMove 150s linear infinite;
-        }
-
-        .ocean {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 40%;
-            background: linear-gradient(to bottom, #4fa8e0, #1e5799);
-            z-index: 4;
-        }
-
-        .wave {
-            position: absolute;
-            width: 100%;
-            height: 20px;
-            background: linear-gradient(to bottom, #7fcdff, transparent);
-            opacity: 0.7;
-            border-radius: 50%;
-            z-index: 5;
-        }
-
-        .wave1 {
-            bottom: 120px;
-            animation: waveMove 5s ease-in-out infinite;
-        }
-
-        .wave2 {
-            bottom: 100px;
-            animation: waveMove 7s ease-in-out infinite;
-            animation-delay: 1s;
-        }
-
-        .wave3 {
-            bottom: 80px;
-            animation: waveMove 6s ease-in-out infinite;
-            animation-delay: 2s;
-        }
-
-        .beach {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 80px;
-            background: linear-gradient(to bottom, #f2d694, #e6c88a);
-            z-index: 6;
-        }
-
-        .grass-area {
-            position: absolute;
-            bottom: 79px;
-            left: 30%;
-            width: 40%;
-            height: 100px;
-            background: #7cba5f;
-            border-radius: 100px 100px 0 0;
-            z-index: 6;
-        }
-
-        .island {
-            position: absolute;
-            bottom: 79px;
-            left: 70%;
-            width: 200px;
-            height: 100px;
-            background: #e6c88a;
-            border-radius: 100px 100px 0 0;
-            z-index: 6;
-        }
-
-        .palm-tree {
-            position: absolute;
-            bottom: 140px;
-            left: calc(70% + 50px);
-            z-index: 7;
-        }
-
-        .trunk {
-            width: 15px;
-            height: 80px;
-            background: linear-gradient(to right, #8B4513, #A0522D);
-            margin-left: 20px;
-            transform: rotate(10deg);
-        }
-
-        .leaves {
-            position: absolute;
-            top: -40px;
-            width: 60px;
-            height: 60px;
-        }
-
-        .leaf {
-            position: absolute;
-            width: 40px;
-            height: 60px;
-            background: #2e8b57;
-            border-radius: 50% 50% 0 50%;
-            transform-origin: bottom right;
-        }
-
-        .leaf:nth-child(1) {
-            transform: rotate(0deg);
-        }
-
-        .leaf:nth-child(2) {
-            transform: rotate(60deg);
-        }
-
-        .leaf:nth-child(3) {
-            transform: rotate(120deg);
-        }
-
-        .leaf:nth-child(4) {
-            transform: rotate(180deg);
-        }
-
-        .leaf:nth-child(5) {
-            transform: rotate(240deg);
-        }
-
-        .leaf:nth-child(6) {
-            transform: rotate(300deg);
-        }
-
-        .boat {
-            position: absolute;
-            bottom: 130px;
-            left: 20%;
-            z-index: 7;
-            cursor: pointer;
-        }
-
-        .boat-body {
-            width: 100px;
-            height: 30px;
-            background: #8B4513;
-            border-radius: 0 20px 0 20px;
-        }
-
-        .sail {
-            position: absolute;
-            top: -60px;
-            left: 30px;
-            width: 5px;
-            height: 60px;
-            background: #A0522D;
-        }
-
-        .sail-canvas {
-            position: absolute;
-            top: -50px;
-            left: 35px;
+            bottom: 50px;
+            left: 400px;
             width: 40px;
             height: 50px;
-            background: white;
-            border-radius: 10px;
+            background-color: transparent;
+            z-index: 10;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+             display: flex;
+             flex-direction: column;
+             align-items: center;
         }
 
-        .cabin {
-            position: absolute;
-            bottom: 30px;
-            left: 15px;
-            width: 30px;
-            height: 20px;
-            background: #A0522D;
-        }
-
-        .fish {
-            position: absolute;
-            width: 25px;
-            height: 15px;
-            background: #ff9999;
-            border-radius: 50% 50% 50% 50%;
-            z-index: 6;
-            cursor: pointer;
-        }
-
-        .fish::after {
-            content: "";
-            position: absolute;
-            right: -10px;
-            top: 5px;
-            border-left: 15px solid #ff9999;
-            border-top: 5px solid transparent;
-            border-bottom: 5px solid transparent;
-        }
-
-        .fish1 {
-            bottom: 100px;
-            left: 30%;
-            animation: fishSwim 30s linear infinite;
-            background: #f67280;
-        }
-
-        .fish2 {
-            bottom: 120px;
-            left: 40%;
-            animation: fishSwim 25s linear infinite;
-            animation-delay: 5s;
-            background: #6c5b7b;
-        }
-
-        .fish3 {
-            bottom: 140px;
-            left: 60%;
-            animation: fishSwim 35s linear infinite;
-            animation-delay: 10s;
-            background: #c06c84;
-        }
-
-        .shell {
-            position: absolute;
-            width: 20px;
-            height: 15px;
-            background: #ffcccc;
-            border-radius: 50% 50% 0 0;
-            z-index: 7;
-            cursor: pointer;
-        }
-
-        .shell::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 20px;
-            height: 15px;
-            background: linear-gradient(to right, transparent, #ffcccc);
-            border-radius: 10px 10px 0 0;
-        }
-
-        .shell1 {
-            bottom: 20px;
-            left: 20%;
-        }
-
-        .shell2 {
-            bottom: 30px;
-            left: 40%;
-        }
-
-        .shell3 {
-            bottom: 25px;
-            left: 60%;
-        }
-
-        .bird {
-            position: absolute;
-            top: 150px;
-            z-index: 3;
-            animation: birdFly 40s linear infinite;
-        }
-
-        .bird::before, .bird::after {
-            content: "";
-            position: absolute;
-            width: 15px;
-            height: 5px;
-            background: black;
-            border-radius: 50%;
-            transform-origin: right;
-        }
-
-        .bird::before {
-            transform: rotate(-30deg);
-        }
-
-        .bird::after {
-            transform: rotate(30deg);
-        }
-
-        .bird1 {
-            left: -50px;
-        }
-
-        .bird2 {
-            left: -100px;
-            top: 130px;
-            animation-delay: 5s;
-        }
-
-        .bird3 {
-            left: -150px;
-            top: 170px;
-            animation-delay: 10s;
-        }
-
-        .dock {
-            position: absolute;
-            bottom: 79px;
-            left: 10%;
-            width: 20px;
-            height: 100px;
-            background: #8B4513;
-            z-index: 5;
-        }
-
-        .dock-top {
-            position: absolute;
-            bottom: 79px;
-            left: calc(10% - 40px);
-            width: 100px;
-            height: 10px;
-            background: #A0522D;
-            z-index: 6;
-        }
-
-        .house {
-            position: absolute;
-            bottom: 79px;
-            left: 35%;
-            z-index: 7;
-            cursor: pointer;
-        }
-
-        .house-base {
-            width: 90px;
-            height: 65px;
-            background: #ffd1dc;
-            border: 3px solid #d38c9f;
-            border-radius: 10px;
-        }
-
-        .house-roof {
-            width: 110px;
-            height: 50px;
-            background: #d38c9f;
-            margin-left: -10px;
-            margin-top: -20px;
-            clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
-            position: relative;
-        }
-
-        .chimney {
-            position: absolute;
-            width: 15px;
-            height: 25px;
-            background: #d38c9f;
-            top: -20px;
-            right: 20px;
-        }
-
-        .house-door {
-            position: absolute;
-            bottom: 0;
-            left: 35px;
-            width: 20px;
-            height: 30px;
-            background: #fff0f5;
-            border: 2px solid #d38c9f;
-            border-radius: 10px 10px 0 0;
-        }
-
-        .window {
-            position: absolute;
-            width: 15px;
-            height: 15px;
-            background: #c1e3ff;
-            border: 2px solid #d38c9f;
-            border-radius: 50%;
-        }
-
-        .window1 {
-            top: 15px;
-            left: 15px;
-        }
-
-        .window2 {
-            top: 15px;
-            right: 15px;
-        }
-
-        .flower-box {
-            position: absolute;
-            width: 40px;
-            height: 10px;
-            background: #d38c9f;
-            bottom: 10px;
-            left: 5px;
-        }
-
-        .flower {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: #ff99cc;
-            border-radius: 50%;
-            bottom: 10px;
-        }
-
-        .flower1 {
-            left: 8px;
-        }
-
-        .flower2 {
-            left: 18px;
-        }
-
-        .flower3 {
-            left: 28px;
-        }
-
-        .animal {
-            position: absolute;
-            z-index: 7;
-            cursor: pointer;
-        }
-
-        .cow {
-            width: 40px;
-            height: 30px;
-            background: white;
-            border-radius: 10px;
-            bottom: 90px;
-            left: 48%;
-        }
-
-        .cow::before {
-            content: "";
-            position: absolute;
-            width: 20px;
-            height: 15px;
-            background: white;
-            border-radius: 50%;
-            top: -5px;
-            left: -5px;
-        }
-
-        .cow::after {
-            content: "🐄";
-            position: absolute;
-            font-size: 20px;
-            top: -10px;
-            left: 5px;
-        }
-
-        .goat {
-            bottom: 90px;
-            left: 55%;
-        }
-
-        .goat::after {
-            content: "🐐";
-            position: absolute;
-            font-size: 20px;
-        }
-
-        .dog {
-            position: absolute;
-            bottom: 85px;
-            left: 30%;
-            z-index: 7;
-            cursor: pointer;
-        }
-
-        .dog::after {
-            content: "🐕";
-            position: absolute;
-            font-size: 20px;
-        }
-
-        .cat {
-            position: absolute;
-            bottom: 85px;
-            left: 52%;
-            z-index: 7;
-            cursor: pointer;
-        }
-
-        .cat::after {
-            content: "🐈";
-            position: absolute;
-            font-size: 20px;
-        }
-
-        .person {
-            position: absolute;
-            z-index: 8;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            flex-direction: column;
-        }
-
-        .boy {
-            bottom: 85px;
-            left: 40%;
-            animation: walkAround 20s linear infinite;
-            position: relative; /* For positioning arms/legs absolutely within .boy */
-        }
-
-        .boy::after {
-            content: "🧑‍🌾";
-            position: relative;
-            font-size: 22px;
-            z-index: 20;
-        }
-
-        /* --- Add Legs and Arms to Boy (Player) --- */
-        .boy::before, .boy::after { /* Using ::before and ::after for legs/arms */
+        #player::before, #player::after {
             content: '';
             position: absolute;
-            background-color: #8B4513; /* Example brown color, adjust to skin/clothing */
-            width: 4px; /* Leg/arm width */
-            height: 15px; /* Leg/arm height */
-            bottom: 0; /* Align to bottom of the body */
-            border-radius: 2px; /* Slight rounding */
-            z-index: -1; /* Behind the emoji visually */
+            background-color: #8B4513;
+            width: 4px;
+            height: 14px;
+            bottom: 0px;
+            border-radius: 2px;
+
         }
 
-        .boy::before { /* Left leg/arm */
-            left: 7px; /* Adjust position relative to body center */
-            transform-origin: top center; /* Rotation point */
+        #player::before { left: 6px;  }
+        #player::after { right: 6px; }
+
+
+        .walking-left {
+           transform: scaleX(-1);
+        }
+        .walking-right{
+
         }
 
-        .boy::after { /* Right leg/arm */
-            right: 7px; /* Adjust position */
-            transform-origin: top center;
-        }
-
-
-        .girl {
-            bottom: 85px;
-            left: 43%;
-            animation: walkAround 20s linear infinite;
-        }
-
-        .girl::after {
-            content: "👧";
-            position: absolute;
-            font-size: 22px;
-        }
-
-        .animal-pen {
-            position: absolute;
-            bottom: 85px;
-            left: 50%;
-            width: 100px;
-            height: 60px;
-            border: 3px solid #8B4513;
-            border-radius: 5px;
-            z-index: 6;
-        }
-
-        .fence {
-            position: absolute;
-            height: 20px;
-            background: #A0522D;
-            z-index: 7;
-            bottom: 79px;
-        }
-
-        .fence1 {
-            left: 30%;
-            width: 40px;
-        }
-
-        .fence2 {
-            left: 50%;
-            width: 100px;
-        }
-
-        .controls {
-            display: flex;
-            justify-content: space-around;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.7);
-            z-index: 10;
-            position: absolute; /* Position controls at the bottom */
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            box-sizing: border-box; /* Include padding in width */
-        }
-
-        .button {
-            padding: 10px 15px;
-            background: #4fa8e0;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .button:hover {
-            background: #3887b7;
-        }
-
-        .time-cycle {
-            position: absolute;
-            top: 20px;
-            /* position time-cycle to the right of inventory with spacing */
-            left: calc(20px + 150px + 20px); /* Assuming inventory is 150px wide, and 20px spacing */
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.7);
-            border-radius: 5px;
-            z-index: 10;
-        }
-
-        .time-label {
-            margin-right: 10px;
-        }
-
-        .inventory {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(255, 255, 255, 0.7);
-            border-radius: 5px;
-            padding: 10px;
-            z-index: 10;
-            width: 150px; /* Set a width for inventory, used in calc() for time-cycle */
-        }
-
-        .inventory-title {
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        .inventory-items {
-            display: flex;
-            gap: 10px;
-            flex-direction: column; /* Stack inventory items vertically */
-        }
-
-        .inventory-item {
-            width: calc(100% - 10px); /* Item width relative to inventory width */
-            padding: 5px;
-            background: rgba(255, 255, 255, 0.5);
-            border-radius: 5px;
-            display: flex;
-            justify-content: start; /* Align item text to start */
-            align-items: center;
-            font-size: 16px; /* Slightly smaller font size for inventory items */
-            box-sizing: border-box; /* Include padding in item width calculation */
-        }
-         .inventory-item > div { /* Style for resource counts *within* items, if used */
-            margin-left: auto; /* Push count to the right end of item */
-            font-weight: normal; /* Make counts less bold */
-         }
-
-
-        .message-box {
-            position: absolute;
-            bottom: 80px; /* Adjust message box position to be above controls, with some space */
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.8);
-            padding: 15px;
-            border-radius: 10px;
-            max-width: 80%;
-            z-index: 100;
-            display: none;
-            box-sizing: border-box; /* Ensure padding included in max-width calculation */
-        }
-
-        .message-text {
-            margin-bottom: 10px;
-            font-size: 18px; /* Slightly larger text for messages */
-        }
-
-        .message-options {
-            display: flex;
-            gap: 10px;
-            justify-content: center; /* Center message options */
-        }
-
-        .message-option {
-            padding: 8px 12px; /* Adjust padding for message buttons */
-            background: #4fa8e0;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        /* --- Game Specific Styles (UPDATED for Alien Types and Combat) --- */
-        .player, .alien {
-            position: absolute;
-            bottom: 85px;
-            z-index: 9;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-repeat: no-repeat;
-            background-size: contain;
-            background-position: center bottom;
-        }
-
-        .player::after { /* Player icon */
+        #player-image{
             content: "🧑‍🌾";
             font-size: 30px;
+            line-height: 50px;
+            z-index: 200;
+            position: absolute;
+            width: 100%;
+
+        }
+         .player-leg-left, .player-leg-right{
         }
 
-        /* --- Alien Styles --- */
+
+        .alien {
+            position: absolute;
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-position: center;
+        }
         .alien-drone {
             width: 40px;
             height: 40px;
-            background-image: url('alien-drone.png'); /* Replace with your drone image URL */
+            background-image: url('alien-drone.png');
             animation: float 2s infinite;
+            z-index: 5;
         }
 
         .alien-shielded {
             width: 60px;
             height: 60px;
-            background-image: url('alien-shielded.png'); /* Replace with your shielded image URL */
+            background-image: url('alien-shielded.png');
             animation: pulseShield 3s infinite;
         }
-
+        .shield{
+           width: 100%;
+           height: 100%;
+           background-color: rgba(173, 216, 230, 0.6);
+           z-index:6;
+           position:absolute;
+        }
         .alien-elite {
             width: 80px;
             height: 80px;
-            background-image: url('alien-elite.png'); /* Replace with your elite image URL */
-            animation: teleport 5s steps(2) infinite;
+            background-image: url('alien-elite.png');
+            animation: teleport 5s infinite;
         }
-
         .alien-boss {
             width: 120px;
             height: 120px;
-            background-image: url('alien-boss.png'); /* Replace with your boss image URL */
-            animation: bossCharge 10s linear infinite;
+            background-image: url('alien-boss.png');
+            animation: bossCharge 10s infinite;
         }
 
-        /* Placeholder visuals - using background color and emojis instead of images for now */
-        .alien-drone::after { content: "👽"; font-size: 30px; color: lightgreen; display: block; margin-top: -0.4em; /* Center emoji visually */}
-        .alien-shielded::after { content: "🛡️"; font-size: 40px; color: lightblue; display: block; margin-top: -0.1em; } /* Shield emoji */
-        .alien-elite::after { content: "👾"; font-size: 45px; color: red; display: block; margin-top: -0.1em;}
-        .alien-boss::after { content: "👹"; font-size: 55px; color: orange; display: block; margin-top: -0.1em;}
-
-
-        /* Health Bar (unchanged) */
         .health-bar-container {
-            width: 50px;
+            position: absolute;
+            width: 40px;
             height: 5px;
-            background-color: rgba(0,0,0,0.5);
-            border-radius: 5px;
-            margin-top: 5px;
-            overflow: hidden;
+            background-color: #555;
+            border-radius: 2px;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 15;
         }
 
         .health-bar {
             height: 100%;
             background-color: green;
             width: 100%;
-            border-radius: 5px;
-            transition: width 0.3s linear, background-color 0.3s ease; /* Added color transition */
+            border-radius: 2px;
+            transition: width 0.3s linear, background-color 0.2s ease;
         }
 
         .health-bar.damage {
             background-color: red;
         }
 
-
-        /* Combat Visuals - Player Attacks */
-        .attack-visual { /* Base class for all attack visuals */
+        .resource {
             position: absolute;
-            pointer-events: none; /* Prevent blocking clicks */
-            z-index: 11; /* Above characters */
+            cursor: pointer;
         }
 
-        .melee-attack {
-            width: 30px;
-            height: 30px;
-            background-color: rgba(255, 0, 0, 0.7); /* Red, semi-transparent */
-            border-radius: 50%;
-            animation: meleeSwing 0.5s forwards; /* 'forwards' keeps last frame of animation */
-            transform-origin: center;
-            /* Position to originate from player */
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
+        .shell::after {
+            content: "🐚";
+            font-size: 20px;
+
         }
+
+        .fish::after{
+           content:"🐟";
+           font-size: 20px;
+        }
+        .projectile {
+            position: absolute;
+            border-radius: 50%;
+            z-index: 5;
+         }
+        .player-projectile {  }
+
+        .melee-attack{
+            width: 35px;
+            height: 35px;
+            background-color: rgba(255,0,0,0.7);
+            animation: meleeSwing 0.3s forwards;
+         }
+
         @keyframes meleeSwing {
-            0% { transform: translateX(-50%) translateY(0) rotate(0deg) scale(0); opacity: 0.8; }
-            50% { transform: translateX(-50%) translateY(-20px) rotate(180deg) scale(1.2); opacity: 1; }
-            100% { transform: translateX(-50%) translateY(0) rotate(360deg) scale(0); opacity: 0; } /* Fade out at end */
+          0% { transform:  scale(0) rotate(0deg); opacity: 0;}
+          50% { transform: scale(1.3) rotate(180deg); opacity: 1; }
+          100% { transform:  scale(0) rotate(360deg); opacity: 0; }
         }
-
-
-        .ranged-attack {
-            width: 10px;
-            height: 10px;
-            background-color: blue;
-            border-radius: 50%;
-            animation: shootProjectile 0.7s linear forwards;
-        }
-        @keyframes shootProjectile {
-            0% { transform: translateX(0) translateY(0); opacity: 1;}
-            100% { transform: translateX(300px) translateY(-50px); opacity: 0; } /* Adjust trajectory and distance */
-        }
-
-        .special-attack { /* Area of effect visual */
-            width: 0px; /* Start small, expand */
-            height: 0px;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 0, 0.5); /* Yellow, semi-transparent */
-            opacity: 0.8;
-            animation: explodeArea 0.8s ease-out forwards;
-        }
-        @keyframes explodeArea {
-            0% { width: 0px; height: 0px; opacity: 0.5; }
-            100% { width: 200px; height: 200px; opacity: 0; } /* Expand and fade out */
-        }
-
-        /* Game Animations - (Existing cloudMove, waveMove, fishSwim, birdFly, sunriseSun, collect - unchanged) */
-        @keyframes cloudMove {
-            0% {
-                transform: translateX(0);
-            }
-            100% {
-                transform: translateX(2000px);
-            }
-        }
-
-        @keyframes waveMove {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(10px);
-            }
-        }
-
-        @keyframes fishSwim {
-            0% {
-                transform: translateX(0);
-            }
-            50% {
-                transform: translateX(200px) scaleX(-1);
-            }
-            100% {
-                transform: translateX(0) scaleX(1);
-            }
-        }
-
-        @keyframes birdFly {
-            0% {
-                transform: translateX(0);
-            }
-            100% {
-                transform: translateX(2000px);
-            }
-        }
-
-        @keyframes walkAround { /* Extended walkAround to animate legs/arms too */
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(30px); }
-            50% { transform: translateX(60px); }
-            75% { transform: translateX(30px); }
-
-            /* Leg/Arm Movements during walking animation */
-            25% .boy::before { transform: rotate(-30deg); } /* Left leg back, right forward at 25% of cycle */
-            25% .boy::after { transform: rotate(30deg); }
-
-            75% .boy::before { transform: rotate(30deg); }  /* Left leg forward, right back at 75% of cycle */
-            75% .boy::after { transform: rotate(-30deg); }
-        }
-
-
-        /* Time cycle styles (unchanged) */
-        body.morning {
-            background-color: #e6f7ff;
-        }
-
-        body.morning .sky {
-            background: linear-gradient(to bottom, #87CEEB, #c9e9f6);
-        }
-
-        body.morning .sun {
-            top: 80px;
-            left: 30%;
-            background: radial-gradient(circle, #ffff99, #ffcc00);
-        }
-
-        body.afternoon {
-            background-color: #e6f7ff;
-        }
-
-        body.afternoon .sky {
-            background: linear-gradient(to bottom, #87CEEB, #c9e9f6);
-        }
-
-        body.afternoon .sun {
-            top: 50px;
-            left: 80%;
-            background: radial-gradient(circle, #ffff99, #ffcc00);
-        }
-
-        body.evening {
-            background-color: #ffefd5;
-        }
-
-        body.evening .sky {
-            background: linear-gradient(to bottom, #ff7e5f, #feb47b);
-        }
-
-        body.evening .sun {
-            top: 120px;
-            left: 90%;
-            background: radial-gradient(circle, #ff9966, #ff5e62);
-        }
-
-        body.night {
-            background-color: #0f2027;
-        }
-
-        body.night .sky {
-            background: linear-gradient(to bottom, #0f2027, #203a43);
-        }
-
-        body.night .sun {
-            top: 80px;
-            left: 80%;
+         .ranged-attack{
+             background-color: #007bff;
+             width: 12px;
+             height: 12px;
+         }
+         .special-attack{
             width: 60px;
             height: 60px;
-            background: radial-gradient(circle, #f5f5f5, #e6e6e6);
-            box-shadow: 0 0 20px #f5f5f5;
+            border-radius: 50%;
+            background-color: rgba(255,255,0, 0.6);
+            animation:  specialExpand 0.7s ease-out forwards;
+
+         }
+
+         @keyframes specialExpand{
+             0%{ transform: scale(0);}
+            100% { transform: scale(1.5);  opacity: 0; }
+
+         }
+        #ui-container {
+            width: 800px;
+            margin: 0 auto;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+        }
+        #controls{
+        }
+        #inventory {
+           display: flex;
+           gap: 15px;
+
         }
 
-        body.night .ocean {
-            background: linear-gradient(to bottom, #203a43, #0f2027);
+        #wave-info {
+
         }
 
-        @keyframes sunriseSun {
-            0% {
-                top: 150px;
-                left: 20%;
-                transform: scale(1.5);
-                background: radial-gradient(circle, #ff6666, #ff3300);
-            }
-            100% {
-                top: 80px;
-                left: 30%;
-                transform: scale(1);
-                background: radial-gradient(circle, #ffff99, #ffcc00);
-            }
+        #message-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            z-index: 1000;
+            display: none;
         }
 
-        .collected {
-            animation: collect 1s forwards;
+        #message-text {}
+        #message-options{
+          display:flex;
+          justify-content:center;
         }
 
-        @keyframes collect {
-            0% {
-                transform: scale(1);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(0);
-                opacity: 0;
-            }
+        #game-over-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
         }
 
-        /* New Animations from Design Doc */
-        @keyframes float { /* For alien drone */
+        #game-over-content {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        #game-over-content h2 {}
+
+        #game-over-content button {}
+
+        .defense {
+            position: absolute;
+        }
+
+        .barrier {
+            width: 50px;
+            height: 20px;
+            background-color: brown;
+            border: 1px solid black;
+        }
+          .turret {
+              content:"🗼";
+               font-size: 35px;
+
+          }
+
+           .healing-station {
+            content:"➕";
+            font-size:35px;
+
+        }
+           .house {
+             position: absolute;
+            width: 80px;
+            height: 70px;
+            background-color:  #ffd1dc;
+            border: 4px solid brown;
+             left: 20px;
+             bottom: 50px;
+           }
+
+        @keyframes float {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+            50% { transform: translateY(-8px); }
+        }
+        @keyframes pulseShield {
+             0%, 100% {opacity: 1; }
+             50% { opacity: 0.3; }
+         }
+
+        @keyframes teleport {
+           0%, 100% { opacity: 1;}
+            49% { opacity: 1; }
+            50% { opacity: 0;}
+            99% { opacity: 0;}
         }
 
-        @keyframes pulseShield { /* For shielded alien */
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
 
-        @keyframes teleport { /* For elite alien - using 'steps' timing function for sharper effect */
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0; transform: scale(0.8); } /* Scale down slightly to simulate teleporting out */
-        }
+          @keyframes bossCharge{
 
-        @keyframes bossCharge { /* For boss alien */
-            0% { transform: translateX(0); }
-            50% { transform: translateX(100px); } /* Charge animation will move horizontally */
-            100% { transform: translateX(0); }
+            0%{ transform: translateX(0);}
+            50%{ transform: translateX(-450px)}
+           100% {transform: translateX(0); }
         }
 
 
     </style>
 </head>
-<body class="afternoon">
-    <div class="scene">
-        <div class="sky"></div>
-        <div class="sun"></div>
-        <div class="cloud cloud1"></div>
-        <div class="cloud cloud2"></div>
-        <div class="bird bird1"></div>
-        <div class="bird bird2"></div>
-        <div class="bird bird3"></div>
-        <div class="ocean"></div>
-        <div class="wave wave1"></div>
-        <div class="wave wave2"></div>
-        <div class="wave wave3"></div>
-        <div class="fish fish1"></div>
-        <div class="fish fish2"></div>
-        <div class="fish fish3"></div>
-        <div class="dock"></div>
-        <div class="dock-top"></div>
-        <div class="boat">
-            <div class="boat-body"></div>
-            <div class="sail"></div>
-            <div class="sail-canvas"></div>
-            <div class="cabin"></div>
-        </div>
-        <div class="beach"></div>
-        <div class="shell shell1"></div>
-        <div class="shell shell2"></div>
-        <div class="shell shell3"></div>
-        <div class="island"></div>
-        <div class="palm-tree">
-            <div class="trunk"></div>
-            <div class="leaves">
-                <div class="leaf"></div>
-                <div class="leaf"></div>
-                <div class="leaf"></div>
-                <div class="leaf"></div>
-                <div class="leaf"></div>
-                <div class="leaf"></div>
+<body>
+    <div id="game-container">
+        <div id="player">
+          <div id = "player-image"></div>
+            <div class = "health-bar-container">
+               <div class = "health-bar player-health"> </div>
             </div>
         </div>
 
-        <div class="grass-area"></div>
+          <div class="house" id="house"> </div>
 
-        <div class="house">
-            <div class="house-roof">
-                <div class="chimney"></div>
-            </div>
-            <div class="house-base">
-                <div class="house-door"></div>
-                <div class="window window1"></div>
-                <div class="window window2"></div>
-                <div class="flower-box">
-                    <div class="flower flower1"></div>
-                    <div class="flower flower2"></div>
-                    <div class="flower flower3"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="animal-pen"></div>
-        <div class="fence fence1"></div>
-        <div class="fence fence2"></div>
-
-        <div class="animal cow"></div>
-        <div class="animal goat"></div>
-
-        <div class="dog"></div>
-        <div class="cat"></div>
-
-        <div class="person boy">
-            <div class="health-bar-container">
-                <div class="health-bar player-health"></div>
-            </div>
-        </div>
-        <div class="person girl"></div>
-
-        <!-- Alien Enemy Container - Will hold different alien types -->
-        <div class="alien-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;">
-            <!-- Alien will be dynamically inserted here as child elements -->
-        </div>
-
-        <div class="inventory">
-            <div class="inventory-title">Collection:</div>
-            <div class="inventory-items">
-                <div class="inventory-item">🐚 <div class="shell-count">0</div></div>
-                <div class="inventory-item">🐟 <div class="fish-count">0</div></div>
-                <div class="inventory-item">Points: <div class="upgrade-points">0</div></div>
-            </div>
-        </div>
-
-        <div class="time-cycle">
-            <span class="time-label">Time:</span>
-            <span class="time-value">Afternoon</span>
-        </div>
-
-        <div class="message-box">
-            <div class="message-text" id="gameMessageText">Welcome to Coastal Defense! Protect your home from alien invaders. Collect resources, upgrade your weapons, and survive the waves!</div>
-            <div class="message-options" id="gameMessageOptions">
-                <button class="message-option" onclick="startGame()">Start Game</button>
-            </div>
-        </div>
-
-        <div class="game-over-message" id="gameOverMessage">
-            <h2>Game Over!</h2>
-            <p id="gameOverText">Aliens have taken over Serene Shores!</p>
-            <button onclick="restartGame()">Play Again</button>
-        </div>
 
     </div>
+     <div id="ui-container">
+            <div id="controls">
+                <button id="melee-attack-btn">Melee</button>
+                <button id="ranged-attack-btn">Ranged</button>
+                <button id="special-attack-btn">Special</button>
+                <button id="build-barrier-btn">Barrier</button>
+                <button id = "build-turret-btn">Turret</button>
+                <button id = "build-healingstation-btn">Healing Station</button>
+                <button id="upgrade-button">Upgrades</button>
+            </div>
+            <div id="inventory">
+                 <div>Shells: <span id="shell-count">0</span></div>
+                 <div>Fish: <span id="fish-count">0</span></div>
 
-    <div class="controls">
-        <button class="button" onclick="changeTime('morning')">Morning</button>
-        <button class="button" onclick="changeTime('afternoon')">Afternoon</button>
-        <button class="button" onclick="changeTime('evening')">Evening</button>
-        <button class="button" onclick="changeTime('night')">Night</button>
-        <button class="button" onclick="performAttack('melee')">Melee Attack</button>
-        <button class="button" onclick="performAttack('ranged')">Ranged Attack</button>
-        <button class="button" onclick="performAttack('special')">Special Attack</button>
-        <button class="button" onclick="showUpgrades()">Upgrades</button>
-    </div>
+            </div>
+            <div id="wave-info">
+                Wave: <span id="wave-number">1</span>
+            </div>
+       </div>
+
+       <div id="message-box">
+          <div id="message-text"></div>
+          <div id = "message-options">
+           </div>
+        </div>
+
+        <div id="game-over-overlay">
+            <div id="game-over-content">
+                <h2>Game Over!</h2>
+                <p id="game-over-reason"></p>
+                <button id="restart-button">Restart</button>
+            </div>
+        </div>
 
     <script>
-        /* --- Game Variables and Setup --- */
-        let player = document.querySelector('.boy');
-        let playerHealthBar = document.querySelector('.player-health');
-        let alienContainer = document.querySelector('.alien-container'); // Container for aliens
-        let gameOverMessageElement = document.getElementById('gameOverMessage');
-        let gameOverTextElement = document.getElementById('gameOverText');
-        let gameMessageTextElement = document.getElementById('gameMessageText');
-        let gameMessageOptionsElement = document.getElementById('gameMessageOptions');
-        let grassArea = document.querySelector('.grass-area');
+        const GAME_WIDTH = 800;
+        const GAME_HEIGHT = 600;
+        const PLAYER_SPEED = 5;
+        const PROJECTILE_SPEED = 8;
+        const WAVE_INTERVAL = 5000;
 
-        // Resource counters in inventory display
-        let shellCountDisplay = document.querySelector('.shell-count');
-        let fishCountDisplay = document.querySelector('.fish-count');
-        let upgradePointsDisplay = document.querySelector('.upgrade-points');
-
-        let playerSpeed = 5;
-        let playerHealth = 100;
-        let playerAttackDamage = { melee: 20, ranged: 15, special: 30 }; // Base damages, can be upgraded
-
-        let gameActive = false;
+        let player;
+        let aliens = [];
+        let resources = [];
+        let projectiles = [];
+        let defenses = [];
+        let gameInterval;
+        let waveNumber = 0;
         let isGameOver = false;
-        let currentWave = 0;
-        let shells = 0;
-        let fishes = 0;
-        let upgradePoints = 0; // Points earned for wave clears or resource collection to spend on upgrades
+        let gameActive = false;
 
-        let playerAttackHistory = []; // For basic AI learning
-        let activeAliens = [];      // Array to manage multiple aliens
-        let waveConfig = [ // Configure waves
-            { waveNumber: 1, enemyType: 'drone', enemyCount: 1 },
-            { waveNumber: 2, enemyType: 'drone', enemyCount: 2 },
-            { waveNumber: 3, enemyType: 'shielded', enemyCount: 1 },
-            { waveNumber: 4, enemyType: 'drone', enemyCount: 2, enemyType2: 'shielded', enemyCount2: 1 }, // Mixed wave
-            { waveNumber: 5, enemyType: 'elite', enemyCount: 1 } ,
-            { waveNumber: 6, enemyType: 'elite', enemyCount: 2 },
-            { waveNumber: 7, enemyType: 'boss', enemyCount: 1 },
+        let playerState = {
+            x: GAME_WIDTH / 2,
+            y: GAME_HEIGHT - 50,
+            health: 100,
+            shells: 0,
+            fish: 0,
+            upgradePoints: 0,
+            attackDamage: {
+                melee: 15,
+                ranged: 10,
+                special: 30,
+            },
+
+        }
+
+         let houseState = {
+            health: 100,
+            maxHealth: 100,
+        }
+         let paused = false;
+
+        let waveConfig = [
+              { enemies: [{type: 'drone', count: 3 }] },
+
+              { enemies: [{type: 'drone', count: 5}]},
+
+              { enemies: [{type: 'drone', count: 2 }, {type: 'shielded', count: 1} ]},
+
+            { enemies: [{type: 'drone', count: 3 }, {type: 'shielded', count: 2}]},
+
+            { enemies: [ { type: 'shielded', count: 3 }, { type: 'elite', count: 1 } ]},
+            { enemies: [{type: 'elite', count:3}]},
+            { enemies: [{type: 'boss', count:1}]}
         ];
-        let currentWaveIndex = 0; // Start at wave config index 0.
+         let nextWaveTimer;
+        const gameContainer = document.getElementById('game-container');
+        const playerImage = document.getElementById('player-image');
+        const uiContainer = document.getElementById('ui-container');
+        const shellCountDisplay = document.getElementById('shell-count');
+        const fishCountDisplay = document.getElementById('fish-count');
+        const waveNumberDisplay = document.getElementById('wave-number');
+        const messageBox = document.getElementById('message-box');
+        const messageText = document.getElementById('message-text');
+        const messageOptions = document.getElementById('message-options');
+        const gameOverOverlay = document.getElementById('game-over-overlay');
+        const gameOverReason = document.getElementById('game-over-reason');
+        const restartButton = document.getElementById('restart-button');
 
+        const meleeAttackBtn = document.getElementById('melee-attack-btn');
+        const rangedAttackBtn = document.getElementById('ranged-attack-btn');
+        const specialAttackBtn = document.getElementById('special-attack-btn');
+        const upgradeButton = document.getElementById('upgrade-button');
+        const buildBarrierBtn = document.getElementById('build-barrier-btn');
+        const buildTurretBtn = document.getElementById('build-turret-btn');
+        const buildHealingStationBtn = document.getElementById('build-healingstation-btn');
+        const pauseBtn = document.getElementById('pause-button');
 
-        /* --- Game Objects and Classes --- */
-        class Alien {
-            constructor(type) {
-                this.type = type;
-                this.health = this.getInitialHealth(type);
-                this.speed = this.getInitialSpeed(type); // Set different speeds for different types
-                this.damage = this.getInitialDamage(type); // Damage amount they deal
-                this.element = this.createAlienElement(type); // DOM element representing the alien
-                this.isAttacking = false;
-                this.attackInterval = null;
-                this.moveInterval = null;
-                this.attackPattern = []; // Learned patterns from player
+        class Player {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.width = 40;
+                this.height = 50;
+                this.element = document.getElementById('player');
+                this.isMovingLeft = false;
+                this.isMovingRight = false;
 
-                alienContainer.appendChild(this.element); // Add to scene
-                activeAliens.push(this); // Add to active aliens array
             }
 
-            getInitialHealth(type) {
-                switch (type) {
-                    case 'drone': return 50;
-                    case 'shielded': return 80;
-                    case 'elite': return 120;
-                    case 'boss': return 200;
-                    default: return 100;
+            update() {
+                if (this.isMovingLeft && this.x > 0) {
+                   this.x -= PLAYER_SPEED;
+
+                   playerImage.parentElement.classList.add('walking-left');
+                   playerImage.parentElement.classList.remove('walking-right');
+
                 }
-            }
+                 if (this.isMovingRight && this.x < GAME_WIDTH - this.width) {
+                    this.x += PLAYER_SPEED;
 
-            getInitialSpeed(type) { // Define speed per type
-                switch (type) {
-                    case 'drone': return 0.8; // Slower drones
-                    case 'shielded': return 0.6; // Shielded even slower maybe
-                    case 'elite': return 1.2;  // Elites faster
-                    case 'boss': return 0.9;   // Boss a bit slower than elite but tougher
-                    default: return 1;
-                }
-            }
-             getInitialDamage(type) {
-                switch (type) {
-                    case 'drone': return 10;
-                    case 'shielded': return 15;
-                    case 'elite': return 25;
-                    case 'boss': return 35;
-                    default: return 15;
-                }
-            }
-
-            createAlienElement(type) {
-                const alienDiv = document.createElement('div');
-                alienDiv.classList.add('alien', `alien-${type}`); // e.g., alien alien-drone
-
-                const healthBarContainer = document.createElement('div');
-                healthBarContainer.classList.add('health-bar-container');
-                const healthBar = document.createElement('div');
-                healthBar.classList.add('health-bar', 'enemy-health'); // Re-using enemy-health style
-                healthBarContainer.appendChild(healthBar);
-                alienDiv.appendChild(healthBarContainer);
-
-                alienDiv.style.left = '75%'; // Initial spawn position
-                return alienDiv;
-            }
-
-            startAI() {
-                this.moveInterval = setInterval(() => this.moveTowardsPlayer(), 150);
-                this.attackInterval = setInterval(() => {
-                    if (!this.isAttacking && gameActive && distanceBetweenElements(player, this.element) < 120) { // Similar range check
-                        this.attackPlayer();
-                    }
-                }, 1500); // Attack every 1.5 seconds
-            }
-
-            stopAI() {
-                clearInterval(this.moveInterval);
-                clearInterval(this.attackInterval);
-            }
-
-
-            moveTowardsPlayer() {
-                if (!gameActive || isGameOver || !this.element) return;
-
-                const playerRect = player.getBoundingClientRect();
-                const alienRect = this.element.getBoundingClientRect();
-                let dx = 0;
-
-                if (alienRect.left > playerRect.left) {
-                    dx = -this.speed; // Move left
-                } else if (alienRect.left < playerRect.left) {
-                    dx = this.speed;  // Move right
+                    playerImage.parentElement.classList.add('walking-right');
+                    playerImage.parentElement.classList.remove('walking-left');
                 }
 
-                let newAlienLeft = parseFloat(this.element.style.left || getComputedStyle(this.element).left);
-                newAlienLeft += dx;
-                newAlienLeft = Math.max(0, Math.min(newAlienLeft, 95));
-                this.element.style.left = `${newAlienLeft}%`;
-
-                 if (isColliding(this.element, grassArea)) { // House damage check
-                    damageHouse(this.damage / 20 ); // Aliens cause house damage over time
-                }
+                this.render();
             }
 
-
-            attackPlayer() {
-                if (!this.isAttacking && gameActive && this.element && !isGameOver) {
-                    this.isAttacking = true;
-                    this.element.classList.add('attacking');
-
-                    damagePlayer(this.damage); // Alien's damage value
-
-                    setTimeout(() => {
-                        this.element.classList.remove('attacking');
-                        this.isAttacking = false;
-                    }, 500);
-                }
+            render() {
+                this.element.style.left = `${this.x}px`;
+                this.element.style.bottom = `${GAME_HEIGHT - this.y - this.height}px`;
             }
 
-            takeDamage(damage) {
-                this.health -= damage;
-                if (this.health < 0) this.health = 0;
-                this.updateHealthBar();
-
-                const healthBarElement = this.element.querySelector('.enemy-health');
-                if (healthBarElement) {
-                    healthBarElement.classList.add('damage');
-                    setTimeout(() => healthBarElement.classList.remove('damage'), 200);
-                }
-
-                if (this.health <= 0) {
-                    this.die();
-                }
-            }
-
-            updateHealthBar() {
-                const healthBarElement = this.element.querySelector('.enemy-health');
-                if (healthBarElement) {
-                    healthBarElement.style.width = `${(this.health / this.getInitialHealth(this.type)) * 100}%`;
-                     if (this.health <= this.getInitialHealth(this.type) * 0.25) {
-                        healthBarElement.style.backgroundColor = 'red';
-                    } else if (this.health <= this.getInitialHealth(this.type) * 0.5) {
-                        healthBarElement.style.backgroundColor = 'orange';
-                    } else {
-                        healthBarElement.style.backgroundColor = 'green';
-                    }
-                }
-            }
-
-
-            die() {
-                this.stopAI();
-                this.element.remove();
-                activeAliens = activeAliens.filter(alien => alien !== this);
-
-                incrementUpgradePoints(1); // Award upgrade points on defeat
-
-                checkWaveClear();
-            }
-
-
-            adapt(attackType) { // Very basic adaptation
-                if (attackType === 'melee' && !this.attackPattern.includes('dodgeMelee')) {
-                    this.attackPattern.push('dodgeMelee');
-                    console.log(`${this.type} alien is adapting to melee attacks!`);
-                }
-            }
-
-            tryDodge(attackType) {
-                if (attackType === 'melee' && this.attackPattern.includes('dodgeMelee') && Math.random() < 0.3) {
-                    console.log(`${this.type} alien dodged melee!`);
-                    return true;
-                }
-                return false;
-            }
-
-
-        } // End Alien Class
-
-        /* --- Player and House Objects (Basic placeholders for now) --- */
-        let houseHealth = 100;
-        function damageHouse(damageAmount) {
-            if (isGameOver) return;
-
-            houseHealth -= damageAmount;
-            if (houseHealth < 0) houseHealth = 0;
-
-            if (houseHealth <= 0) {
-                homeDefeated();
-            } else {
-                showMessageWithText("Your house is under attack!", [{text: 'Defend!', action: closeMessage}]);
-            }
         }
-
-
-        /* --- Game Logic Functions (Modified) --- */
-        function updateTimeDisplay() {
-            document.querySelector('.time-value').textContent = document.body.className.charAt(0).toUpperCase() + document.body.className.slice(1);
-        }
-
-        function changeTime(time) {
-            document.body.className = time;
-            updateTimeDisplay();
-        }
-
-        function showMessage(messageText, options) { // Modified showMessage
-            gameMessageTextElement.textContent = messageText;
-            gameMessageOptionsElement.innerHTML = ''; // Clear old buttons
-
-            if (options && options.length > 0) {
-                options.forEach(option => {
-                    const button = document.createElement('button');
-                    button.className = 'message-option';
-                    button.textContent = option.text;
-                    button.onclick = option.action;
-                    gameMessageOptionsElement.appendChild(button);
-                });
-            } else { // Default "Close" if no options given
-                 const defaultButton = document.createElement('button');
-                    defaultButton.className = 'message-option';
-                    defaultButton.textContent = "Close";
-                    defaultButton.onclick = closeMessage;
-                    gameMessageOptionsElement.appendChild(defaultButton);
+         class Resource{
+             constructor(x, y, type){
+                 this.x = x;
+                 this.y = y;
+                 this.type = type;
+                 this.width = 20;
+                 this.height = 20;
+                 this.element = document.createElement('div');
+                 this.element.classList.add('resource', type);
+                 this.element.style.left = `${this.x}px`;
+                 this.element.style.bottom = `${this.y}px`;
+                 this.element.onclick = () => this.collect();
+                 gameContainer.appendChild(this.element);
             }
+            collect(){
 
-            document.querySelector('.message-box').style.display = 'block';
-        }
-
-
-        function closeMessage() {
-            document.querySelector('.message-box').style.display = 'none';
-        }
-
-
-        function performAttack(attackType) {
-            if (!gameActive || isGameOver || !activeAliens[0]) return;
-
-            let currentAlien = activeAliens[0];
-
-             if (currentAlien.tryDodge(attackType)) { // Check for dodge
-                showMessageWithText(`${currentAlien.type} dodged your ${attackType} attack!`, ['Adapt!']);
-                playerAttackHistory.push(attackType);
-                return; // Exit attack if dodged.
+             if (this.type === 'shell'){
+                  playerState.shells++;
+             }else if (this.type === 'fish'){
+                 playerState.fish++;
              }
 
-            playerAttackHistory.push(attackType); // Record attack used
-            currentAlien.adapt(attackType);
+                this.remove();
+                updateUI();
 
-            let damage = playerAttackDamage[attackType];
-            let visualClass;
-
-            switch (attackType) {
-                case 'melee': visualClass = 'melee-attack'; break;
-                case 'ranged': visualClass = 'ranged-attack'; break;
-                case 'special': visualClass = 'special-attack'; damage = playerAttackDamage.special; break; // Special might have separate damage
-                default: return;
             }
-
-            const attackVisual = document.createElement('div');
-            attackVisual.classList.add('attack-visual', visualClass);
-            player.appendChild(attackVisual);
-
-            if (attackType === 'ranged') {
-                 const projectileAnimation = attackVisual.animate([
-                    { transform: 'translateX(0) translateY(0)', opacity: 1 },
-                    { transform: `translateX(${currentAlien.element.offsetLeft - player.offsetLeft + (currentAlien.element.offsetWidth /2) - (player.offsetWidth/2)}px) translateY(${currentAlien.element.offsetTop - player.offsetTop + (currentAlien.element.offsetHeight /2) - (player.offsetHeight/2) + 30 }px)`, opacity: 1 },
-                    { transform: `translateX(${currentAlien.element.offsetLeft - player.offsetLeft + (currentAlien.element.offsetWidth /2) - (player.offsetWidth/2)}px) translateY(${currentAlien.element.offsetTop - player.offsetTop + (currentAlien.element.offsetHeight /2) - (player.offsetHeight/2) + 30}px)`, opacity: 0 },
-                 ], {
-                    duration: 700, // projectile duration in ms
-                    easing: 'linear',
-                    fill: 'forwards'
-                });
-
-                projectileAnimation.onfinish = () => {
-                    attackVisual.remove();
-                     currentAlien.takeDamage(damage); // Apply damage after animation completes.
-                };
-
-            } else { // Melee & Special
-                setTimeout(() => { // Timing to allow animation to play
-                    attackVisual.remove();
-                    currentAlien.takeDamage(damage);
-                }, 500);
-            }
-        }
-
-
-        function damagePlayer(damage) {
-            if (!isGameOver && gameActive) {
-                playerHealth -= damage;
-                if (playerHealth < 0) playerHealth = 0;
-                updateHealthBar(playerHealthBar, playerHealth);
-
-                playerHealthBar.classList.add('damage');
-                setTimeout(() => playerHealthBar.classList.remove('damage'), 200);
-
-                if (playerHealth <= 0) {
-                    playerDefeated();
-                }
-            }
-        }
-
-        function updateHealthBar(healthBarElement, currentHealth) {
-            healthBarElement.style.width = `${currentHealth}%`;
-             if (currentHealth <= 25) {
-                healthBarElement.style.backgroundColor = 'red';
-            } else if (currentHealth <= 50) {
-                healthBarElement.style.backgroundColor = 'orange';
-            } else {
-                healthBarElement.style.backgroundColor = 'green';
-            }
-        }
-
-
-        function spawnWave(waveData) {
-            if (!waveData) { // If no more waves defined, you've won.
-                gameWon();
-                return;
-            }
-
-            currentWave = waveData.waveNumber;
-            showMessageWithText(`Wave ${currentWave} incoming! Prepare for battle!`, [{text: 'Get Ready!', action: closeMessage}]);
-
-            if (waveData.enemyType) { // Spawn first enemy type
-                 const newAlien = new Alien(waveData.enemyType);
-                 newAlien.startAI();
-            }
-            if (waveData.enemyType2) { // Spawn second enemy type if defined
-                const newAlien2 = new Alien(waveData.enemyType2);
-                newAlien2.startAI();
-            }
-
-        }
-
-        function checkWaveClear() {
-            if (activeAliens.length === 0) { // Wave cleared when no active aliens left
-                incrementUpgradePoints(5); // Award bonus points for wave clear
-                updateInventoryDisplay();
-
-                currentWaveIndex++;
-                if (currentWaveIndex < waveConfig.length) {
-                    setTimeout(() => spawnWave(waveConfig[currentWaveIndex]), 2000); // Delay next wave slightly
-                } else {
-                    gameWon(); // All waves complete, player wins
-                }
-            }
-        }
-
-
-        function enemyDefeated() { // Now called directly from Alien.die()
-            // (Functionality now handled in Alien.die() method.)
-        }
-
-        function incrementUpgradePoints(points) {
-            upgradePoints += points;
-            updateInventoryDisplay();
-        }
-
-        function updateInventoryDisplay() {
-            shellCountDisplay.textContent = `${shells}`;
-            fishCountDisplay.textContent = `${fishes}`;
-            upgradePointsDisplay.textContent = `${upgradePoints}`;
-        }
-
-
-        function collectResource(resourceType) {
-            if (resourceType === 'shell') {
-                shells++;
-                showMessageWithText("You collected a shell! Use it to craft upgrades.", [{text: 'OK', action: closeMessage}]);
-            } else if (resourceType === 'fish') {
-                fishes++;
-                showMessageWithText("You caught a fish! Tasty and maybe useful.", [{text: 'Yum', action: closeMessage}]);
-            }
-            updateInventoryDisplay();
-        }
-
-        // Modify collectible interactions to trigger collectResource()
-        const collectibles = document.querySelectorAll('.shell, .fish');
-        collectibles.forEach(item => {
-            item.addEventListener('click', function() {
-                const resourceType = this.classList.contains('shell') ? 'shell' : 'fish';
-                collectResource(resourceType);
-                this.classList.add('collected');
-                setTimeout(() => {
-                    this.style.display = 'none';
-                }, 1000);
-            });
-        });
-
-
-        function playerDefeated() {
-            isGameOver = true;
-            gameActive = false;
-            activeAliens.forEach(alien => alien.stopAI());
-
-            gameOverTextElement.textContent = "Aliens have breached your defenses!";
-            gameOverMessageElement.style.display = 'block';
-        }
-
-        function homeDefeated() {
-             isGameOver = true;
-             gameActive = false;
-             activeAliens.forEach(alien => alien.stopAI());
-             gameOverTextElement.textContent = "Your home is destroyed!";
-             gameOverMessageElement.style.display = 'block';
+             remove(){
+              this.element.remove();
+              resources.splice(resources.indexOf(this), 1);
+             }
          }
 
 
-        function gameWon() {
+        class Alien {
+            constructor(type, x, y) {
+                this.type = type;
+                this.x = x;
+                this.y = y;
+                this.width = 40;
+                this.height = 40;
+                this.speed = 1;
+                this.health = 100;
+                this.attackPower = 10;
+                this.attackPattern = [];
+                this.isAttacking = false;
+                this.attackCooldown = 1500;
+                this.nextAttackTimer = null;
+
+                this.element = document.createElement('div');
+                this.element.classList.add('alien', `alien-${type}`);
+                switch (type) {
+                    case 'drone':
+                        this.health = 50;
+                        this.speed = 1.2;
+                         break;
+                    case 'shielded':
+                        this.width = 60;
+                        this.height = 60;
+                        this.health = 120;
+                        this.speed = 0.8;
+                        this.attackPower = 15;
+                        this.hasShield = true;
+                        break;
+                    case 'elite':
+                        this.width = 50;
+                        this.height = 50;
+                         this.health = 80;
+                        this.speed = 2;
+                         this.attackPower = 20;
+                        break;
+                    case 'boss':
+                         this.width = 100;
+                         this.height = 100;
+                         this.health = 300;
+                         this.speed = 0.9;
+                        this.attackPower = 35;
+                         break;
+                }
+                 this.healthBarContainer = document.createElement('div');
+                this.healthBarContainer.classList.add('health-bar-container');
+
+                this.healthBarElement = document.createElement('div');
+                this.healthBarElement.classList.add('health-bar');
+
+                this.healthBarContainer.appendChild(this.healthBarElement);
+                this.element.appendChild(this.healthBarContainer);
+                if (this.hasShield) {
+                    this.shieldElement = document.createElement('div');
+                    this.shieldElement.classList.add('shield');
+                    this.element.appendChild(this.shieldElement);
+                }
+
+                gameContainer.appendChild(this.element);
+                this.render();
+                this.startAI();
+            }
+
+            update() {
+                if(!paused) this.moveTowardsPlayer();
+
+                this.render();
+            }
+
+            render() {
+                this.element.style.left = `${this.x}px`;
+                this.element.style.bottom = `${this.y}px`;
+
+                const healthPercent = (this.health / this.getMaxHealth()) * 100;
+                this.healthBarElement.style.width = `${healthPercent}%`;
+                 if(healthPercent <= 25){
+                   this.healthBarElement.style.backgroundColor = 'red';
+                } else if (healthPercent <= 50){
+                   this.healthBarElement.style.backgroundColor = 'orange';
+                }
+                else{
+                    this.healthBarElement.style.backgroundColor = 'green';
+                }
+            }
+
+            startAI() {
+                if (this.moveInterval) {
+                    clearInterval(this.moveInterval)
+                 }
+
+                this.moveInterval = setInterval(() => {
+                    this.moveTowardsPlayer();
+                }, 50);
+
+                this.scheduleNextAttack();
+
+            }
+              scheduleNextAttack(){
+
+                 if (this.nextAttackTimer) {
+                       clearTimeout(this.nextAttackTimer);
+                  }
+
+                this.nextAttackTimer =  setTimeout(() => {
+                    if (this.distanceToPlayer() < 100) {
+                           this.attackPlayer();
+                    }
+                   this.scheduleNextAttack();
+
+                 }, this.attackCooldown);
+             }
+            moveTowardsPlayer() {
+               if (!gameActive || isGameOver) return;
+
+                 if (!this.canMove()) return;
+                 const playerX = player.x + player.width / 2;
+                const playerY = player.y + player.height/ 2;
+
+                 const dx = playerX - (this.x + this.width/2 );
+                const dy = playerY - (this.y + this.height /2 );
+
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist > 5) {
+
+                      const moveX = (dx / dist) * this.speed;
+                     const moveY = (dy / dist) * this.speed;
+
+                   this.x += moveX;
+                   this.y += moveY;
+                }
+
+                if(isColliding(this, {x: houseState.x, y: houseState.y, width: 80, height: 70} )){
+
+                    damageHouse(this.attackPower/40);
+
+               }
+
+            }
+             canMove(){
+                  return true;
+             }
+
+             distanceToPlayer(){
+
+                  const playerX = player.x + player.width/2;
+                const playerY = player.y + player.height/2
+
+                  const dx = playerX - (this.x + this.width / 2);
+                  const dy = playerY - (this.y + this.height/2);
+
+                 return Math.sqrt(dx * dx + dy * dy);
+              }
+
+            attackPlayer() {
+              if (isGameOver || !gameActive) {return};
+
+                 if (!this.isAttacking){
+                     this.isAttacking = true;
+                    this.element.classList.add('attacking');
+                   switch(this.type){
+
+                      case 'drone':
+
+                           damagePlayer(this.attackPower);
+
+                           break;
+                       case 'shielded':
+
+                          damagePlayer(this.attackPower);
+
+                           break;
+                       case 'elite':
+                            damagePlayer(this.attackPower)
+
+                           break;
+                      case 'boss':
+
+                       damagePlayer(this.attackPower);
+
+                          break;
+                    }
+                     setTimeout(() => {
+
+                         this.element.classList.remove('attacking');
+                        this.isAttacking = false;
+
+                     }, 500);
+
+                   }
+
+            }
+
+            takeDamage(damage) {
+                if (this.hasShield) {
+                    if (Math.random() < 0.5) {
+                        showMessage('Shield blocked!',[{text: 'Ok', action:closeMessage}])
+                      return;
+                    }
+                }
+
+                 if (!isGameOver && gameActive)
+                    this.health -= damage;
+
+                if (this.health <= 0) {
+                    this.health = 0;
+                    this.die();
+                    return;
+                }
+                this.render();
+            }
+
+            die() {
+
+               if (this.element) this.element.remove();
+
+              if(this.nextAttackTimer)  clearTimeout(this.nextAttackTimer);
+              clearInterval(this.moveInterval);
+
+                aliens = aliens.filter(a => a !== this);
+
+                if (Math.random() < 0.5) {
+
+                     let dropType = Math.random() < 0.5 ? 'shell':'fish';
+
+                    const resource = new Resource(this.x, GAME_HEIGHT - this.y, dropType);
+                    resources.push(resource)
+
+               }
+
+                checkWaveCompletion();
+            }
+
+            getMaxHealth(){
+
+                  switch(this.type){
+
+                     case 'drone':  return 50;
+
+                    case 'shielded': return 120;
+                   case 'elite': return 80;
+
+                   case 'boss':  return 300;
+                 }
+               return 100;
+           }
+
+            adapt(attackType) {
+                if (attackType === 'melee' && !this.attackPattern.includes('dodgeMelee')) {
+
+                   this.attackPattern.push('dodgeMelee');
+                }
+
+           }
+
+
+            tryDodge(attackType) {
+                if (attackType === 'melee' && this.attackPattern.includes('dodgeMelee')) {
+
+                     let moveX = Math.random() < 0.5 ? -30: 30;
+
+                     this.x += moveX;
+
+                      this.x = Math.max(0, Math.min(this.x, GAME_WIDTH-this.width))
+
+                     return true;
+                 }
+             return false;
+             }
+
+        }
+
+        class Projectile{
+                constructor(x, y, targetX, targetY, speed, damage, attackType = 'normal', source) {
+
+                this.x = x;
+                this.y = y;
+
+                this.targetX = targetX;
+                this.targetY = targetY;
+
+                this.speed = speed;
+                this.damage = damage;
+
+                 this.width = 10;
+                 this.height = 10;
+
+                 this.attackType = attackType;
+
+                 this.element = document.createElement('div');
+
+                this.element.classList.add('projectile');
+
+                if(source === "player"){
+                    this.element.classList.add('player-projectile');
+                  }
+
+                this.element.style.left = `${this.x}px`;
+
+                gameContainer.appendChild(this.element);
+
+                const dx = this.targetX - this.x;
+                const dy = this.targetY - this.y;
+
+                const distance = Math.sqrt(dx*dx + dy * dy);
+                this.velocityX = (dx/distance) * this.speed;
+                this.velocityY = (dy/distance) * this.speed;
+                this.hasHit = false;
+           }
+
+                update(){
+                   if(!gameActive) return;
+                     this.x += this.velocityX;
+                    this.y += this.velocityY;
+
+
+                  if(this.x < 0 || this.x > GAME_WIDTH || this.y < 0 || this.y > GAME_HEIGHT || this.hasHit){
+
+                    this.remove();
+                    return;
+                  }
+
+                if (this.element.classList.contains('player-projectile')){
+
+                   for(const alien of aliens){
+
+                         if (isColliding(this, alien) ){
+                          alien.takeDamage(this.damage);
+                          this.hasHit = true;
+                          this.remove();
+                          return;
+
+                              }
+                       }
+                   }
+            this.render();
+          }
+
+           render(){
+               this.element.style.left = `${this.x}px`;
+               this.element.style.bottom = `${this.y}px`;
+            }
+
+
+            remove(){
+               this.element.remove();
+              projectiles = projectiles.filter(p => p!== this);
+
+                }
+         }
+        class Defense {
+            constructor(x, y, type) {
+
+                this.x = x;
+                this.y = y;
+                this.type = type;
+                 this.element = document.createElement('div');
+                this.element.classList.add('defense', this.type);
+                 switch(type) {
+                      case 'barrier':
+
+                           this.width = 50;
+                           this.height = 30;
+
+                           break;
+
+                   }
+
+                  gameContainer.appendChild(this.element);
+                   this.render();
+             }
+
+              render(){
+               this.element.style.left = `${this.x}px`;
+                this.element.style.bottom = `${this.y}px`;
+           }
+
+        }
+        function showMessage(text, options) {
+              messageText.textContent = text;
+              messageOptions.innerHTML = '';
+
+              if (options && options.length>0) {
+                 options.forEach(opt => {
+                     const button = document.createElement('button');
+                      button.textContent = opt.text;
+                     button.onclick = opt.action;
+                      messageOptions.appendChild(button);
+                });
+              } else {
+                const defaultButton = document.createElement('button')
+                defaultButton.textContent = 'OK';
+                defaultButton.onclick = closeMessage;
+                messageOptions.append(defaultButton)
+             }
+              messageBox.style.display = 'block';
+
+        }
+         function closeMessage() {
+
+              messageBox.style.display = 'none';
+          }
+
+          function isColliding(entity1, entity2){
+
+                 const rect1 = entity1.element ? entity1.element.getBoundingClientRect() : entity1;
+                const rect2 = entity2.element ? entity2.element.getBoundingClientRect(): entity2;
+
+               return !(rect1.right < rect2.left || rect1.left > rect2.right || rect1.bottom < rect2.top ||  rect1.top> rect2.bottom)
+           }
+
+            function spawnWave() {
+
+                  if (isGameOver || currentWaveIndex >= waveConfig.length) {
+
+                    return;
+                   }
+
+                    const currentWaveData = waveConfig[currentWaveIndex];
+                   waveNumber++;
+
+               showMessage(`Wave ${waveNumber} incoming!`, [
+                  { text: 'Prepare', action: closeMessage },
+                 ]);
+
+               activeAliens.forEach(a => {
+                     if(a && a.element)
+                          a.element.remove();
+                 });
+
+                 aliens = [];
+
+                 currentWaveData.enemies.forEach(enemyGroup => {
+                    for (let i = 0; i < enemyGroup.count; i++) {
+
+                       const xOffset = i * 50;
+                       const yOffset = 0
+                        const alien = new Alien(enemyGroup.type, GAME_WIDTH - 50 - xOffset, GAME_HEIGHT - 50-yOffset); // Initial position based wave data!
+                        aliens.push(alien); // Add all ALIEN Instances to ARRAY for handling
+
+                    }
+                });
+                currentWaveIndex++; // Prepare *NEXT WAVE DATA* (increment!)
+            }
+
+            function checkWaveCompletion() {
+
+             if (aliens.length === 0) {
+
+                   updateUI();  // Resource count! (Can make upgrade appear with some chance too)
+                    showMessage(`Wave ${waveNumber} Complete!`, [ { text: "Next Wave", action: ()=> {
+                       // Can *add upgrade phase now as separate function!, or automatically spawn
+
+                       spawnWave(); /* Automatic: */
+
+                    }
+
+                   } ])
+
+                }
+             }
+
+        function damagePlayer(damage) {
+            if(!gameActive || isGameOver) return;
+
+            playerState.health -= damage;
+            if (playerState.health <= 0) {
+                playerState.health = 0;
+                gameOver("Player defeated!"); //
+                return;
+            }
+             updateUI();
+        }
+
+        function damageHouse(damage) {
+
+             if(!gameActive || isGameOver) return;
+
+           houseState.health -= damage;
+
+          if (houseState.health <= 0) {
+               gameOver("House destroyed!"); // End game *specific reason message (House/Player) - refine text!
+               return;
+           }
+
+          updateUI(); // Reflect Change
+      }
+        function gameOver(reason) { //
             isGameOver = true;
+            gameActive = false; // Stop updates.
+            clearInterval(gameInterval); // VERY IMPORTANT - Prevent future WAVE spawns or continued running update
+            clearTimeout(nextWaveTimer);
+             aliens.forEach(a => {
+               a.stopAI()});
+
+             gameOverReason.textContent = reason; // Player lost, *show why* - House vs Monster killed?
+            gameOverOverlay.style.display = 'flex'; // show overlay and content, centered nicely, absolute
+
+        }
+       function gameWon() {  /* Victory! */
             gameActive = false;
-            activeAliens.forEach(alien => alien.stopAI());
 
-            gameOverTextElement.textContent = "You defended Serene Shores! Wave Complete!";
-            gameOverMessageElement.style.display = 'block';
+           /* Similar Overlay show + score: - if need expand*/
+           /* aliens.forEach(a => { // If any remain due to collision and death.
+
+            }); */
+
+       }
+       function createProjectile(startX, startY, targetX, targetY, damage, attackType = 'normal', source = 'player') {
+             const projectile = new Projectile(startX, startY, targetX, targetY, PROJECTILE_SPEED, damage, attackType, source );
+              projectiles.push(projectile); // Tracking the "active Bullets", like for Enemy to remove from List!
+
+        }
+
+        function performAttack(attackType) {
+          if(!gameActive || isGameOver || paused ) return;  /* Game State checks: no attacks in pause, over etc.*/
+
+            if (aliens.length === 0) return;  // no target, return
+
+              const closestAlien = findClosestAlien(); // Helper
+
+               // Attack visuals centered on PLAYER for Melee and Special - same X position! */
+
+               const attackVisual = document.createElement('div');
+               attackVisual.classList.add('attack-visual');  // ALWAYS give attackVisual!
+
+            let damage = 0;
+
+           switch(attackType){
+                case 'melee':
+
+                 damage = playerState.attackDamage.melee;
+                 /* VISUAL Melee, and play at that Position - then disappear/automatic cleanup by CSS Keyframes set already in CSS itself (with appropriate animation)
+                /* Example: */
+
+                   attackVisual.classList.add('melee-attack'); // Melee effects! Add Animation as you like (visuals + sound later), but it will set class
+                 // offset by height. NOTE  Y value = where we have the START bottom Point
+
+                   attackVisual.style.left = `${player.x}px` // player center point
+                    attackVisual.style.bottom = `${GAME_HEIGHT - player.y}px` // Consistent BOTTOM system to handle/control offsets (player is using same coordinates)
+
+                    gameContainer.appendChild(attackVisual); // Put to Main game so positioning relative
+
+
+                /* Remove VISUAL when Melee completes - here, automatic after set in STYLE/keyframes (set by classes, which define behavior/properties per *type*) */
+                   setTimeout(()=>{
+                         if(attackVisual && attackVisual.parentElement){ /*Check existence*/
+                              attackVisual.remove(); /* Very crucial - after *each*, CLEANUP*/
+                          }
+                  }, 300);   /* .3s animation for MELEE hit feedback, *Match CSS melee duration now * (easier maintenance - values in SAME part).  */
+                 break;
+
+                case 'ranged': /* For the Bullet*/
+
+                damage = playerState.attackDamage.ranged;
+
+                 /* Calculate where the Player actually shoot AT: */// ... (previous code) ...
+
+                case 'ranged':
+                    damage = playerState.attackDamage.ranged;
+
+                    // Aim at the *closest* alien.  More advanced targeting could be implemented.
+                    if (closestAlien) {
+                        // Adjust starting position slightly to originate from "gun" (visual offset).
+                        const startX = player.x + player.width / 2;
+                        const startY = GAME_HEIGHT - player.y - player.height / 2;
+
+                        // Target the *center* of the closest alien.
+                        const targetX = closestAlien.x + closestAlien.width / 2;
+                        const targetY = GAME_HEIGHT - closestAlien.y - closestAlien.height / 2; // Consistent bottom-based y
+
+                        createProjectile(startX, startY, targetX, targetY, damage, 'normal', 'player');
+                    }
+                    break;
+
+                case 'special':
+                    damage = playerState.attackDamage.special;
+
+                    attackVisual.classList.add('special-attack');
+
+                    attackVisual.style.left = `${player.x - 30 + player.width/2}px`; //initial expansion, will use animation after setting. No need "offset here, because start from ZERO SIZE
+                    attackVisual.style.bottom = `${GAME_HEIGHT-player.y - 30}px`;// Start where player currently, + size offset
+                    gameContainer.appendChild(attackVisual);
+
+                    setTimeout(() => {  // removal after effect end. MATCH style
+                       if(attackVisual && attackVisual.parentElement){
+                           attackVisual.remove();
+
+                      }
+
+                     }, 700);
+
+                   // Apply Damage within an Area of Effect: All nearby
+
+                   aliens.forEach(alien => {  // DAMAGE multiple
+
+                    if (distanceBetween(player, alien) < 100){
+                     alien.takeDamage(damage); /* apply, check consequences if dead (will manage array removal. */
+                    }
+                    })
+                    break;
+           }
+
+        }
+      function findClosestAlien() { // VERY useful helper:  Get the nearest ALIVE
+             if (aliens.length === 0) {
+                  return null;
+              }
+
+               let closest = aliens[0]; // default start compare.
+                let closestDist = distanceBetween(player, closest);  // start to set up min dist.
+               for (let i = 1; i < aliens.length; i++) {
+                   const dist = distanceBetween(player, aliens[i]);
+                 if (dist < closestDist) { /* BETTER!  (shorter distance */
+                    closestDist = dist; // new minimum.
+                     closest = aliens[i];
+                  }
+                }
+             return closest; // Found
+         }
+
+       function distanceBetween(entity1, entity2){ // can calculate dist BETWEEN ANY TWO Entities.  Avoid complex repeated properties accesses
+            const dx = (entity1.x + entity1.width/2) - (entity2.x+ entity2.width /2 );
+            const dy = (entity1.y + entity1.height/2) - (entity2.y+ entity2.height/2);  /* IMPORTANT  Consistent center based to handle attack area check etc  - for circle/etc */
+
+             return Math.sqrt(dx*dx + dy*dy);
+
+        }
+
+        function updateUI() {
+            shellCountDisplay.textContent = playerState.shells;
+            fishCountDisplay.textContent = playerState.fish;
+            waveNumberDisplay.textContent = waveNumber;
+            //Update Upgrade point too.
+            /*
+            Update House Health visual: could set class, size if NO image.   .house--damaged
+            if (houseState.health <= 50 ){  } // change color of a class for visual, apply DAMAGE
+             OR (direct/simple method, not requiring more HTML nodes/nested divs)
+
+              e.g.: simple Size REDUCE for health reduction, visual */
+
+                const houseVisual = document.getElementById('house'); // the main HTML tag - ensure the main Element exists
+
+              // style
+              // houseVisual.style.backgroundColor = 'red'; // change COLOR
+               // Scale SIZE of visual of the whole house, OR its specific internal Elements/borders!
+            // Adjust WIDTH. Use %:
+
+                const houseHealthPercent = (houseState.health/houseState.maxHealth)*100 // Ensure that value used.
+                houseVisual.style.width = `${houseHealthPercent}%`;  // use Percent, of that parent! OR can be pixel (consistent)
+
+           const playerHealthPercent = (playerState.health/100)*100 // Max 100 hardcoded - future can track this max differently, same as enemy.
+            document.querySelector('.player-health').style.width = `${playerHealthPercent}%` // very important update value too, from game-logic number/object states to user-facing VIEW
+            // if less 25%
+
+           if(playerHealthPercent <= 25){
+             document.querySelector('.player-health').style.backgroundColor = 'red' // danger warning
+           } else if (playerHealthPercent<= 50){
+
+            document.querySelector('.player-health').style.backgroundColor = 'orange';
+          } else{
+
+             document.querySelector('.player-health').style.backgroundColor = 'green'//reset! VERY important!
+         }
 
 
         }
 
+        function showUpgrades() { // Display Menu and options
+
+             if(playerState.upgradePoints <= 0){ // guard
+
+                showMessage("No Upgrade Points!",[{text: 'OK', action:closeMessage}]); // No complex object/class method dependency.
+                return;
+              }
+
+             // Otherwise CAN continue display menu
+
+              const options = [
+
+                    {text: "Sword (+10 Melee Damage, 10pts)", action: () => upgradeWeapon('melee') }, //bind for player, ensure player context for state updates/upgrades
+                    {text: "Bow (+5 Ranged Damage, 8pts)", action: () => upgradeWeapon('ranged') },
+                     //... MORE OPTION: for different upgrade PATH
+                      {text: 'Cancel', action: closeMessage } /* ALWAYS: can exit! *crucial  */
+
+              ]
+                 // OR separate upgradeSpecialAttack("duration", 2, ) - where increases more property (or for magic effects like 'radius') - requires MORE upgrade menu logic. */
+
+                  /* Future/Complex:
+
+                       More Menu Option could add DEFENSES - Barriers etc.
+
+                   */
+
+              showMessage(`Upgrades: ( ${playerState.upgradePoints} Points)`,options);
+
+          }
+          /* Upgrade/modify Player ATTACK STAT */
+
+         function upgradeWeapon(type){ // simple cost, direct set
+            let upgradeCost = 0;
+            let upgradeAmount = 0; // Amount of damage to add *as increase */
+              switch(type){  // handle the STATS for game *tuning*.
+                  case 'melee':  // direct damage upgrade
+
+                     upgradeCost = 10;  // COST point value. If have many type - can move these rules (Cost, change/upgrade benefit, prerequisites) into Game Data Structure (class, static value for properties) or global game config constant.
+                       upgradeAmount = 10;
+                      break;  /* Add More Options HERE if wanted for the sword upgrade */
+
+                   case 'ranged':  // for shooting
+
+                     upgradeCost = 8;
+                    upgradeAmount = 5;
+
+                     break; /* and Other Bow-specific UPGRADES. e.g. attack Speed */
+                /*
+
+                  Expand logic HERE: E.g. different effects, multiple weapon can get other attack *types (e.g. shot fire, etc)
+
+                */
+
+            } // Upgrade Cost can vary and rules can be applied:
+
+             // Guard:  FIRST CHECK and return
+             if(playerState.upgradePoints< upgradeCost){ // canNOT perform Action: Player's Resource state DOESN'T Match.
+                 showMessage("Not enough Points!", [{text: 'OK', action: showUpgrades}]); /* Can Show AGAIN */
+               return;
+              }
+             // After CHECKS (and can "chain them", but return after failure prompt) - APPLY UPGRADE/game benefit
+
+              playerState.upgradePoints -= upgradeCost; // FIRST, apply Player Resource Cost.
+
+               playerState.attackDamage[type] += upgradeAmount; // *Increase* stats on appropriate object *
+
+                // Confirm
+
+              showMessage("Upgraded! +"+upgradeAmount +"  to: " + type, [{text: 'Continue', action: closeMessage}]);
+             updateUI();
+
+         }
+
+       function placeDefense(type){ /* Very Basic Example: Place *Structure at Click */
+         // NOT in "upgrade weapon menu"
+
+             if(playerState.shells < 5){  // If cost require Fish + some Shell: can be 'complex price tag', not simple constant points like for attack increases/upgrades, so flexible for new resource (
+                    // ... Can't perform action now - could make multiple checks
+               return;
+             }
+
+            // Get where was tapped (could use TouchEvent in addEventListener *also*, change Event type if touch ONLY
+             // (on touch: e.client/Y gives coordinates similar-mobile game.)
+           document.addEventListener('click', function buildHandler(event){
+               if(type == "barrier"){
+                 const barrier = new Defense(event.offsetX, GAME_HEIGHT-event.offsetY, 'barrier') // can create at current position (CLICK POINT is relative *inside CONTAINER - all game use same positioning rule consistent!)
+                  defenses.push(barrier);
+               }
+                if(type == 'turret'){
+                    const turret = new Defense(event.offsetX, GAME_HEIGHT-event.offsetY, 'turret')
+                 defenses.push(turret)
+                }
+
+                document.removeEventListener('click', buildHandler) // Ensure NOT Multi call for each
+               // place that clicked after set. (more structured way can also define: in a Player-mode. E.g., player has State = BUILDING/selecting type to perform (button trigger/event can add properties like current Mode: place barrier) AND when complete placing: switch that off, back to null). If wanted "free select any where on screen, AND THEN decide build here
+                 //   e.g. when player mode: can use move, if right place, add build
+           })
+
+       }
+          /*   Expand for more "cost-per structure (if need refine resource values), different placements (Turret and Barricade) - game content/strategy tuning.  */
+
+           // can have Barrier *different shape* - if barrier can be 5 "tile wide for some, BUT needs COST adjustment to avoid "1 tap 10 width instantly */
+
+
+        // --- Game Loop (Update and Render) ---
+        function gameLoop() {
+             if (!gameActive) return;
+             /*if (paused) return; // Check Global: If in other mode - MENU option etc.*/
+             // Note: if too many calls cause slow/lag performance. (IF many nested for/loops *each game loop*, too many iterations)
+
+               /* Check collision! Projectile hit (as "immediate"), in own *separate* Class updates
+                   (each bullet manages self check every tick )  *Separate, not here
+                */
+
+               /* NOTE. Can do this for multiple Object, for convenience, at Once (iterate one, loop) :
+
+                 */
+
+                 // Instead of repeat blocks per object. IF adding new game Elements - all needs "updating/frame logic".
+
+               /* Use loop as more ROBUST:
+
+                    ALL that is *currently alive, track and perform
+
+               /*
+                  Example structure,
+                 [player, ...aliens].forEach(entity => { // Ensure no Nulls if not spawned properly!
+                 updateEntity(entity) / render...
+                 // call OTHER properties here too, e.g.: UpdateStateEffects - IF need logic in Game to reduce Countdowns, set states etc
+
+                  })
+                */
+
+
+                player.update();
+                projectiles.forEach(p => p.update()); // Bullets/other will call own "Check" every time (Move OR collide and be Removed if did *or expired )
+                aliens.forEach(alien => alien.update());
+
+                updateUI();
+
+        }
+
+
+        function startGame() { //
+
+          gameActive = true;  // First
+             player = new Player(playerState.x, playerState.y);
+             player.render();
+
+             // Setup EVENT for INPUT KEY Handling. - Better with centralized/game *focused logic.
+           document.addEventListener('keydown', handleKeyDown); // SET ONLY *once*
+          document.addEventListener('keyup', handleKeyUp);
+
+             /* Very important: BUTTON event listener  */
+
+           meleeAttackBtn.addEventListener('click', ()=> {
+                 performAttack('melee');
+                })
+           rangedAttackBtn.addEventListener('click', ()=> {  // SAME, and Ensure Correct 'attack mode passed'.
+              performAttack('ranged')
+
+           })
+
+           specialAttackBtn.addEventListener('click', ()=>{
+              performAttack('special') // Very IMPORTANT use "switch cases in Perform to check which WAS Clicked: *NO MIX*.
+            })
+
+           /* BUTTON: Defense PLACEMENT on Scene */
+           buildBarrierBtn.addEventListener('click', ()=> {placeDefense('barrier')}) /* Add defense *type*.   NOTE : Cost of RESOURCE/Gold per defense type needs logic in *that placement!*.  NOT in Player upgrade.    IF need separate Upgrade Path and currency - can create as menu here - similar to upgradeWeapon structure!*/
+
+             // Similar : turret.  But more complex for visual changes
+          // buildTurretBtn =
+          //  buildHealingStationBtn = document.getElementBy....
+
+             upgradeButton.addEventListener('click', showUpgrades);  // when Player Clicks: menu UP
+
+
+            restartButton.addEventListener('click', restartGame);
+
+           /* --- CORE Gameplay after Start */
+
+            showMessage("Wave incoming!", [{text: 'Start', action: closeMessage}]);
+
+            spawnWave(); // begin FIRST Wave immediately! *Initial Call* - VERY crucial
+
+           /* *GAME LOOP* Very CRITICAL:
+
+                setInterval (will REPEAT calls) that Run update/checks (AI actions)
+
+            *Start*: Call AFTER Set all Up and Initial Spawns for Enemies. */
+
+           gameInterval = setInterval(gameLoop, 1000 / 60); // *60 times a second*, FPS-rate control. For smooth animation/consistent *Update Check: Game State *and visuals refreshed (player moves AND all Alien move - this allows "multi entity behaviors!) */
+
+
+         // e.g.  Spawn  *New Resource*/ every *SOME* number of times game loop  check OR, set on *game TIME*: every 5 second can re-spawn Shell etc (for crafting, upgrade-currencies)
+        }
+
+         /*  Handles KEY: Player control MOVES. */
+          function handleKeyDown(event) {
+
+               if (event.key === 'ArrowLeft' || event.key === 'a') {
+                  player.isMovingLeft = true;  /* NOTE : isMoving, BUT move *actually happen/apply  PER frame*
+
+                     /* For *better and simple *animations: just Swap Classes as in Example */
+                } else if (event.key === 'ArrowRight' || event.key === 'd') {
+                    player.isMovingRight = true; /* VERY CRUCIAL - Ensure RIGHT key (could be d, on d/q keyboard if set up that too!*/
+                 }
+
+
+                /*
+                   Could add  OTHER Key event to add logic!
+
+                     Example if using DEFENSIVE actions later, Player state *based on ability
+
+                 //e.g:
+
+                  if (player.Shielded){  or // check if player currently using
+                      do something. e.g., can NOT also perform other move action/attacks
+                  }
+              */
+
+
+                /* Alternative "ALL actions here in Keys" version : BUT, button click BETTER */
+               /*
+             if(event.key === " "){ /*  Melee example
+
+                  if (player can Do Attack ) - some Cooldown system too (so no repeating every millisecond
+
+                 performAttack("melee")
+               }
+
+            if ( event.key ===... (Other ability.)) {
+
+
+               However this is HARD to organize if having different/multiple keys
+
+               Consider that Button approach:  Can define Attack(and send in WHICH one, name as text);   Much *more robust way, cleaner! */
+        }
+        function handleKeyUp(event) { // Stop *CONTINUOUS*. VERY *CRUCIAL, other, player move EVEN AFTER let key! *BUG if Not. */
+             if (event.key === 'ArrowLeft' || event.key === 'a') {
+
+                  player.isMovingLeft = false;  // Player  release: immediately  *prevent move/cancel  *. VERY Crucial!! *avoid keeping State/Move on key released*
+
+                  /* if need add class/styling switch : E.g. for "Stop animation after Key no more. - (and other visual)
+
+                    player.style... (OR set back DEFAULT class - back to STAND/idle!)
+
+                  */
+
+               } else if (event.key === 'ArrowRight' || event.key === 'd') {
+
+                     player.isMovingRight = false; // Key Up = release Action to move in any dir - No *other direction keys check*
+
+                     /* could expand later : other Animation logic for stop player animation
+
+                     */
+              }
+
+          /* Check ALSO  other KEY releases if expand Game -  so does NOT keep doing something on Release! e.g., do not KEEP creating projectiles in that one spot of Attack  if Player Key up - and have to do Action on *next game-frame/tick update loop!.
+
+        }
+  */
+}
         function restartGame() {
+          //RESET GAME states: NO keep aliens/progress
+            aliens.forEach(a => a.element.remove()); // cleanup for old wave *before restarting New! VERY Crucial!
+           aliens = [];
+          projectiles.forEach(p => p.remove());
+          projectiles = [];  // new game = CLEAR
+
+          // clear interval IF keep going
             isGameOver = false;
-            gameActive = true;
-            playerHealth = 100;
-            houseHealth = 100;
-            updateHealthBar(playerHealthBar, playerHealth);
-            shells = 0; fishes = 0; upgradePoints = 0;
+            gameActive = false; // set start to *TRUE
 
-            updateInventoryDisplay();
+            playerState.health = 100;  // reset
+            houseState.health = 100;
+             waveNumber = 0;
+           currentWaveIndex = 0; // Crucial
+           // resource count.
+           playerState.shells = 0;  //reset
+           playerState.fish = 0;
 
-            alienContainer.innerHTML = '';
-            activeAliens = [];
+           /* *Crucial, after SET values - ensure UPDATE View as restart!. */
+             updateUI();
 
-            currentWaveIndex = 0;
-            gameOverMessageElement.style.display = 'none';
+          gameOverOverlay.style.display = 'none'; // hide Game Over *UI*
+          /* Reset position/any player changes from previous round
+                // (OR use 'spawn' at start again/re create PLAYER completely!)
+           // */
 
+          /* Clean any active projectiles too for clear up between Game Reset (bullet left alive while time run out etc*/
             startGame();
+        }
+        // Initial setup
+        function init() {
+             // Placeholder for the house
+
+            houseState.x = 20; // Define within object as Properties so it exists consistently, just update value of state - if keeping SAME type!
+             houseState.y = 50;  // Same, bottom = Consistent and Easy for check relative distances in isColliding helper!  Just set/refer to value here!
+
+            document.getElementById('house').style.left = `${houseState.x}px` /* Apply the x. Ensure house render with those STATE properly from initial */
+           document.getElementById('house').style.bottom =  `${houseState.y}px`
+
+          // setup *resources * before play
+
+           updateUI();
+           /*
+           More set/value adjustments if expand.
+
+           But better/structured: Move init call INTO other Function Call, at GameStart Button Trigger!
+          // */
+
 
         }
 
-
-        function startGame() {
-            if (gameActive) return; // Prevent starting multiple times
-            gameActive = true; // Set gameActive at start of startGame
-
-
-             showMessageWithText("Wave 1 incoming! Prepare for battle!", [{text: 'Get Ready!', action: closeMessage}]); // Show initial wave message
-            setTimeout(() => spawnWave(waveConfig[currentWaveIndex]), 1000); // Spawn first wave slightly after message
-
-
-            updateInventoryDisplay(); // Initialize inventory counts display
-        }
-
-        function showUpgrades() {
-             if (upgradePoints > 0) { // Only show if there are points
-                showMessageWithText(`Upgrade Menu: Points: ${upgradePoints}. What do you want to upgrade?`, [
-                    { text: "Sword (+10 Melee Damage, 10pts)", action: () => upgradeWeapon('melee', 10) },
-                    { text: "Bow (+5 Ranged Damage, 8pts)", action: () => upgradeWeapon('ranged', 5) },
-                    { text: "Bomb (Radius++, 15pts)", action: () => upgradeSpecialAttack('radius') }, // Example - specific upgrade action
-                    { text: "Cancel", action: closeMessage} // Option to close upgrade menu.
-                ]);
-             } else {
-                showMessageWithText("Not enough Upgrade Points! Earn more by defeating waves.", [{text: 'OK', action: closeMessage}]);
-             }
-        }
-
-        function upgradeWeapon(weaponType, damageIncrease) {
-            const cost = (weaponType === 'melee') ? 10 : 8; // Example cost system - can scale by level, etc.
-
-            if (upgradePoints >= cost) {
-                upgradePoints -= cost;
-                playerAttackDamage[weaponType] += damageIncrease;
-                updateInventoryDisplay();
-                showMessageWithText(`${weaponType.charAt(0).toUpperCase() + weaponType.slice(1)} upgraded! Increased damage by ${damageIncrease}.`, [{text: 'Continue', action: showUpgrades}]);
-             } else {
-                showMessageWithText("Not enough Upgrade Points for this upgrade!", [{text: 'OK', action: showUpgrades}]);
-             }
-        }
-         function upgradeSpecialAttack(upgradeType) { // Example special attack upgrade function
-             const cost = 15;
-
-            if (upgradePoints >= cost) {
-                upgradePoints -= cost;
-                // Example of upgrading some aspect of special attack visually or in effect - placeholder for now.
-                // Could modify the explosion animation duration, size, or even damage radius *mechanically* (beyond visual).
-
-                updateInventoryDisplay();
-                showMessageWithText(`Special Attack Radius increased! (Visual placeholder only for now, code update needed for real radius change).`, [{text: 'Continue', action: showUpgrades}]);
-            } else {
-                 showMessageWithText("Not enough Upgrade Points!", [{text: 'OK', action: showUpgrades}]);
-            }
-
-        }
-
-
-        /* --- Event Listeners and Initialization (Modified Keydown, Init Message) --- */
-        document.addEventListener('keydown', function(event) {
-            if (!gameActive || isGameOver) return;
-
-            let currentLeft = parseFloat(player.style.left || getComputedStyle(player).left);
-
-            switch (event.key) {
-                case 'ArrowLeft':
-                case 'a':
-                    currentLeft -= playerSpeed;
-                    break;
-                case 'ArrowRight':
-                case 'd':
-                    currentLeft += playerSpeed;
-                    break;
-               // No attack control in keydown, using buttons now for attack type selection
-            }
-
-            currentLeft = Math.max(20, Math.min(currentLeft, 70));
-            player.style.left = `${currentLeft}%`;
-
-            if (activeAliens[0]?.element && isColliding(activeAliens[0].element, grassArea)) {  // Use optional chaining and null check.
-              // homeDefeated();  // Home defeated condition optional
-            }
-
-        });
-
-        // Boat interaction (unchanged)
-        document.querySelector('.boat').addEventListener('click', function() {
-            this.style.left = '40%';
-            setTimeout(() => {
-                this.style.left = '20%';
-            }, 5000);
-        });
-
-
-        // Initial Welcome Message and setup at start
+        // Start the game when the page loads
         window.onload = function() {
-            updateTimeDisplay();
-            showMessage("Welcome to Coastal Defense! Protect your home from alien invaders. Collect resources, upgrade your weapons, and survive the waves!",
-             [{text: 'Start Game', action: startGame}]);
+           init() // Initial setting up!
+            showMessage("Welcome to Coastal Defense!", [
+                { text: 'Start Game', action: startGame } // Button with Label AND action!
+            ]);
         };
+
 
     </script>
 </body>
