@@ -25,27 +25,44 @@
       top: 0; left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.8);
-      color: white;
+      background: linear-gradient(135deg, #4fa8e0, #87CEEB);
+      color: #fff;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       z-index: 1000;
+      animation: fadeIn 1s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
     #startScreen h1 {
       margin-bottom: 20px;
-      font-size: 2em;
+      font-size: 2.5em;
       text-align: center;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    #startScreen p {
+      margin-bottom: 30px;
+      font-size: 1.2em;
+      text-align: center;
+      max-width: 80%;
+      line-height: 1.4;
     }
     #startScreen button {
-      padding: 10px 20px;
+      padding: 12px 30px;
       font-size: 1.2em;
       border: none;
       border-radius: 5px;
-      background: #4fa8e0;
-      color: white;
+      background: #ffcc00;
+      color: #333;
       cursor: pointer;
+      box-shadow: 0px 4px 6px rgba(0,0,0,0.2);
+    }
+    #startScreen button:hover {
+      background: #ffdd33;
     }
     /* ===== Game Area ===== */
     #gameArea {
@@ -208,7 +225,7 @@
       z-index: 20;
       color: #000;
       font-size: 1.2em;
-      background: rgba(255,255,255,0.7);
+      background: rgba(255,255,255,0.8);
       padding: 5px 10px;
       border-radius: 5px;
     }
@@ -231,7 +248,7 @@
   <div id="startScreen">
     <h1>Welcome to Coastal Defense!</h1>
     <p>Protect your home from alien invaders. Collect resources, upgrade your weapons, and survive the waves!</p>
-    <button onclick="game.startGame()">Start Game</button>
+    <button id="startButton">Start Game</button>
   </div>
   
   <!-- Game Area -->
@@ -258,8 +275,7 @@
         this.type = type;
         this.health = (type === 'boss') ? 300 : 100;
         this.element = document.createElement('div');
-        this.element.classList.add('alien');
-        this.element.classList.add(`alien-${type}`);
+        this.element.classList.add('alien', `alien-${type}`);
         this.x = x;
         this.y = y;
         this.speed = (type === 'drone') ? 0.5 : (type === 'shielded') ? 0.3 : (type === 'elite') ? 0.7 : 0.2;
@@ -299,7 +315,10 @@
       }
       
       startGame() {
-        document.getElementById('startScreen').style.display = 'none';
+        // Hide start screen with fade-out effect
+        const startScreen = document.getElementById('startScreen');
+        startScreen.style.opacity = 0;
+        setTimeout(() => { startScreen.style.display = 'none'; }, 500);
         this.showMessage("Wave 1 incoming! Prepare for battle!");
         this.nextWave();
         this.gameLoopInterval = setInterval(() => this.update(), 20);
@@ -307,7 +326,7 @@
       }
       
       initControls() {
-        // Player movement (arrow keys / WASD)
+        // Player movement (arrow keys / WASD) and attacks
         document.addEventListener('keydown', (e) => {
           let left = parseInt(window.getComputedStyle(this.player).left);
           let bottom = parseInt(window.getComputedStyle(this.player).bottom);
@@ -338,9 +357,7 @@
           attackElem.classList.add('special-attack');
         }
         document.getElementById('gameArea').appendChild(attackElem);
-        // Remove attack element after animation
         setTimeout(() => { attackElem.remove(); }, 600);
-        // Check for collisions with aliens
         this.checkAttackCollisions(type);
       }
       
@@ -348,7 +365,6 @@
         this.aliens.forEach((alien, index) => {
           let alienRect = alien.element.getBoundingClientRect();
           let playerRect = this.player.getBoundingClientRect();
-          // Simple collision: if alien is near player attack area
           if (Math.abs(alienRect.left - playerRect.left) < 50 && Math.abs(alienRect.top - playerRect.top) < 50) {
             alien.health -= (attackType === 'melee' ? 30 : attackType === 'ranged' ? 20 : 50);
             if (alien.health <= 0) {
@@ -366,12 +382,10 @@
       }
       
       spawnAlien() {
-        // Adaptive spawning: if player used melee a lot, spawn more shielded aliens
         let type = 'drone';
         if (this.attackHistory.filter(a => a==='melee').length > 5) {
           type = (Math.random() < 0.5) ? 'shielded' : 'drone';
         }
-        // Every 5th wave, spawn an elite or boss
         if (this.wave >= 5 && Math.random() < 0.2) {
           type = (Math.random() < 0.5) ? 'elite' : 'boss';
         }
@@ -382,9 +396,7 @@
       }
       
       update() {
-        // Update aliens
         this.aliens.forEach(alien => alien.update());
-        // Check if any alien reaches the house (simulate damage)
         this.aliens.forEach((alien, index) => {
           let houseRect = this.house.getBoundingClientRect();
           let alienRect = alien.element.getBoundingClientRect();
@@ -410,7 +422,6 @@
         this.wave++;
         this.updateHUD();
         this.showMessage(`Wave ${this.wave} incoming! Prepare for battle!`);
-        // Increase difficulty by reducing spawn interval every wave
         clearInterval(this.alienSpawnInterval);
         this.alienSpawnInterval = setInterval(() => this.spawnAlien(), Math.max(500, 2000 - this.wave * 100));
       }
@@ -418,9 +429,7 @@
       showMessage(msg) {
         this.messageBox.textContent = msg;
         this.messageBox.style.opacity = 1;
-        setTimeout(() => {
-          this.messageBox.style.opacity = 0;
-        }, 3000);
+        setTimeout(() => { this.messageBox.style.opacity = 0; }, 3000);
       }
       
       gameOver() {
@@ -430,13 +439,13 @@
       }
     }
     
-    // Instantiate game variable globally for start button access
+    // Instantiate game
     let game = new Game();
     
-    // Expose startGame method to start screen button
-    game.startGame = function() {
-      this.startGame();
-    };
+    // Attach event listener to start button
+    document.getElementById('startButton').addEventListener('click', () => {
+      game.startGame();
+    });
   </script>
 </body>
 </html>
