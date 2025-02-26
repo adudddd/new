@@ -1,998 +1,1481 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Serene Shores Interactive</title>
-  <style>
-    /* ===== Reset & Basic Styles ===== */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      transition: all 0.5s ease;
-    }
-    body {
-      background-color: #e6f7ff;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
-    }
-    
-    /* ===== Scene & Background ===== */
-    .scene {
-      position: relative;
-      flex-grow: 1;
-      overflow: hidden;
-      background: linear-gradient(to bottom, #87CEEB, #e6f7ff);
-    }
-    .sky {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 60%;
-      background: linear-gradient(to bottom, #87CEEB, #c9e9f6);
-      z-index: 1;
-    }
-    .sun {
-      position: absolute;
-      top: 50px;
-      left: 80%;
-      width: 80px;
-      height: 80px;
-      background: radial-gradient(circle, #ffff99, #ffcc00);
-      border-radius: 50%;
-      z-index: 2;
-      box-shadow: 0 0 20px #ffff99;
-    }
-    .cloud {
-      position: absolute;
-      background: white;
-      border-radius: 50px;
-      z-index: 3;
-      opacity: 0.8;
-    }
-    .cloud.cloud1 {
-      top: 100px;
-      left: 200px;
-      width: 100px;
-      height: 40px;
-      animation: cloudMove 100s linear infinite;
-    }
-    .cloud.cloud2 {
-      top: 150px;
-      left: 600px;
-      width: 150px;
-      height: 50px;
-      animation: cloudMove 150s linear infinite;
-    }
-    @keyframes cloudMove {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(2000px); }
-    }
-    
-    /* ===== Ocean, Waves, & Beach ===== */
-    .ocean {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 40%;
-      background: linear-gradient(to bottom, #4fa8e0, #1e5799);
-      z-index: 4;
-    }
-    .wave {
-      position: absolute;
-      width: 100%;
-      height: 20px;
-      background: linear-gradient(to bottom, #7fcdff, transparent);
-      opacity: 0.7;
-      border-radius: 50%;
-      z-index: 5;
-    }
-    .wave.wave1 {
-      bottom: 120px;
-      animation: waveMove 5s ease-in-out infinite;
-    }
-    .wave.wave2 {
-      bottom: 100px;
-      animation: waveMove 7s ease-in-out infinite;
-      animation-delay: 1s;
-    }
-    .wave.wave3 {
-      bottom: 80px;
-      animation: waveMove 6s ease-in-out infinite;
-      animation-delay: 2s;
-    }
-    @keyframes waveMove {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(10px); }
-    }
-    .beach {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 80px;
-      background: linear-gradient(to bottom, #f2d694, #e6c88a);
-      z-index: 6;
-    }
-    .grass-area {
-      position: absolute;
-      bottom: 79px;
-      left: 30%;
-      width: 40%;
-      height: 100px;
-      background: #7cba5f;
-      border-radius: 100px 100px 0 0;
-      z-index: 6;
-    }
-    .island {
-      position: absolute;
-      bottom: 79px;
-      left: 70%;
-      width: 200px;
-      height: 100px;
-      background: #e6c88a;
-      border-radius: 100px 100px 0 0;
-      z-index: 6;
-    }
-    
-    /* ===== Palm Tree ===== */
-    .palm-tree {
-      position: absolute;
-      bottom: 140px;
-      left: calc(70% + 50px);
-      z-index: 7;
-    }
-    .trunk {
-      width: 15px;
-      height: 80px;
-      background: linear-gradient(to right, #8B4513, #A0522D);
-      margin-left: 20px;
-      transform: rotate(10deg);
-    }
-    .leaves {
-      position: absolute;
-      top: -40px;
-      width: 60px;
-      height: 60px;
-    }
-    .leaf {
-      position: absolute;
-      width: 40px;
-      height: 60px;
-      background: #2e8b57;
-      border-radius: 50% 50% 0 50%;
-      transform-origin: bottom right;
-    }
-    .leaf:nth-child(1) { transform: rotate(0deg); }
-    .leaf:nth-child(2) { transform: rotate(60deg); }
-    .leaf:nth-child(3) { transform: rotate(120deg); }
-    .leaf:nth-child(4) { transform: rotate(180deg); }
-    .leaf:nth-child(5) { transform: rotate(240deg); }
-    .leaf:nth-child(6) { transform: rotate(300deg); }
-    
-    /* ===== Boats ===== */
-    .boat {
-      position: absolute;
-      bottom: 130px;
-      z-index: 7;
-      cursor: pointer;
-      animation: boatSail 20s linear infinite;
-    }
-    .boat .boat-body {
-      width: 100px;
-      height: 30px;
-      background: #8B4513;
-      border-radius: 0 20px 0 20px;
-    }
-    .boat .sail {
-      position: absolute;
-      top: -60px;
-      left: 30px;
-      width: 5px;
-      height: 60px;
-      background: #A0522D;
-    }
-    .boat .sail-canvas {
-      position: absolute;
-      top: -50px;
-      left: 35px;
-      width: 40px;
-      height: 50px;
-      background: white;
-      border-radius: 10px;
-    }
-    .boat .cabin {
-      position: absolute;
-      bottom: 30px;
-      left: 15px;
-      width: 30px;
-      height: 20px;
-      background: #A0522D;
-    }
-    .boat.small-boat { width: 70px; }
-    .boat.large-boat { width: 120px; }
-    @keyframes boatSail {
-      0% { left: 10%; }
-      50% { left: 50%; }
-      100% { left: 10%; }
-    }
-    
-    /* ===== Shells & Fish ===== */
-    .shell {
-      position: absolute;
-      width: 20px;
-      height: 15px;
-      background: #ffcccc;
-      border-radius: 50% 50% 0 0;
-      z-index: 7;
-      cursor: pointer;
-    }
-    .shell::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 20px;
-      height: 15px;
-      background: linear-gradient(to right, transparent, #ffcccc);
-      border-radius: 10px 10px 0 0;
-    }
-    .shell.shell1 { bottom: 20px; left: 20%; }
-    .shell.shell2 { bottom: 30px; left: 40%; }
-    .shell.shell3 { bottom: 25px; left: 60%; }
-    
-    .fish {
-      position: absolute;
-      width: 25px;
-      height: 15px;
-      background: #ff9999;
-      border-radius: 50%;
-      z-index: 6;
-      cursor: pointer;
-    }
-    .fish::after {
-      content: "";
-      position: absolute;
-      right: -10px;
-      top: 5px;
-      border-left: 15px solid #ff9999;
-      border-top: 5px solid transparent;
-      border-bottom: 5px solid transparent;
-    }
-    .fish.fish1 {
-      bottom: 100px;
-      left: 30%;
-      animation: fishSwim 30s linear infinite;
-      background: #f67280;
-    }
-    .fish.fish2 {
-      bottom: 120px;
-      left: 40%;
-      animation: fishSwim 25s linear infinite;
-      animation-delay: 5s;
-      background: #6c5b7b;
-    }
-    .fish.fish3 {
-      bottom: 140px;
-      left: 60%;
-      animation: fishSwim 35s linear infinite;
-      animation-delay: 10s;
-      background: #c06c84;
-    }
-    @keyframes fishSwim {
-      0% { transform: translateX(0); }
-      50% { transform: translateX(200px) scaleX(-1); }
-      100% { transform: translateX(0) scaleX(1); }
-    }
-    
-    /* ===== House ===== */
-    .house {
-      position: absolute;
-      bottom: 79px;
-      left: 35%;
-      z-index: 7;
-      cursor: pointer;
-    }
-    .house-base {
-      width: 90px;
-      height: 65px;
-      background: #ffd1dc;
-      border: 3px solid #d38c9f;
-      border-radius: 10px;
-    }
-    .house-roof {
-      width: 110px;
-      height: 50px;
-      background: #d38c9f;
-      margin-left: -10px;
-      margin-top: -20px;
-      clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
-      position: relative;
-    }
-    .chimney {
-      position: absolute;
-      width: 15px;
-      height: 25px;
-      background: #d38c9f;
-      top: -20px;
-      right: 20px;
-    }
-    .house-door {
-      position: absolute;
-      bottom: 0;
-      left: 35px;
-      width: 20px;
-      height: 30px;
-      background: #fff0f5;
-      border: 2px solid #d38c9f;
-      border-radius: 10px 10px 0 0;
-    }
-    .window {
-      position: absolute;
-      width: 15px;
-      height: 15px;
-      background: #c1e3ff;
-      border: 2px solid #d38c9f;
-      border-radius: 50%;
-    }
-    .window.window1 { top: 15px; left: 15px; }
-    .window.window2 { top: 15px; right: 15px; }
-    .flower-box {
-      position: absolute;
-      width: 40px;
-      height: 10px;
-      background: #d38c9f;
-      bottom: 10px;
-      left: 5px;
-    }
-    .flower {
-      position: absolute;
-      width: 8px;
-      height: 8px;
-      background: #ff99cc;
-      border-radius: 50%;
-      bottom: 10px;
-    }
-    .flower.flower1 { left: 8px; }
-    .flower.flower2 { left: 18px; }
-    .flower.flower3 { left: 28px; }
-    
-    /* ===== Animal Pen & Fence ===== */
-    .animal-pen {
-      position: absolute;
-      bottom: 85px;
-      left: 50%;
-      width: 100px;
-      height: 60px;
-      border: 3px solid #8B4513;
-      border-radius: 5px;
-      z-index: 6;
-    }
-    .fence {
-      position: absolute;
-      height: 20px;
-      background: #A0522D;
-      z-index: 7;
-      bottom: 79px;
-    }
-    .fence.fence1 { left: 30%; width: 40px; }
-    .fence.fence2 { left: 50%; width: 100px; }
-    
-    /* ===== Farm Animals ===== */
-    .animal {
-      position: absolute;
-      z-index: 7;
-      cursor: pointer;
-    }
-    .cow {
-      width: 40px;
-      height: 30px;
-      background: white;
-      border-radius: 10px;
-      bottom: 90px;
-      left: 48%;
-    }
-    .cow::before {
-      content: "";
-      position: absolute;
-      width: 20px;
-      height: 15px;
-      background: white;
-      border-radius: 50%;
-      top: -5px;
-      left: -5px;
-    }
-    .cow::after {
-      content: "🐄";
-      position: absolute;
-      font-size: 20px;
-      top: -10px;
-      left: 5px;
-    }
-    .goat {
-      bottom: 90px;
-      left: 55%;
-    }
-    .goat::after {
-      content: "🐐";
-      position: absolute;
-      font-size: 20px;
-    }
-    
-    /* ===== Pets (with Movement) ===== */
-    .dog, .cat {
-      position: absolute;
-      bottom: 85px;
-      z-index: 7;
-      cursor: pointer;
-    }
-    .dog {
-      left: 30%;
-      animation: dogRun 4s ease-in-out infinite;
-    }
-    .dog::after {
-      content: "🐕";
-      position: absolute;
-      font-size: 20px;
-    }
-    .cat {
-      left: 52%;
-      animation: catMove 5s ease-in-out infinite;
-    }
-    .cat::after {
-      content: "🐈";
-      position: absolute;
-      font-size: 20px;
-    }
-    @keyframes dogRun {
-      0% { left: 30%; }
-      50% { left: 35%; }
-      100% { left: 30%; }
-    }
-    @keyframes catMove {
-      0% { left: 52%; }
-      50% { left: 55%; }
-      100% { left: 52%; }
-    }
-    
-    /* ===== Humans with 2D Limbs ===== */
-    .person {
-      position: absolute;
-      width: 40px;
-      height: 100px;
-      cursor: pointer;
-    }
-    .person .human {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-    .person .head {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 30px;
-      height: 30px;
-      background: #ffe0bd;
-      border-radius: 50%;
-      border: 2px solid #000;
-    }
-    .person .body {
-      position: absolute;
-      top: 30px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 20px;
-      height: 40px;
-      background: #00aced;
-    }
-    .person .left-arm {
-      position: absolute;
-      top: 35px;
-      left: 0;
-      width: 10px;
-      height: 30px;
-      background: #ffe0bd;
-      transform: rotate(10deg);
-    }
-    .person .right-arm {
-      position: absolute;
-      top: 35px;
-      right: 0;
-      width: 10px;
-      height: 30px;
-      background: #ffe0bd;
-      transform: rotate(-10deg);
-    }
-    .person .left-leg {
-      position: absolute;
-      bottom: 0;
-      left: 40%;
-      width: 8px;
-      height: 30px;
-      background: #000;
-    }
-    .person .right-leg {
-      position: absolute;
-      bottom: 0;
-      right: 40%;
-      width: 8px;
-      height: 30px;
-      background: #000;
-    }
-    .boy {
-      bottom: 85px;
-      left: 40%;
-      animation: walkAround 20s linear infinite;
-    }
-    .girl {
-      bottom: 85px;
-      left: 43%;
-      animation: walkAround 20s linear infinite;
-      animation-delay: 1s;
-    }
-    @keyframes walkAround {
-      0% { transform: translateX(0); }
-      25% { transform: translateX(50px); }
-      50% { transform: translateX(100px); }
-      75% { transform: translateX(50px); }
-      100% { transform: translateX(0); }
-    }
-    
-    /* ===== Score Board, Inventory & Time Cycle ===== */
-    .score-board {
-      position: absolute;
-      top: 70px;
-      left: 20px;
-      background: rgba(255, 255, 255, 0.7);
-      padding: 5px 10px;
-      border-radius: 5px;
-      font-size: 16px;
-      z-index: 10;
-    }
-    .inventory {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      background: rgba(255, 255, 255, 0.7);
-      border-radius: 5px;
-      padding: 10px;
-      z-index: 10;
-    }
-    .inventory-title {
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-    .inventory-items {
-      display: flex;
-      gap: 10px;
-    }
-    .inventory-item {
-      width: 30px;
-      height: 30px;
-      background: rgba(255, 255, 255, 0.5);
-      border-radius: 5px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 20px;
-    }
-    .time-cycle {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      padding: 10px;
-      background: rgba(255, 255, 255, 0.7);
-      border-radius: 5px;
-      z-index: 10;
-    }
-    .time-label {
-      margin-right: 10px;
-    }
-    
-    /* ===== Message Box ===== */
-    .message-box {
-      position: absolute;
-      bottom: 100px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(255, 255, 255, 0.8);
-      padding: 15px;
-      border-radius: 10px;
-      max-width: 80%;
-      z-index: 100;
-      display: none;
-    }
-    .message-text {
-      margin-bottom: 10px;
-    }
-    .message-options {
-      display: flex;
-      gap: 10px;
-    }
-    .message-option {
-      padding: 5px 10px;
-      background: #4fa8e0;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    
-    /* ===== Controls ===== */
-    .controls {
-      display: flex;
-      justify-content: space-around;
-      padding: 15px;
-      background: rgba(255, 255, 255, 0.7);
-      z-index: 10;
-    }
-    .button {
-      padding: 10px 15px;
-      background: #4fa8e0;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    .button:hover { background: #3887b7; }
-    
-    /* ===== Time Cycle Themes ===== */
-    body.morning {
-      background-color: #e6f7ff;
-    }
-    body.morning .sky {
-      background: linear-gradient(to bottom, #87CEEB, #c9e9f6);
-    }
-    body.morning .sun {
-      top: 80px;
-      left: 30%;
-      background: radial-gradient(circle, #ffff99, #ffcc00);
-    }
-    body.afternoon {
-      background-color: #e6f7ff;
-    }
-    body.afternoon .sky {
-      background: linear-gradient(to bottom, #87CEEB, #c9e9f6);
-    }
-    body.afternoon .sun {
-      top: 50px;
-      left: 80%;
-      background: radial-gradient(circle, #ffff99, #ffcc00);
-    }
-    body.evening {
-      background-color: #ffefd5;
-    }
-    body.evening .sky {
-      background: linear-gradient(to bottom, #ff7e5f, #feb47b);
-    }
-    body.evening .sun {
-      top: 120px;
-      left: 90%;
-      background: radial-gradient(circle, #ff9966, #ff5e62);
-    }
-    body.night {
-      background-color: #0f2027;
-    }
-    body.night .sky {
-      background: linear-gradient(to bottom, #0f2027, #203a43);
-    }
-    body.night .sun {
-      top: 80px;
-      left: 80%;
-      width: 60px;
-      height: 60px;
-      background: radial-gradient(circle, #f5f5f5, #e6e6e6);
-      box-shadow: 0 0 20px #f5f5f5;
-    }
-    body.night .ocean {
-      background: linear-gradient(to bottom, #203a43, #0f2027);
-    }
-    
-    /* ===== Collected Items Animation ===== */
-    .collected {
-      animation: collect 1s forwards;
-    }
-    @keyframes collect {
-      0% { transform: scale(1); opacity: 1; }
-      100% { transform: scale(0); opacity: 0; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serene Shores: Alien Defense</title>
+    <style>
+        /* --- General Styles & Scene Setup (Mostly Unchanged) --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: all 0.3s ease; /* Slightly faster transition */
+        }
+
+        body {
+            background-color: #e6f7ff;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            position: relative; /* For message box positioning */
+        }
+
+        .scene {
+            position: relative;
+            flex-grow: 1;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #87CEEB, #e6f7ff);
+        }
+
+        .sky { /* ... (unchanged sky styles) ... */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            background: linear-gradient(to bottom, #87CEEB, #c9e9f6);
+            z-index: 1;
+        }
+
+        .sun { /* ... (unchanged sun styles) ... */
+            position: absolute;
+            top: 50px;
+            left: 80%;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, #ffff99, #ffcc00);
+            border-radius: 50%;
+            z-index: 2;
+            box-shadow: 0 0 20px #ffff99;
+        }
+
+        .cloud { /* ... (unchanged cloud styles and animations) ... */
+            position: absolute;
+            background: white;
+            border-radius: 50px;
+            z-index: 3;
+            opacity: 0.8;
+        }
+
+        .cloud1 {
+            top: 100px;
+            left: 200px;
+            width: 100px;
+            height: 40px;
+            animation: cloudMove 100s linear infinite;
+        }
+
+        .cloud2 {
+            top: 150px;
+            left: 600px;
+            width: 150px;
+            height: 50px;
+            animation: cloudMove 150s linear infinite;
+        }
+
+        .ocean { /* ... (unchanged ocean and wave styles and animations) ... */
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            background: linear-gradient(to bottom, #4fa8e0, #1e5799);
+            z-index: 4;
+        }
+
+        .wave {
+            position: absolute;
+            width: 100%;
+            height: 20px;
+            background: linear-gradient(to bottom, #7fcdff, transparent);
+            opacity: 0.7;
+            border-radius: 50%;
+            z-index: 5;
+        }
+
+        .wave1 {
+            bottom: 120px;
+            animation: waveMove 5s ease-in-out infinite;
+        }
+
+        .wave2 {
+            bottom: 100px;
+            animation: waveMove 7s ease-in-out infinite;
+            animation-delay: 1s;
+        }
+
+        .wave3 {
+            bottom: 80px;
+            animation: waveMove 6s ease-in-out infinite;
+            animation-delay: 2s;
+        }
+
+        .beach { /* ... (unchanged beach style) ... */
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: linear-gradient(to bottom, #f2d694, #e6c88a);
+            z-index: 6;
+        }
+
+        .grass-area { /* ... (unchanged grass area and house/island styles) ... */
+            position: absolute;
+            bottom: 79px;
+            left: 30%;
+            width: 40%;
+            height: 100px;
+            background: #7cba5f;
+            border-radius: 100px 100px 0 0;
+            z-index: 6;
+        }
+
+        .island {
+            position: absolute;
+            bottom: 79px;
+            left: 70%;
+            width: 200px;
+            height: 100px;
+            background: #e6c88a;
+            border-radius: 100px 100px 0 0;
+            z-index: 6;
+        }
+
+        .palm-tree { /* ... (unchanged palm tree and boat styles) ... */
+            position: absolute;
+            bottom: 140px;
+            left: calc(70% + 50px);
+            z-index: 7;
+        }
+
+        .trunk {
+            width: 15px;
+            height: 80px;
+            background: linear-gradient(to right, #8B4513, #A0522D);
+            margin-left: 20px;
+            transform: rotate(10deg);
+        }
+
+        .leaves {
+            position: absolute;
+            top: -40px;
+            width: 60px;
+            height: 60px;
+        }
+
+        .leaf {
+            position: absolute;
+            width: 40px;
+            height: 60px;
+            background: #2e8b57;
+            border-radius: 50% 50% 0 50%;
+            transform-origin: bottom right;
+        }
+
+        .leaf:nth-child(1) {
+            transform: rotate(0deg);
+        }
+
+        .leaf:nth-child(2) {
+            transform: rotate(60deg);
+        }
+
+        .leaf:nth-child(3) {
+            transform: rotate(120deg);
+        }
+
+        .leaf:nth-child(4) {
+            transform: rotate(180deg);
+        }
+
+        .leaf:nth-child(5) {
+            transform: rotate(240deg);
+        }
+
+        .leaf:nth-child(6) {
+            transform: rotate(300deg);
+        }
+
+        .boat {
+            position: absolute;
+            bottom: 130px;
+            left: 20%;
+            z-index: 7;
+            cursor: pointer;
+        }
+
+        .boat-body {
+            width: 100px;
+            height: 30px;
+            background: #8B4513;
+            border-radius: 0 20px 0 20px;
+        }
+
+        .sail {
+            position: absolute;
+            top: -60px;
+            left: 30px;
+            width: 5px;
+            height: 60px;
+            background: #A0522D;
+        }
+
+        .sail-canvas {
+            position: absolute;
+            top: -50px;
+            left: 35px;
+            width: 40px;
+            height: 50px;
+            background: white;
+            border-radius: 10px;
+        }
+
+        .cabin {
+            position: absolute;
+            bottom: 30px;
+            left: 15px;
+            width: 30px;
+            height: 20px;
+            background: #A0522D;
+        }
+
+        .fish { /* ... (unchanged fish styles and animations) ... */
+            position: absolute;
+            width: 25px;
+            height: 15px;
+            background: #ff9999;
+            border-radius: 50% 50% 50% 50%;
+            z-index: 6;
+            cursor: pointer;
+        }
+
+        .fish::after {
+            content: "";
+            position: absolute;
+            right: -10px;
+            top: 5px;
+            border-left: 15px solid #ff9999;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+        }
+
+        .fish1 {
+            bottom: 100px;
+            left: 30%;
+            animation: fishSwim 30s linear infinite;
+            background: #f67280;
+        }
+
+        .fish2 {
+            bottom: 120px;
+            left: 40%;
+            animation: fishSwim 25s linear infinite;
+            animation-delay: 5s;
+            background: #6c5b7b;
+        }
+
+        .fish3 {
+            bottom: 140px;
+            left: 60%;
+            animation: fishSwim 35s linear infinite;
+            animation-delay: 10s;
+            background: #c06c84;
+        }
+
+        .shell { /* ... (unchanged shell styles) ... */
+            position: absolute;
+            width: 20px;
+            height: 15px;
+            background: #ffcccc;
+            border-radius: 50% 50% 0 0;
+            z-index: 7;
+            cursor: pointer;
+        }
+
+        .shell::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 15px;
+            background: linear-gradient(to right, transparent, #ffcccc);
+            border-radius: 10px 10px 0 0;
+        }
+
+        .shell1 {
+            bottom: 20px;
+            left: 20%;
+        }
+
+        .shell2 {
+            bottom: 30px;
+            left: 40%;
+        }
+
+        .shell3 {
+            bottom: 25px;
+            left: 60%;
+        }
+
+        .bird { /* ... (unchanged bird styles and animations) ... */
+            position: absolute;
+            top: 150px;
+            z-index: 3;
+            animation: birdFly 40s linear infinite;
+        }
+
+        .bird::before, .bird::after {
+            content: "";
+            position: absolute;
+            width: 15px;
+            height: 5px;
+            background: black;
+            border-radius: 50%;
+            transform-origin: right;
+        }
+
+        .bird::before {
+            transform: rotate(-30deg);
+        }
+
+        .bird::after {
+            transform: rotate(30deg);
+        }
+
+        .bird1 {
+            left: -50px;
+        }
+
+        .bird2 {
+            left: -100px;
+            top: 130px;
+            animation-delay: 5s;
+        }
+
+        .bird3 {
+            left: -150px;
+            top: 170px;
+            animation-delay: 10s;
+        }
+
+        .dock { /* ... (unchanged dock and dock-top styles) ... */
+            position: absolute;
+            bottom: 79px;
+            left: 10%;
+            width: 20px;
+            height: 100px;
+            background: #8B4513;
+            z-index: 5;
+        }
+
+        .dock-top {
+            position: absolute;
+            bottom: 79px;
+            left: calc(10% - 40px);
+            width: 100px;
+            height: 10px;
+            background: #A0522D;
+            z-index: 6;
+        }
+
+        /* Cute house styles */
+        .house { /* ... (unchanged house styles) ... */
+            position: absolute;
+            bottom: 79px;
+            left: 35%;
+            z-index: 7;
+            cursor: pointer;
+        }
+
+        .house-base {
+            width: 90px;
+            height: 65px;
+            background: #ffd1dc; /* Light pink */
+            border: 3px solid #d38c9f;
+            border-radius: 10px;
+        }
+
+        .house-roof {
+            width: 110px;
+            height: 50px;
+            background: #d38c9f; /* Darker pink */
+            margin-left: -10px;
+            margin-top: -20px;
+            clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+            position: relative;
+        }
+
+        .chimney {
+            position: absolute;
+            width: 15px;
+            height: 25px;
+            background: #d38c9f;
+            top: -20px;
+            right: 20px;
+        }
+
+        .house-door {
+            position: absolute;
+            bottom: 0;
+            left: 35px;
+            width: 20px;
+            height: 30px;
+            background: #fff0f5;
+            border: 2px solid #d38c9f;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .window {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: #c1e3ff;
+            border: 2px solid #d38c9f;
+            border-radius: 50%;
+        }
+
+        .window1 {
+            top: 15px;
+            left: 15px;
+        }
+
+        .window2 {
+            top: 15px;
+            right: 15px;
+        }
+
+        .flower-box {
+            position: absolute;
+            width: 40px;
+            height: 10px;
+            background: #d38c9f;
+            bottom: 10px;
+            left: 5px;
+        }
+
+        .flower {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #ff99cc;
+            border-radius: 50%;
+            bottom: 10px;
+        }
+
+        .flower1 {
+            left: 8px;
+        }
+
+        .flower2 {
+            left: 18px;
+        }
+
+        .flower3 {
+            left: 28px;
+        }
+
+        /* Farm animals */
+        .animal { /* ... (unchanged animal styles) ... */
+            position: absolute;
+            z-index: 7;
+            cursor: pointer;
+        }
+
+        .cow {
+            width: 40px;
+            height: 30px;
+            background: white;
+            border-radius: 10px;
+            bottom: 90px;
+            left: 48%;
+        }
+
+        .cow::before {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 15px;
+            background: white;
+            border-radius: 50%;
+            top: -5px;
+            left: -5px;
+        }
+
+        .cow::after {
+            content: "🐄";
+            position: absolute;
+            font-size: 20px;
+            top: -10px;
+            left: 5px;
+        }
+
+        .goat {
+            bottom: 90px;
+            left: 55%;
+        }
+
+        .goat::after {
+            content: "🐐";
+            position: absolute;
+            font-size: 20px;
+        }
+
+        /* Pet styles */
+        .dog { /* ... (unchanged pet styles) ... */
+            position: absolute;
+            bottom: 85px;
+            left: 30%;
+            z-index: 7;
+            cursor: pointer;
+        }
+
+        .dog::after {
+            content: "🐕";
+            position: absolute;
+            font-size: 20px;
+        }
+
+        .cat {
+            position: absolute;
+            bottom: 85px;
+            left: 52%;
+            z-index: 7;
+            cursor: pointer;
+        }
+
+        .cat::after {
+            content: "🐈";
+            position: absolute;
+            font-size: 20px;
+        }
+
+        /* People */
+        .person { /* ... (slightly modified person styles and walkAround animation) ... */
+            position: absolute;
+            z-index: 8;
+            cursor: pointer;
+        }
+
+        .boy {
+            bottom: 85px;
+            left: 40%;
+            animation: walkAround 20s linear infinite;
+            /* Player Styling */
+            display: flex;
+            justify-content: center;
+            align-items: flex-end; /* Center emoji and health bar relative to bottom */
+            flex-direction: column; /* Stack emoji and health bar vertically */
+        }
+
+        .boy::after {
+            content: "👦";
+            position: relative; /* Position relative to parent .boy */
+            font-size: 22px;
+            z-index: 20; /* Ensure emoji is above health bar if they overlap slightly */
+        }
+
+        .girl {
+            bottom: 85px;
+            left: 43%;
+            animation: walkAround 20s linear infinite;
+        }
+
+        .girl::after {
+            content: "👧";
+            position: absolute;
+            font-size: 22px;
+        }
+
+        /* Animal pen and fence */
+        .animal-pen { /* ... (unchanged animal pen and fence styles) ... */
+            position: absolute;
+            bottom: 85px;
+            left: 50%;
+            width: 100px;
+            height: 60px;
+            border: 3px solid #8B4513;
+            border-radius: 5px;
+            z-index: 6;
+        }
+
+        .fence {
+            position: absolute;
+            height: 20px;
+            background: #A0522D;
+            z-index: 7;
+            bottom: 79px;
+        }
+
+        .fence1 {
+            left: 30%;
+            width: 40px;
+        }
+
+        .fence2 {
+            left: 50%;
+            width: 100px;
+        }
+
+        .controls { /* ... (unchanged controls styles) ... */
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.7);
+            z-index: 10;
+        }
+
+        .button {
+            padding: 10px 15px;
+            background: #4fa8e0;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .button:hover {
+            background: #3887b7;
+        }
+
+        .time-cycle { /* ... (unchanged time cycle styles) ... */
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 5px;
+            z-index: 10;
+        }
+
+        .time-label {
+            margin-right: 10px;
+        }
+
+        .inventory { /* ... (unchanged inventory styles) ... */
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 5px;
+            padding: 10px;
+            z-index: 10;
+        }
+
+        .inventory-title {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .inventory-items {
+            display: flex;
+            gap: 10px;
+        }
+
+        .inventory-item {
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+        }
+
+        .message-box { /* ... (unchanged message box styles) ... */
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            max-width: 80%;
+            z-index: 100;
+            display: none;
+        }
+
+        .message-text {
+            margin-bottom: 10px;
+        }
+
+        .message-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        .message-option {
+            padding: 5px 10px;
+            background: #4fa8e0;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* --- Game Specific Styles --- */
+        /* Player and Enemy styles */
+        .player, .alien-enemy {
+            position: absolute;
+            bottom: 85px;
+            z-index: 9;
+            cursor: pointer;
+            display: flex; /* For positioning health bar relative to player/enemy */
+            flex-direction: column;
+            align-items: center; /* Center health bar horizontally */
+        }
+
+        .player::after { /* Player character (using a simple emoji for now) */
+            content: "🧑‍🌾"; /* Farmer Emoji for player */
+            font-size: 30px;
+        }
+
+        .alien-enemy {
+            left: 75%; /* Initial enemy position */
+        }
+
+        .alien-enemy.level1::after {
+            content: "👽";
+            font-size: 25px;
+        }
+        .alien-enemy.level2::after {
+            content: "👾"; /* Stronger enemy type visually */
+            font-size: 35px;
+        }
+        .alien-enemy.level3::after {
+            content: "👹"; /* Even stronger enemy type visually */
+            font-size: 40px;
+        }
+
+        /* Basic enemy "equipment" change - color and slightly different shape */
+        .alien-enemy.equipped::after {
+             content: "👾"; /* Keep similar, just example of visual change */
+             color: red;
+             font-size: 35px;
+             animation: enemyEquipFlash 1s steps(2) infinite; /* Flash effect to indicate equip */
+        }
+        @keyframes enemyEquipFlash {
+            50% { color: transparent; }
+        }
+
+
+        /* Health Bar */
+        .health-bar-container {
+            width: 50px; /* Width of health bar */
+            height: 5px;   /* Height of health bar */
+            background-color: rgba(0,0,0,0.5); /* Dark background */
+            border-radius: 5px;
+            margin-top: 5px; /* Space between character and health bar */
+            overflow: hidden; /* Ensure bar fills within container */
+        }
+
+        .health-bar {
+            height: 100%;
+            background-color: green; /* Health color - can change with damage */
+            width: 100%; /* Initially full health */
+            border-radius: 5px;
+            transition: width 0.3s linear; /* Smooth health decrease */
+        }
+        .health-bar.damage {
+            background-color: red; /* Health becomes red when damaged */
+        }
+
+
+        /* Game Animations - new animations specific to game actions */
+        @keyframes playerAttack {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(20deg); } /* Jump and swing animation */
+        }
+        .player.attacking::after {
+            animation: playerAttack 0.5s ease-in-out;
+        }
+
+        @keyframes enemyAttack { /* Basic enemy attack animation */
+            0%, 100% { transform: scale(1); color: white;}
+            50% { transform: scale(1.2); color: red;} /* 'Pulsate' attack */
+        }
+        .alien-enemy.attacking::after {
+            animation: enemyAttack 0.5s ease-in-out;
+        }
+
+
+        /* Win/Lose messages */
+        .game-over-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 24px;
+            z-index: 101; /* Above all other content */
+            display: none; /* Initially hidden */
+        }
+        .game-over-message button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            background-color: #5cb85c;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* --- Animation Keyframes (Existing, moved to bottom for organization) --- */
+        @keyframes cloudMove { /* ... (unchanged cloudMove animation) ... */
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(2000px);
+            }
+        }
+
+        @keyframes waveMove { /* ... (unchanged waveMove animation) ... */
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(10px);
+            }
+        }
+
+        @keyframes fishSwim { /* ... (unchanged fishSwim animation) ... */
+            0% {
+                transform: translateX(0);
+            }
+            50% {
+                transform: translateX(200px) scaleX(-1);
+            }
+            100% {
+                transform: translateX(0) scaleX(1);
+            }
+        }
+
+        @keyframes birdFly { /* ... (unchanged birdFly animation) ... */
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(2000px);
+            }
+        }
+
+        @keyframes walkAround { /* ... (slightly modified walkAround for smoother movement) ... */
+             0%, 100% { transform: translateX(0); } /* Pause at start and end for loop */
+             25% { transform: translateX(30px); }
+             50% { transform: translateX(60px); }
+             75% { transform: translateX(30px); }
+         }
+
+
+        /* Time cycle styles (unchanged) ... */
+        body.morning { /* ... (unchanged time cycle styles) ... */
+            background-color: #e6f7ff;
+        }
+
+        body.morning .sky {
+            background: linear-gradient(to bottom, #87CEEB, #c9e9f6);
+        }
+
+        body.morning .sun {
+            top: 80px;
+            left: 30%;
+            background: radial-gradient(circle, #ffff99, #ffcc00);
+        }
+
+        body.afternoon {
+            background-color: #e6f7ff;
+        }
+
+        body.afternoon .sky {
+            background: linear-gradient(to bottom, #87CEEB, #c9e9f6);
+        }
+
+        body.afternoon .sun {
+            top: 50px;
+            left: 80%;
+            background: radial-gradient(circle, #ffff99, #ffcc00);
+        }
+
+        body.evening {
+            background-color: #ffefd5;
+        }
+
+        body.evening .sky {
+            background: linear-gradient(to bottom, #ff7e5f, #feb47b);
+        }
+
+        body.evening .sun {
+            top: 120px;
+            left: 90%;
+            background: radial-gradient(circle, #ff9966, #ff5e62);
+        }
+
+        body.night {
+            background-color: #0f2027;
+        }
+
+        body.night .sky {
+            background: linear-gradient(to bottom, #0f2027, #203a43);
+        }
+
+        body.night .sun {
+            top: 80px;
+            left: 80%;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, #f5f5f5, #e6e6e6);
+            box-shadow: 0 0 20px #f5f5f5;
+        }
+
+        body.night .ocean {
+            background: linear-gradient(to bottom, #203a43, #0f2027);
+        }
+
+        /* Morning animations (unchanged) */
+        @keyframes sunriseSun { /* ... (unchanged sunriseSun animation) ... */
+            0% {
+                top: 150px;
+                left: 20%;
+                transform: scale(1.5);
+                background: radial-gradient(circle, #ff6666, #ff3300);
+            }
+            100% {
+                top: 80px;
+                left: 30%;
+                transform: scale(1);
+                background: radial-gradient(circle, #ffff99, #ffcc00);
+            }
+        }
+
+        /* Collection feedback (unchanged) */
+        .collected { /* ... (unchanged collected animation) ... */
+            animation: collect 1s forwards;
+        }
+
+        @keyframes collect {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0);
+                opacity: 0;
+            }
+        }
+
+    </style>
 </head>
 <body class="afternoon">
-  <div class="scene">
-    <div class="sky"></div>
-    <div class="sun"></div>
-    <div class="cloud cloud1"></div>
-    <div class="cloud cloud2"></div>
-    <div class="score-board">Score: <span id="score">0</span></div>
-    
-    <!-- ===== Boats ===== -->
-    <div class="boat" id="boat1">
-      <div class="boat-body"></div>
-      <div class="sail"></div>
-      <div class="sail-canvas"></div>
-      <div class="cabin"></div>
-    </div>
-    <div class="boat small-boat" id="boat2" style="bottom: 150px;">
-      <div class="boat-body"></div>
-      <div class="sail" style="top: -40px; left: 20px;"></div>
-      <div class="sail-canvas" style="top: -30px; left: 25px; width: 30px; height: 40px;"></div>
-      <div class="cabin" style="bottom: 20px; left: 10px; width: 20px; height: 15px;"></div>
-    </div>
-    <div class="boat large-boat" id="boat3" style="bottom: 110px;">
-      <div class="boat-body"></div>
-      <div class="sail" style="top: -70px; left: 40px;"></div>
-      <div class="sail-canvas" style="top: -60px; left: 45px; width: 50px; height: 60px;"></div>
-      <div class="cabin" style="bottom: 40px; left: 20px; width: 40px; height: 25px;"></div>
-    </div>
-    
-    <div class="ocean"></div>
-    <div class="wave wave1"></div>
-    <div class="wave wave2"></div>
-    <div class="wave wave3"></div>
-    <div class="fish fish1"></div>
-    <div class="fish fish2"></div>
-    <div class="fish fish3"></div>
-    <div class="beach"></div>
-    <div class="shell shell1"></div>
-    <div class="shell shell2"></div>
-    <div class="shell shell3"></div>
-    <div class="island"></div>
-    <div class="palm-tree">
-      <div class="trunk"></div>
-      <div class="leaves">
-        <div class="leaf"></div>
-        <div class="leaf"></div>
-        <div class="leaf"></div>
-        <div class="leaf"></div>
-        <div class="leaf"></div>
-        <div class="leaf"></div>
-      </div>
-    </div>
-    <div class="grass-area"></div>
-    <div class="house">
-      <div class="house-roof">
-        <div class="chimney"></div>
-      </div>
-      <div class="house-base">
-        <div class="house-door"></div>
-        <div class="window window1"></div>
-        <div class="window window2"></div>
-        <div class="flower-box">
-          <div class="flower flower1"></div>
-          <div class="flower flower2"></div>
-          <div class="flower flower3"></div>
+    <div class="scene">
+        <div class="sky"></div>
+        <div class="sun"></div>
+        <div class="cloud cloud1"></div>
+        <div class="cloud cloud2"></div>
+        <div class="bird bird1"></div>
+        <div class="bird bird2"></div>
+        <div class="bird bird3"></div>
+        <div class="ocean"></div>
+        <div class="wave wave1"></div>
+        <div class="wave wave2"></div>
+        <div class="wave wave3"></div>
+        <div class="fish fish1"></div>
+        <div class="fish fish2"></div>
+        <div class="fish fish3"></div>
+        <div class="dock"></div>
+        <div class="dock-top"></div>
+        <div class="boat">
+            <div class="boat-body"></div>
+            <div class="sail"></div>
+            <div class="sail-canvas"></div>
+            <div class="cabin"></div>
         </div>
-      </div>
-    </div>
-    <div class="animal-pen"></div>
-    <div class="fence fence1"></div>
-    <div class="fence fence2"></div>
-    <div class="animal cow"></div>
-    <div class="animal goat"></div>
-    <div class="dog"></div>
-    <div class="cat"></div>
-    
-    <!-- ===== Humans with Realistic 2D Limbs ===== -->
-    <div class="person boy">
-      <div class="human">
-        <div class="head"></div>
-        <div class="body"></div>
-        <div class="left-arm"></div>
-        <div class="right-arm"></div>
-        <div class="left-leg"></div>
-        <div class="right-leg"></div>
-      </div>
-    </div>
-    <div class="person girl">
-      <div class="human">
-        <div class="head" style="background:#ffccaa;"></div>
-        <div class="body" style="background:#ff69b4;"></div>
-        <div class="left-arm"></div>
-        <div class="right-arm"></div>
-        <div class="left-leg"></div>
-        <div class="right-leg"></div>
-      </div>
-    </div>
-    
-    <!-- ===== Message Box ===== -->
-    <div class="message-box">
-      <div class="message-text">
-        Welcome to your enhanced Serene Shores Interactive Game! Collect items, interact with your surroundings, and explore your beach home.
-      </div>
-      <div class="message-options">
-        <button class="message-option">Collect shells</button>
-        <button class="message-option">Feed animals</button>
-        <button class="message-option">Go to house</button>
-        <button class="message-option">Take a walk</button>
-      </div>
-    </div>
-  </div>
-  
-  <!-- ===== Controls ===== -->
-  <div class="controls">
-    <button class="button" onclick="changeTime('morning')">Morning</button>
-    <button class="button" onclick="changeTime('afternoon')">Afternoon</button>
-    <button class="button" onclick="changeTime('evening')">Evening</button>
-    <button class="button" onclick="changeTime('night')">Night</button>
-    <button class="button" onclick="showMessage()">Interact</button>
-  </div>
+        <div class="beach"></div>
+        <div class="shell shell1"></div>
+        <div class="shell shell2"></div>
+        <div class="shell shell3"></div>
+        <div class="island"></div>
+        <div class="palm-tree">
+            <div class="trunk"></div>
+            <div class="leaves">
+                <div class="leaf"></div>
+                <div class="leaf"></div>
+                <div class="leaf"></div>
+                <div class="leaf"></div>
+                <div class="leaf"></div>
+                <div class="leaf"></div>
+            </div>
+        </div>
 
-  <script>
-    // ===== Game Class for Modular & Controllable Interactions =====
-    class Game {
-      constructor() {
-        this.score = 0;
-        this.scoreElement = document.getElementById('score');
-        this.messageBox = document.querySelector('.message-box');
-        this.messageText = document.querySelector('.message-text');
-        this.initialize();
-      }
-      
-      initialize() {
-        this.setupCollectibles();
-        this.setupInteractions();
-        this.setupMessageOptions();
-      }
-      
-      setupCollectibles() {
+        <!-- New grass area -->
+        <div class="grass-area"></div>
+
+        <!-- New cute house -->
+        <div class="house">
+            <div class="house-roof">
+                <div class="chimney"></div>
+            </div>
+            <div class="house-base">
+                <div class="house-door"></div>
+                <div class="window window1"></div>
+                <div class="window window2"></div>
+                <div class="flower-box">
+                    <div class="flower flower1"></div>
+                    <div class="flower flower2"></div>
+                    <div class="flower flower3"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Animal pen and fence -->
+        <div class="animal-pen"></div>
+        <div class="fence fence1"></div>
+        <div class="fence fence2"></div>
+
+        <!-- Farm animals -->
+        <div class="animal cow"></div>
+        <div class="animal goat"></div>
+
+        <!-- Pets -->
+        <div class="dog"></div>
+        <div class="cat"></div>
+
+        <!-- People (you and your girlfriend) -->
+        <div class="person boy">
+            <!-- Player's Health Bar -->
+            <div class="health-bar-container">
+                <div class="health-bar player-health"></div>
+            </div>
+        </div>
+        <div class="person girl"></div>
+
+        <!-- Alien Enemy -->
+        <div class="alien-enemy level1">
+            <div class="health-bar-container">
+                <div class="health-bar enemy-health"></div>
+            </div>
+        </div>
+
+        <div class="inventory">
+            <div class="inventory-title">Collection:</div>
+            <div class="inventory-items">
+                <div class="inventory-item">🐚</div>
+                <div class="inventory-item">🐟</div>
+                <div class="inventory-item">🍃</div>
+                <div class="inventory-item">🥛</div>
+                <div class="inventory-item">🦴</div>
+            </div>
+        </div>
+
+        <div class="time-cycle">
+            <span class="time-label">Time:</span>
+            <span class="time-value">Afternoon</span>
+        </div>
+
+        <div class="message-box">
+            <div class="message-text">Welcome to Serene Shores: Alien Defense! Aliens are attacking your peaceful home. Defend it! Use arrow keys to move and spacebar to attack.</div>
+            <div class="message-options">
+                <button class="message-option" onclick="closeMessage()">Okay, I'm ready!</button>
+            </div>
+        </div>
+
+        <!-- Game Over Message -->
+        <div class="game-over-message" id="gameOverMessage">
+            <h2>Game Over!</h2>
+            <p id="gameOverText">Aliens have taken over Serene Shores!</p>
+            <button onclick="restartGame()">Play Again</button>
+        </div>
+
+    </div>
+
+    <div class="controls">
+        <button class="button" onclick="changeTime('morning')">Morning</button>
+        <button class="button" onclick="changeTime('afternoon')">Afternoon</button>
+        <button class="button" onclick="changeTime('evening')">Evening</button>
+        <button class="button" onclick="changeTime('night')">Night</button>
+    </div>
+
+    <script>
+        /* --- Game Variables and Setup --- */
+        let player = document.querySelector('.boy');
+        let playerHealthBar = document.querySelector('.player-health');
+        let enemy = document.querySelector('.alien-enemy');
+        let enemyHealthBar = document.querySelector('.enemy-health');
+        let grassArea = document.querySelector('.grass-area'); // "Home" to defend
+        let gameOverMessageElement = document.getElementById('gameOverMessage');
+        let gameOverTextElement = document.getElementById('gameOverText');
+
+        let playerSpeed = 5; // Player movement speed
+        let enemySpeed = 1;   // Enemy movement speed
+        let playerHealth = 100;
+        let enemyHealth = 100;
+        let enemyLevel = 1;       // Starting enemy level
+        let isGameOver = false;
+
+        let enemyAttackInterval;   // For enemy attack timing
+        let enemyMoveInterval;     // For enemy movement timing
+        let gameActive = false;    // Track if the game is actively running
+
+        // Movement and attack states
+        let isPlayerAttacking = false;
+        let isEnemyAttacking = false;
+
+        /* --- Helper Functions for Collision and Distance --- */
+        function isColliding(element1, element2) {
+            const rect1 = element1.getBoundingClientRect();
+            const rect2 = element2.getBoundingClientRect();
+            return !(rect1.right < rect2.left || rect1.left > rect2.right || rect1.bottom < rect2.top || rect1.top > rect2.bottom);
+        }
+
+        function distanceBetweenElements(element1, element2) {
+            const rect1 = element1.getBoundingClientRect();
+            const rect2 = element2.getBoundingClientRect();
+            const distX = rect1.left + rect1.width / 2 - (rect2.left + rect2.width / 2);
+            const distY = rect1.top + rect1.height / 2 - (rect2.top + rect2.height / 2);
+            return Math.sqrt(distX * distX + distY * distY);
+        }
+
+
+        /* --- Game Logic Functions --- */
+        function updateTimeDisplay() {
+            document.querySelector('.time-value').textContent = document.body.className.charAt(0).toUpperCase() + document.body.className.slice(1);
+        }
+
+        function changeTime(time) {
+            document.body.className = time;
+            updateTimeDisplay();
+        }
+
+        function showMessage() {
+            document.querySelector('.message-box').style.display = 'block';
+        }
+
+        function closeMessage() {
+            document.querySelector('.message-box').style.display = 'none';
+            if (!gameActive) { // Start game after closing initial message only if not already started
+                startGame();
+            }
+        }
+
+
+        /* --- Player and Enemy Actions --- */
+        function playerAttack() {
+            if (!isPlayerAttacking && gameActive && !isGameOver) {
+                isPlayerAttacking = true;
+                player.classList.add('attacking'); // Trigger attack animation
+
+                if (isColliding(player, enemy)) {
+                    damageEnemy(20); // Deal damage on hit
+                }
+
+                setTimeout(() => {
+                    player.classList.remove('attacking'); // End attack animation
+                    isPlayerAttacking = false;
+                }, 500); // Animation duration
+            }
+        }
+
+        function damageEnemy(damage) {
+            enemyHealth -= damage;
+            if (enemyHealth < 0) enemyHealth = 0; // Prevent negative health
+            updateHealthBar(enemyHealthBar, enemyHealth);
+
+            enemyHealthBar.classList.add('damage'); // Briefly change color when damaged
+            setTimeout(() => enemyHealthBar.classList.remove('damage'), 200);
+
+            if (enemyHealth <= 0) {
+                enemyDefeated();
+            }
+        }
+
+        function damagePlayer(damage) {
+            if (!isGameOver && gameActive) { // Only damage player if game is active and not over
+                playerHealth -= damage;
+                if (playerHealth < 0) playerHealth = 0; // Prevent negative health
+                updateHealthBar(playerHealthBar, playerHealth);
+
+                playerHealthBar.classList.add('damage'); // Visual feedback for player damage
+                setTimeout(() => playerHealthBar.classList.remove('damage'), 200);
+
+                if (playerHealth <= 0) {
+                    playerDefeated();
+                }
+            }
+        }
+
+
+        function enemyAttack() {
+            if (!isEnemyAttacking && gameActive && !isGameOver) {
+                isEnemyAttacking = true;
+                enemy.classList.add('attacking'); // Trigger enemy attack animation
+
+                if (distanceBetweenElements(player, enemy) < 100) { // Attack if player is near enough - simplified range
+                    damagePlayer(10); // Enemy damage
+                }
+
+                setTimeout(() => {
+                    enemy.classList.remove('attacking');
+                    isEnemyAttacking = false;
+                }, 500);
+            }
+        }
+
+
+        /* --- Game State and Enemy AI --- */
+        function updateHealthBar(healthBarElement, currentHealth) {
+            healthBarElement.style.width = `${currentHealth}%`;
+            if (currentHealth <= 25) {
+                healthBarElement.style.backgroundColor = 'red'; // Low health indicator
+            } else if (currentHealth <= 50) {
+                healthBarElement.style.backgroundColor = 'orange'; // Medium health
+            } else {
+                healthBarElement.style.backgroundColor = 'green'; // Healthy
+            }
+        }
+
+        function enemyMove() {
+            if (!gameActive || isGameOver) return; // Stop moving if game not active or over
+
+            const playerRect = player.getBoundingClientRect();
+            const enemyRect = enemy.getBoundingClientRect();
+            let dx = 0;
+
+            if (enemyRect.left > playerRect.left) {
+                dx = -enemySpeed; // Move left towards player
+            } else if (enemyRect.left < playerRect.left) {
+                dx = enemySpeed;  // Move right towards player
+            }
+
+            // Simplified enemy AI - prioritize moving towards player horizontally and also towards 'home' area (grassArea)
+            let newEnemyLeft = parseFloat(enemy.style.left || getComputedStyle(enemy).left); // Handle initial 'auto' value
+            newEnemyLeft += dx;
+
+            // Clamp enemy position to within scene boundaries (optional but good for keeping in view)
+            newEnemyLeft = Math.max(0, Math.min(newEnemyLeft, 95)); // Prevent enemy from going off screen
+
+            enemy.style.left = `${newEnemyLeft}%`;
+        }
+
+
+        function spawnEnemy() {
+            if (isGameOver) return; // Don't spawn if game over
+
+            enemyHealth = 100 + (enemyLevel - 1) * 20; // Increase enemy health with level
+            updateHealthBar(enemyHealthBar, enemyHealth);
+            enemy.classList.remove('level1', 'level2', 'level3', 'equipped'); // Reset levels
+            if (enemyLevel === 2) {
+                enemy.classList.add('level2'); // Example level up
+            } else if (enemyLevel >= 3) {
+                enemy.classList.add('level3'); // Even stronger level
+                if (enemyLevel % 2 === 0) { // Example: Every other level, "equip"
+                   enemy.classList.add('equipped'); // Visual indication of being equipped
+                }
+            }
+            enemy.style.left = '75%'; // Reset enemy position
+            enemy.style.display = 'block'; // Make sure enemy is visible
+        }
+
+        function enemyDefeated() {
+            enemyLevel++; // Increase level for next spawn - basic "AI learning" progression
+            enemy.style.display = 'none'; // Hide enemy visually
+            clearInterval(enemyAttackInterval); // Stop enemy attacks while despawned
+
+            showMessageWithText(`Alien defeated! Level ${enemyLevel} approaching! Get ready!`, ['Prepare', 'Strategize']); // Provide feedback, allow brief strategizing
+
+            // New message options based on enemy defeat, as example. Expand as needed.
+            const messageBox = document.querySelector('.message-box');
+            const optionsDiv = messageBox.querySelector('.message-options');
+            optionsDiv.innerHTML = ''; // Clear existing options
+
+            const prepareButton = document.createElement('button');
+            prepareButton.className = 'message-option';
+            prepareButton.textContent = 'Prepare';
+            prepareButton.onclick = () => {
+                closeMessage();
+                setTimeout(spawnEnemy, 2000); // Spawn next enemy after a delay
+                startEnemyAI(); // Restart enemy AI intervals when next enemy spawns
+            };
+
+            const strategizeButton = document.createElement('button');
+            strategizeButton.className = 'message-option';
+            strategizeButton.textContent = 'Strategize';
+            strategizeButton.onclick = () => {
+                showMessageWithText("Think about enemy attack patterns, improve your positioning!", ['Got it!']); // Give strategic tips
+                const strategicOptionsDiv = messageBox.querySelector('.message-options');
+                strategicOptionsDiv.innerHTML = '';
+                const gotItButton = document.createElement('button');
+                gotItButton.className = 'message-option';
+                gotItButton.textContent = 'Got it!';
+                gotItButton.onclick = () => {
+                    closeMessage();
+                    setTimeout(spawnEnemy, 2000); // Spawn after strategizing
+                    startEnemyAI(); // Restart enemy AI
+                };
+                strategicOptionsDiv.appendChild(gotItButton);
+            };
+
+
+            optionsDiv.appendChild(prepareButton);
+            optionsDiv.appendChild(strategizeButton);
+
+
+        }
+
+        function showMessageWithText(text, optionsTexts) {
+            const messageBox = document.querySelector('.message-box');
+            const messageTextElement = messageBox.querySelector('.message-text');
+            const optionsDiv = messageBox.querySelector('.message-options');
+
+            messageTextElement.textContent = text;
+            optionsDiv.innerHTML = ''; // Clear existing options
+
+            optionsTexts.forEach(optionText => {
+                const optionButton = document.createElement('button');
+                optionButton.className = 'message-option';
+                optionButton.textContent = optionText;
+                optionButton.onclick = closeMessage; // Default close action for now - customize as needed
+                optionsDiv.appendChild(optionButton);
+            });
+
+            messageBox.style.display = 'block';
+        }
+
+
+        function playerDefeated() {
+            isGameOver = true;
+            gameActive = false; // Stop game updates
+            clearInterval(enemyAttackInterval); // Stop enemy actions
+            clearInterval(enemyMoveInterval);
+            gameOverTextElement.textContent = "Aliens have breached your defenses!";
+            gameOverMessageElement.style.display = 'block'; // Show game over message
+        }
+
+        function homeDefeated() {
+            isGameOver = true;
+            gameActive = false;
+            clearInterval(enemyAttackInterval);
+            clearInterval(enemyMoveInterval);
+            gameOverTextElement.textContent = "Your home is destroyed!";
+            gameOverMessageElement.style.display = 'block';
+        }
+
+        function restartGame() {
+            isGameOver = false;
+            playerHealth = 100;
+            enemyHealth = 100;
+            enemyLevel = 1;
+            updateHealthBar(playerHealthBar, playerHealth);
+            updateHealthBar(enemyHealthBar, enemyHealth);
+            spawnEnemy(); // Spawn initial enemy for new game
+            enemy.style.display = 'block'; // Ensure enemy is visible at start
+            player.style.left = '40%';      // Reset player position
+            enemy.style.left = '75%';      // Reset enemy position
+            gameOverMessageElement.style.display = 'none';
+            startGame();  // Re-initiate game loops and intervals
+        }
+
+        function startGame() {
+            if (gameActive) return; // Prevent starting multiple times if already active
+
+            gameActive = true; // Mark game as active
+            spawnEnemy();  // Initial enemy spawn
+
+            enemyMoveInterval = setInterval(enemyMove, 150); // Enemy constantly tries to move
+            enemyAttackInterval = setInterval(() => { // Enemy tries to attack every X seconds
+                if (!isGameOver && gameActive && distanceBetweenElements(player, enemy) < 120) { // Only attack if game running, not over and in range. Adjusted range
+                    enemyAttack();
+                }
+            }, 1500); // Attack interval in milliseconds (adjust as needed)
+
+            // Start game loop for rendering, if you have more complex updates in future
+            gameLoop(); // Initiate game loop for future enhancements if needed.
+        }
+
+        function gameLoop() { // Example game loop function for more complex animation/updates in the future
+            if (!gameActive) return; // Stop loop when game is not active
+            // Here you can put any logic that needs to update each frame, if we had more dynamic elements beyond current CSS transitions.
+            requestAnimationFrame(gameLoop); // Continue loop on next frame
+        }
+
+        function startEnemyAI() {
+            if (enemyMoveInterval) clearInterval(enemyMoveInterval); // Clear existing intervals before starting new ones. Avoids multiple intervals running at once.
+            if (enemyAttackInterval) clearInterval(enemyAttackInterval);
+
+            enemyMoveInterval = setInterval(enemyMove, 150); // Restart enemy move
+            enemyAttackInterval = setInterval(() => { // Restart enemy attack interval
+                if (!isGameOver && gameActive && distanceBetweenElements(player, enemy) < 120) {
+                    enemyAttack();
+                }
+            }, 1500);
+        }
+
+
+        /* --- Event Listeners and Initialization --- */
+        document.addEventListener('keydown', function(event) {
+            if (!gameActive || isGameOver) return; // No controls if game isn't running or is over
+
+            let currentLeft = parseFloat(player.style.left || getComputedStyle(player).left); // Handle default 'auto' or initial number
+
+            switch (event.key) {
+                case 'ArrowLeft':
+                    currentLeft -= playerSpeed;
+                    break;
+                case 'ArrowRight':
+                    currentLeft += playerSpeed;
+                    break;
+                case ' ': // Spacebar for attack
+                    playerAttack();
+                    break;
+            }
+
+            // Keep player within bounds
+            currentLeft = Math.max(20, Math.min(currentLeft, 70)); // Example bounds based on your scene, adjust these
+            player.style.left = `${currentLeft}%`;
+
+
+            // Basic home "defense" check - very simplified. For demo purposes.
+            if (isColliding(enemy, grassArea)) { // Check for enemy at "home" area. Adjust "grassArea" selector if you use house instead.
+               // homeDefeated();  // If home is collinding - trigger home defeat, if you want to implement losing when home is attacked. Uncomment if you wish to implement home destruction as a lose condition.
+            }
+        });
+
+
+        // Make items collectible (still active but likely not the main game focus now)
         const collectibles = document.querySelectorAll('.shell, .fish');
         collectibles.forEach(item => {
-          item.addEventListener('click', () => this.handleCollectible(item));
+            item.addEventListener('click', function() {
+                this.classList.add('collected');
+                setTimeout(() => {
+                    this.style.display = 'none';
+                }, 1000);
+            });
         });
-      }
-      
-      handleCollectible(item) {
-        item.classList.add('collected');
-        this.updateScore(5);
-        setTimeout(() => { item.style.display = 'none'; }, 1000);
-        this.showMessage("You collected an item!");
-      }
-      
-      setupInteractions() {
-        // Boat interactions
-        const boats = document.querySelectorAll('.boat');
-        boats.forEach(boat => {
-          boat.addEventListener('click', () => this.handleBoat(boat));
+
+        // Boat interaction (unchanged)
+        document.querySelector('.boat').addEventListener('click', function() {
+            this.style.left = '40%';
+            setTimeout(() => {
+                this.style.left = '20%';
+            }, 5000);
         });
-        
-        // Pet interactions
-        const dog = document.querySelector('.dog');
-        if (dog) dog.addEventListener('click', () => this.handlePet(dog, 'dog'));
-        const cat = document.querySelector('.cat');
-        if (cat) cat.addEventListener('click', () => this.handlePet(cat, 'cat'));
-        
-        // Human interactions
-        const boy = document.querySelector('.person.boy');
-        if (boy) boy.addEventListener('click', () => this.handleHuman(boy, "That's you, Cat! Enjoy the day at your beach home."));
-        const girl = document.querySelector('.person.girl');
-        if (girl) girl.addEventListener('click', () => this.handleHuman(girl, "Your girlfriend smiles warmly at you."));
-        
-        // House & Animal interactions
-        const house = document.querySelector('.house');
-        if (house) house.addEventListener('click', () => this.handleHouse());
-        const cow = document.querySelector('.cow');
-        if (cow) cow.addEventListener('click', () => this.handleAnimal(cow, "Moo! Your cow is happy!"));
-        const goat = document.querySelector('.goat');
-        if (goat) goat.addEventListener('click', () => this.handleAnimal(goat, "Baa! The goat is playful!"));
-      }
-      
-      setupMessageOptions() {
-        const options = document.querySelectorAll('.message-option');
-        options.forEach(button => {
-          button.addEventListener('click', () => {
-            const text = button.textContent.toLowerCase();
-            if (text.includes('collect')) {
-              this.interact('collect');
-            } else if (text.includes('feed')) {
-              this.interact('feed');
-            } else if (text.includes('house')) {
-              this.interact('house');
-            } else if (text.includes('walk')) {
-              this.interact('walk');
-            }
-            this.hideMessage();
-          });
-        });
-      }
-      
-      updateScore(points) {
-        this.score += points;
-        this.scoreElement.textContent = this.score;
-      }
-      
-      showMessage(msg) {
-        this.messageText.textContent = msg;
-        this.messageBox.style.display = 'block';
-      }
-      
-      hideMessage() {
-        this.messageBox.style.display = 'none';
-      }
-      
-      handleBoat(boat) {
-        this.showMessage("You clicked a boat! Enjoy the ride!");
-        boat.style.animationDuration = '5s';
-        setTimeout(() => { boat.style.animationDuration = '20s'; }, 3000);
-      }
-      
-      handlePet(pet, type) {
-        if (type === 'dog') {
-          this.showMessage("Woof! Your dog runs happily around you.");
-          pet.style.left = (30 + Math.random() * 10) + '%';
-        } else if (type === 'cat') {
-          this.showMessage("Meow! Your cat playfully jumps and stretches.");
-          pet.style.left = (52 + Math.random() * 8) + '%';
-        }
-      }
-      
-      handleHuman(human, msg) {
-        this.showMessage(msg);
-      }
-      
-      handleHouse() {
-        this.showMessage("Your cozy pink house is warm and inviting, filled with lovely memories.");
-        this.updateScore(8);
-      }
-      
-      handleAnimal(animal, msg) {
-        this.showMessage(msg);
-        this.updateScore(5);
-      }
-      
-      // Interactions triggered from control options
-      interact(option) {
-        switch(option) {
-          case 'collect':
-            this.showMessage("Collecting items around you...");
-            this.updateScore(10);
-            break;
-          case 'feed':
-            this.showMessage("Feeding your animals...");
-            this.updateScore(5);
-            break;
-          case 'house':
-            this.handleHouse();
-            break;
-          case 'walk':
-            this.showMessage("Taking a leisurely walk along the shore...");
-            this.updateScore(7);
-            break;
-          default:
-            this.showMessage("Enjoy your time at Serene Shores!");
-        }
-      }
-    }
-    
-    // Instantiate the game
-    const game = new Game();
-    
-    // ===== Control Functions =====
-    function changeTime(time) {
-      document.body.className = time;
-    }
-    
-    function showMessage() {
-      document.querySelector('.message-box').style.display = 'block';
-    }
-    
-    function closeMessage() {
-      document.querySelector('.message-box').style.display = 'none';
-    }
-    
-    // Display welcome message on load
-    window.onload = function() {
-      setTimeout(() => { game.showMessage("Welcome to your enhanced Serene Shores Interactive Game!"); }, 1000);
-    };
-  </script>
+
+        // Initialize with welcome message and set up initial time
+        window.onload = function() {
+            updateTimeDisplay(); // Ensure time is displayed on load.
+            setTimeout(showMessage, 1000);
+        };
+
+    </script>
 </body>
 </html>
