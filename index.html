@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Serene Shores: Alien Defense</title>
+    <title>Serene Shores: Coastal Defense</title>
     <style>
         /* --- General Styles & Scene Setup (Mostly Unchanged) --- */
         * {
@@ -11,7 +11,7 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            transition: all 0.3s ease; /* Slightly faster transition */
+            transition: all 0.3s ease;
         }
 
         body {
@@ -20,7 +20,7 @@
             flex-direction: column;
             height: 100vh;
             overflow: hidden;
-            position: relative; /* For message box positioning */
+            position: relative;
         }
 
         .scene {
@@ -30,7 +30,7 @@
             background: linear-gradient(to bottom, #87CEEB, #e6f7ff);
         }
 
-        .sky { /* ... (unchanged sky styles) ... */
+        .sky { /* ... (sky, sun, clouds - unchanged styles) ... */
             position: absolute;
             top: 0;
             left: 0;
@@ -40,7 +40,7 @@
             z-index: 1;
         }
 
-        .sun { /* ... (unchanged sun styles) ... */
+        .sun {
             position: absolute;
             top: 50px;
             left: 80%;
@@ -52,7 +52,7 @@
             box-shadow: 0 0 20px #ffff99;
         }
 
-        .cloud { /* ... (unchanged cloud styles and animations) ... */
+        .cloud {
             position: absolute;
             background: white;
             border-radius: 50px;
@@ -76,7 +76,7 @@
             animation: cloudMove 150s linear infinite;
         }
 
-        .ocean { /* ... (unchanged ocean and wave styles and animations) ... */
+        .ocean { /* ... (ocean, waves - unchanged styles) ... */
             position: absolute;
             bottom: 0;
             left: 0;
@@ -113,7 +113,7 @@
             animation-delay: 2s;
         }
 
-        .beach { /* ... (unchanged beach style) ... */
+        .beach { /* ... (beach, grass area, island, palm tree - unchanged styles) ... */
             position: absolute;
             bottom: 0;
             left: 0;
@@ -123,7 +123,7 @@
             z-index: 6;
         }
 
-        .grass-area { /* ... (unchanged grass area and house/island styles) ... */
+        .grass-area {
             position: absolute;
             bottom: 79px;
             left: 30%;
@@ -145,7 +145,7 @@
             z-index: 6;
         }
 
-        .palm-tree { /* ... (unchanged palm tree and boat styles) ... */
+        .palm-tree {
             position: absolute;
             bottom: 140px;
             left: calc(70% + 50px);
@@ -200,7 +200,7 @@
             transform: rotate(300deg);
         }
 
-        .boat {
+        .boat { /* ... (boat, house, animal/pet/people styles - unchanged) ... */
             position: absolute;
             bottom: 130px;
             left: 20%;
@@ -243,7 +243,7 @@
             background: #A0522D;
         }
 
-        .fish { /* ... (unchanged fish styles and animations) ... */
+        .fish { /* ... (fish, shells, birds, dock, dock-top, house, animal-pen, fences, controls, time cycle, inventory, message box, collected - unchanged) ... */
             position: absolute;
             width: 25px;
             height: 15px;
@@ -286,7 +286,7 @@
             background: #c06c84;
         }
 
-        .shell { /* ... (unchanged shell styles) ... */
+        .shell {
             position: absolute;
             width: 20px;
             height: 15px;
@@ -322,7 +322,7 @@
             left: 60%;
         }
 
-        .bird { /* ... (unchanged bird styles and animations) ... */
+        .bird {
             position: absolute;
             top: 150px;
             z-index: 3;
@@ -363,7 +363,7 @@
             animation-delay: 10s;
         }
 
-        .dock { /* ... (unchanged dock and dock-top styles) ... */
+        .dock {
             position: absolute;
             bottom: 79px;
             left: 10%;
@@ -383,8 +383,7 @@
             z-index: 6;
         }
 
-        /* Cute house styles */
-        .house { /* ... (unchanged house styles) ... */
+        .house {
             position: absolute;
             bottom: 79px;
             left: 35%;
@@ -395,7 +394,7 @@
         .house-base {
             width: 90px;
             height: 65px;
-            background: #ffd1dc; /* Light pink */
+            background: #ffd1dc;
             border: 3px solid #d38c9f;
             border-radius: 10px;
         }
@@ -403,7 +402,7 @@
         .house-roof {
             width: 110px;
             height: 50px;
-            background: #d38c9f; /* Darker pink */
+            background: #d38c9f;
             margin-left: -10px;
             margin-top: -20px;
             clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
@@ -479,8 +478,7 @@
             left: 28px;
         }
 
-        /* Farm animals */
-        .animal { /* ... (unchanged animal styles) ... */
+        .animal {
             position: absolute;
             z-index: 7;
             cursor: pointer;
@@ -525,8 +523,7 @@
             font-size: 20px;
         }
 
-        /* Pet styles */
-        .dog { /* ... (unchanged pet styles) ... */
+        .dog {
             position: absolute;
             bottom: 85px;
             left: 30%;
@@ -554,29 +551,27 @@
             font-size: 20px;
         }
 
-        /* People */
-        .person { /* ... (slightly modified person styles and walkAround animation) ... */
+        .person {
             position: absolute;
             z-index: 8;
             cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            flex-direction: column;
         }
 
         .boy {
             bottom: 85px;
             left: 40%;
             animation: walkAround 20s linear infinite;
-            /* Player Styling */
-            display: flex;
-            justify-content: center;
-            align-items: flex-end; /* Center emoji and health bar relative to bottom */
-            flex-direction: column; /* Stack emoji and health bar vertically */
         }
 
         .boy::after {
-            content: "👦";
-            position: relative; /* Position relative to parent .boy */
+            content: "🧑‍🌾";
+            position: relative;
             font-size: 22px;
-            z-index: 20; /* Ensure emoji is above health bar if they overlap slightly */
+            z-index: 20;
         }
 
         .girl {
@@ -591,8 +586,7 @@
             font-size: 22px;
         }
 
-        /* Animal pen and fence */
-        .animal-pen { /* ... (unchanged animal pen and fence styles) ... */
+        .animal-pen {
             position: absolute;
             bottom: 85px;
             left: 50%;
@@ -621,7 +615,7 @@
             width: 100px;
         }
 
-        .controls { /* ... (unchanged controls styles) ... */
+        .controls {
             display: flex;
             justify-content: space-around;
             padding: 15px;
@@ -643,7 +637,7 @@
             background: #3887b7;
         }
 
-        .time-cycle { /* ... (unchanged time cycle styles) ... */
+        .time-cycle {
             position: absolute;
             top: 20px;
             right: 20px;
@@ -657,7 +651,7 @@
             margin-right: 10px;
         }
 
-        .inventory { /* ... (unchanged inventory styles) ... */
+        .inventory {
             position: absolute;
             top: 20px;
             left: 20px;
@@ -688,7 +682,7 @@
             font-size: 20px;
         }
 
-        .message-box { /* ... (unchanged message box styles) ... */
+        .message-box {
             position: absolute;
             bottom: 100px;
             left: 50%;
@@ -719,120 +713,138 @@
             cursor: pointer;
         }
 
-        /* --- Game Specific Styles --- */
-        /* Player and Enemy styles */
-        .player, .alien-enemy {
+        /* --- Game Specific Styles (UPDATED for Alien Types and Combat) --- */
+        .player, .alien {
             position: absolute;
             bottom: 85px;
             z-index: 9;
             cursor: pointer;
-            display: flex; /* For positioning health bar relative to player/enemy */
+            display: flex;
             flex-direction: column;
-            align-items: center; /* Center health bar horizontally */
+            align-items: center;
+            /* Placeholder visual style - customize with actual alien images/SVGs */
+            background-repeat: no-repeat;
+            background-size: contain; /* Make sure alien image scales within div */
+            background-position: center bottom;
         }
 
-        .player::after { /* Player character (using a simple emoji for now) */
-            content: "🧑‍🌾"; /* Farmer Emoji for player */
+        .player::after { /* Player icon */
+            content: "🧑‍🌾";
             font-size: 30px;
         }
 
-        .alien-enemy {
-            left: 75%; /* Initial enemy position */
+        /* --- Alien Styles --- */
+        .alien-drone {
+            width: 40px;
+            height: 40px;
+            background-image: url('alien-drone.png'); /* Replace with your drone image URL */
+            animation: float 2s infinite;
         }
 
-        .alien-enemy.level1::after {
-            content: "👽";
-            font-size: 25px;
-        }
-        .alien-enemy.level2::after {
-            content: "👾"; /* Stronger enemy type visually */
-            font-size: 35px;
-        }
-        .alien-enemy.level3::after {
-            content: "👹"; /* Even stronger enemy type visually */
-            font-size: 40px;
+        .alien-shielded {
+            width: 60px;
+            height: 60px;
+            background-image: url('alien-shielded.png'); /* Replace with your shielded image URL */
+            animation: pulseShield 3s infinite;
         }
 
-        /* Basic enemy "equipment" change - color and slightly different shape */
-        .alien-enemy.equipped::after {
-             content: "👾"; /* Keep similar, just example of visual change */
-             color: red;
-             font-size: 35px;
-             animation: enemyEquipFlash 1s steps(2) infinite; /* Flash effect to indicate equip */
-        }
-        @keyframes enemyEquipFlash {
-            50% { color: transparent; }
+        .alien-elite {
+            width: 80px;
+            height: 80px;
+            background-image: url('alien-elite.png'); /* Replace with your elite image URL */
+            animation: teleport 5s steps(2) infinite; /* Using steps for teleport "flash" effect */
         }
 
+        .alien-boss {
+            width: 120px;
+            height: 120px;
+            background-image: url('alien-boss.png'); /* Replace with your boss image URL */
+            animation: bossCharge 10s linear infinite;
+        }
 
-        /* Health Bar */
-        .health-bar-container {
-            width: 50px; /* Width of health bar */
-            height: 5px;   /* Height of health bar */
-            background-color: rgba(0,0,0,0.5); /* Dark background */
+        /* Placeholder visuals - using background color and emojis instead of images for now */
+        .alien-drone::after { content: "👽"; font-size: 30px; color: lightgreen; display: block; margin-top: -0.4em; /* Center emoji visually */}
+        .alien-shielded::after { content: "🛡️"; font-size: 40px; color: lightblue; display: block; margin-top: -0.1em; } /* Shield emoji */
+        .alien-elite::after { content: "👾"; font-size: 45px; color: red; display: block; margin-top: -0.1em;}
+        .alien-boss::after { content: "👹"; font-size: 55px; color: orange; display: block; margin-top: -0.1em;}
+
+
+        /* Health Bar (unchanged) */
+        .health-bar-container { /* ... (health bar styles - unchanged) ... */
+            width: 50px;
+            height: 5px;
+            background-color: rgba(0,0,0,0.5);
             border-radius: 5px;
-            margin-top: 5px; /* Space between character and health bar */
-            overflow: hidden; /* Ensure bar fills within container */
+            margin-top: 5px;
+            overflow: hidden;
         }
 
         .health-bar {
             height: 100%;
-            background-color: green; /* Health color - can change with damage */
-            width: 100%; /* Initially full health */
+            background-color: green;
+            width: 100%;
             border-radius: 5px;
-            transition: width 0.3s linear; /* Smooth health decrease */
+            transition: width 0.3s linear, background-color 0.3s ease; /* Added color transition */
         }
+
         .health-bar.damage {
-            background-color: red; /* Health becomes red when damaged */
+            background-color: red;
         }
 
 
-        /* Game Animations - new animations specific to game actions */
-        @keyframes playerAttack {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(20deg); } /* Jump and swing animation */
-        }
-        .player.attacking::after {
-            animation: playerAttack 0.5s ease-in-out;
-        }
-
-        @keyframes enemyAttack { /* Basic enemy attack animation */
-            0%, 100% { transform: scale(1); color: white;}
-            50% { transform: scale(1.2); color: red;} /* 'Pulsate' attack */
-        }
-        .alien-enemy.attacking::after {
-            animation: enemyAttack 0.5s ease-in-out;
-        }
-
-
-        /* Win/Lose messages */
-        .game-over-message {
+        /* Combat Visuals - Player Attacks */
+        .attack-visual { /* Base class for all attack visuals */
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            font-size: 24px;
-            z-index: 101; /* Above all other content */
-            display: none; /* Initially hidden */
-        }
-        .game-over-message button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 18px;
-            border: none;
-            border-radius: 5px;
-            background-color: #5cb85c;
-            color: white;
-            cursor: pointer;
+            pointer-events: none; /* Prevent blocking clicks */
+            z-index: 11; /* Above characters */
         }
 
-        /* --- Animation Keyframes (Existing, moved to bottom for organization) --- */
-        @keyframes cloudMove { /* ... (unchanged cloudMove animation) ... */
+        .melee-attack {
+            width: 30px;
+            height: 30px;
+            background-color: rgba(255, 0, 0, 0.7); /* Red, semi-transparent */
+            border-radius: 50%;
+            animation: meleeSwing 0.5s forwards; /* 'forwards' keeps last frame of animation */
+            transform-origin: center;
+            /* Position to originate from player */
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        @keyframes meleeSwing {
+            0% { transform: translateX(-50%) translateY(0) rotate(0deg) scale(0); opacity: 0.8; }
+            50% { transform: translateX(-50%) translateY(-20px) rotate(180deg) scale(1.2); opacity: 1; }
+            100% { transform: translateX(-50%) translateY(0) rotate(360deg) scale(0); opacity: 0; } /* Fade out at end */
+        }
+
+
+        .ranged-attack {
+            width: 10px;
+            height: 10px;
+            background-color: blue;
+            border-radius: 50%;
+            animation: shootProjectile 0.7s linear forwards;
+        }
+        @keyframes shootProjectile {
+            0% { transform: translateX(0) translateY(0); opacity: 1;}
+            100% { transform: translateX(300px) translateY(-50px); opacity: 0; } /* Adjust trajectory and distance */
+        }
+
+        .special-attack { /* Area of effect visual */
+            width: 0px; /* Start small, expand */
+            height: 0px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 0, 0.5); /* Yellow, semi-transparent */
+            opacity: 0.8;
+            animation: explodeArea 0.8s ease-out forwards;
+        }
+        @keyframes explodeArea {
+            0% { width: 0px; height: 0px; opacity: 0.5; }
+            100% { width: 200px; height: 200px; opacity: 0; } /* Expand and fade out */
+        }
+
+        /* Game Animations - (Existing cloudMove, waveMove, fishSwim, birdFly, walkAround, sunriseSun, collect - unchanged) */
+        @keyframes cloudMove { /* ... (cloudMove, waveMove, fishSwim, birdFly - unchanged) ... */
             0% {
                 transform: translateX(0);
             }
@@ -841,7 +853,7 @@
             }
         }
 
-        @keyframes waveMove { /* ... (unchanged waveMove animation) ... */
+        @keyframes waveMove {
             0%, 100% {
                 transform: translateY(0);
             }
@@ -850,7 +862,7 @@
             }
         }
 
-        @keyframes fishSwim { /* ... (unchanged fishSwim animation) ... */
+        @keyframes fishSwim {
             0% {
                 transform: translateX(0);
             }
@@ -862,7 +874,7 @@
             }
         }
 
-        @keyframes birdFly { /* ... (unchanged birdFly animation) ... */
+        @keyframes birdFly {
             0% {
                 transform: translateX(0);
             }
@@ -871,16 +883,16 @@
             }
         }
 
-        @keyframes walkAround { /* ... (slightly modified walkAround for smoother movement) ... */
-             0%, 100% { transform: translateX(0); } /* Pause at start and end for loop */
-             25% { transform: translateX(30px); }
-             50% { transform: translateX(60px); }
-             75% { transform: translateX(30px); }
-         }
+        @keyframes walkAround {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(30px); }
+            50% { transform: translateX(60px); }
+            75% { transform: translateX(30px); }
+        }
 
 
-        /* Time cycle styles (unchanged) ... */
-        body.morning { /* ... (unchanged time cycle styles) ... */
+        /* Time cycle styles (unchanged) */
+        body.morning { /* ... (time cycle styles - unchanged) ... */
             background-color: #e6f7ff;
         }
 
@@ -943,8 +955,7 @@
             background: linear-gradient(to bottom, #203a43, #0f2027);
         }
 
-        /* Morning animations (unchanged) */
-        @keyframes sunriseSun { /* ... (unchanged sunriseSun animation) ... */
+        @keyframes sunriseSun {
             0% {
                 top: 150px;
                 left: 20%;
@@ -959,8 +970,7 @@
             }
         }
 
-        /* Collection feedback (unchanged) */
-        .collected { /* ... (unchanged collected animation) ... */
+        .collected {
             animation: collect 1s forwards;
         }
 
@@ -974,6 +984,29 @@
                 opacity: 0;
             }
         }
+
+        /* New Animations from Design Doc */
+        @keyframes float { /* For alien drone */
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes pulseShield { /* For shielded alien */
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes teleport { /* For elite alien - using 'steps' timing function for sharper effect */
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0; transform: scale(0.8); } /* Scale down slightly to simulate teleporting out */
+        }
+
+        @keyframes bossCharge { /* For boss alien */
+            0% { transform: translateX(0); }
+            50% { transform: translateX(100px); } /* Charge animation will move horizontally */
+            100% { transform: translateX(0); }
+        }
+
 
     </style>
 </head>
@@ -1018,10 +1051,8 @@
             </div>
         </div>
 
-        <!-- New grass area -->
         <div class="grass-area"></div>
 
-        <!-- New cute house -->
         <div class="house">
             <div class="house-roof">
                 <div class="chimney"></div>
@@ -1038,43 +1069,34 @@
             </div>
         </div>
 
-        <!-- Animal pen and fence -->
         <div class="animal-pen"></div>
         <div class="fence fence1"></div>
         <div class="fence fence2"></div>
 
-        <!-- Farm animals -->
         <div class="animal cow"></div>
         <div class="animal goat"></div>
 
-        <!-- Pets -->
         <div class="dog"></div>
         <div class="cat"></div>
 
-        <!-- People (you and your girlfriend) -->
         <div class="person boy">
-            <!-- Player's Health Bar -->
             <div class="health-bar-container">
                 <div class="health-bar player-health"></div>
             </div>
         </div>
         <div class="person girl"></div>
 
-        <!-- Alien Enemy -->
-        <div class="alien-enemy level1">
-            <div class="health-bar-container">
-                <div class="health-bar enemy-health"></div>
-            </div>
+        <!-- Alien Enemy Container - Will hold different alien types -->
+        <div class="alien-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;">
+            <!-- Alien will be dynamically inserted here as child elements -->
         </div>
 
         <div class="inventory">
             <div class="inventory-title">Collection:</div>
             <div class="inventory-items">
-                <div class="inventory-item">🐚</div>
-                <div class="inventory-item">🐟</div>
-                <div class="inventory-item">🍃</div>
-                <div class="inventory-item">🥛</div>
-                <div class="inventory-item">🦴</div>
+                <div class="inventory-item">🐚 0</div> <div class="shell-count"></div>
+                <div class="inventory-item">🐟 0</div> <div class="fish-count"></div>
+                <div class="inventory-item">Upgrade Points: 0</div> <div class="upgrade-points"></div>
             </div>
         </div>
 
@@ -1084,13 +1106,12 @@
         </div>
 
         <div class="message-box">
-            <div class="message-text">Welcome to Serene Shores: Alien Defense! Aliens are attacking your peaceful home. Defend it! Use arrow keys to move and spacebar to attack.</div>
-            <div class="message-options">
-                <button class="message-option" onclick="closeMessage()">Okay, I'm ready!</button>
+            <div class="message-text" id="gameMessageText">Welcome to Coastal Defense! Protect your home from alien invaders. Collect resources, upgrade your weapons, and survive the waves!</div>
+            <div class="message-options" id="gameMessageOptions">
+                <button class="message-option" onclick="startGame()">Start Game</button>
             </div>
         </div>
 
-        <!-- Game Over Message -->
         <div class="game-over-message" id="gameOverMessage">
             <h2>Game Over!</h2>
             <p id="gameOverText">Aliens have taken over Serene Shores!</p>
@@ -1104,51 +1125,252 @@
         <button class="button" onclick="changeTime('afternoon')">Afternoon</button>
         <button class="button" onclick="changeTime('evening')">Evening</button>
         <button class="button" onclick="changeTime('night')">Night</button>
+        <button class="button" onclick="performAttack('melee')">Melee Attack</button>
+        <button class="button" onclick="performAttack('ranged')">Ranged Attack</button>
+        <button class="button" onclick="performAttack('special')">Special Attack</button>
+        <button class="button" onclick="showUpgrades()">Upgrades</button>
     </div>
 
     <script>
         /* --- Game Variables and Setup --- */
         let player = document.querySelector('.boy');
         let playerHealthBar = document.querySelector('.player-health');
-        let enemy = document.querySelector('.alien-enemy');
-        let enemyHealthBar = document.querySelector('.enemy-health');
-        let grassArea = document.querySelector('.grass-area'); // "Home" to defend
+        let alienContainer = document.querySelector('.alien-container'); // Container for aliens
         let gameOverMessageElement = document.getElementById('gameOverMessage');
         let gameOverTextElement = document.getElementById('gameOverText');
+        let gameMessageTextElement = document.getElementById('gameMessageText');
+        let gameMessageOptionsElement = document.getElementById('gameMessageOptions');
+        let grassArea = document.querySelector('.grass-area');
 
-        let playerSpeed = 5; // Player movement speed
-        let enemySpeed = 1;   // Enemy movement speed
+        // Resource counters in inventory display
+        let shellCountDisplay = document.querySelector('.inventory-item:nth-child(1)'); // Adjust selector if needed if inventory changes.
+        let fishCountDisplay = document.querySelector('.inventory-item:nth-child(2)');
+        let upgradePointsDisplay = document.querySelector('.inventory-item:nth-child(3)');
+
+        let playerSpeed = 5;
         let playerHealth = 100;
-        let enemyHealth = 100;
-        let enemyLevel = 1;       // Starting enemy level
+        let playerAttackDamage = { melee: 20, ranged: 15, special: 30 }; // Base damages, can be upgraded
+
+        let gameActive = false;
         let isGameOver = false;
+        let currentWave = 0;
+        let shells = 0;
+        let fishes = 0;
+        let upgradePoints = 0; // Points earned for wave clears or resource collection to spend on upgrades
 
-        let enemyAttackInterval;   // For enemy attack timing
-        let enemyMoveInterval;     // For enemy movement timing
-        let gameActive = false;    // Track if the game is actively running
+        let playerAttackHistory = []; // For basic AI learning
+        let activeAliens = [];      // Array to manage multiple aliens, if needed. Currently handling one at a time in this example, but expandable.
+        let waveConfig = [ // Configure waves - more types and numbers of aliens as waves progress
+            { waveNumber: 1, enemyType: 'drone', enemyCount: 1 },
+            { waveNumber: 2, enemyType: 'drone', enemyCount: 2 },
+            { waveNumber: 3, enemyType: 'shielded', enemyCount: 1 },
+            { waveNumber: 4, enemyType: 'drone', enemyCount: 2, enemyType2: 'shielded', enemyCount2: 1 }, // Mixed wave
+            { waveNumber: 5, enemyType: 'elite', enemyCount: 1 } ,
+            { waveNumber: 6, enemyType: 'elite', enemyCount: 2 },
+            { waveNumber: 7, enemyType: 'boss', enemyCount: 1 },
+        ];
+        let currentWaveIndex = 0; // Start at wave config index 0.
 
-        // Movement and attack states
-        let isPlayerAttacking = false;
-        let isEnemyAttacking = false;
 
-        /* --- Helper Functions for Collision and Distance --- */
-        function isColliding(element1, element2) {
-            const rect1 = element1.getBoundingClientRect();
-            const rect2 = element2.getBoundingClientRect();
-            return !(rect1.right < rect2.left || rect1.left > rect2.right || rect1.bottom < rect2.top || rect1.top > rect2.bottom);
+        /* --- Game Objects and Classes --- */
+        class Alien {
+            constructor(type) {
+                this.type = type;
+                this.health = this.getInitialHealth(type);
+                this.speed = this.getInitialSpeed(type); // Set different speeds for different types
+                this.damage = this.getInitialDamage(type); // Damage amount they deal
+                this.element = this.createAlienElement(type); // DOM element representing the alien
+                this.isAttacking = false;
+                this.attackInterval = null;
+                this.moveInterval = null;
+                this.attackPattern = []; // Learned patterns from player
+
+                alienContainer.appendChild(this.element); // Add to scene
+                activeAliens.push(this); // Add to active aliens array
+            }
+
+            getInitialHealth(type) {
+                switch (type) {
+                    case 'drone': return 50;
+                    case 'shielded': return 80;
+                    case 'elite': return 120;
+                    case 'boss': return 200;
+                    default: return 100;
+                }
+            }
+
+            getInitialSpeed(type) { // Define speed per type
+                switch (type) {
+                    case 'drone': return 0.8; // Slower drones
+                    case 'shielded': return 0.6; // Shielded even slower maybe
+                    case 'elite': return 1.2;  // Elites faster
+                    case 'boss': return 0.9;   // Boss a bit slower than elite but tougher
+                    default: return 1;
+                }
+            }
+             getInitialDamage(type) {
+                switch (type) {
+                    case 'drone': return 10;
+                    case 'shielded': return 15;
+                    case 'elite': return 25;
+                    case 'boss': return 35;
+                    default: return 15;
+                }
+            }
+
+            createAlienElement(type) {
+                const alienDiv = document.createElement('div');
+                alienDiv.classList.add('alien', `alien-${type}`); // e.g., alien alien-drone
+
+                const healthBarContainer = document.createElement('div');
+                healthBarContainer.classList.add('health-bar-container');
+                const healthBar = document.createElement('div');
+                healthBar.classList.add('health-bar', 'enemy-health'); // Re-using enemy-health style
+                healthBarContainer.appendChild(healthBar);
+                alienDiv.appendChild(healthBarContainer);
+
+                alienDiv.style.left = '75%'; // Initial spawn position - can vary this for different alien waves.
+                return alienDiv;
+            }
+
+            startAI() {
+                this.moveInterval = setInterval(() => this.moveTowardsPlayer(), 150);
+                this.attackInterval = setInterval(() => {
+                    if (!this.isAttacking && gameActive && distanceBetweenElements(player, this.element) < 120) { // Similar range check
+                        this.attackPlayer();
+                    }
+                }, 1500); // Attack every 1.5 seconds
+            }
+
+            stopAI() {
+                clearInterval(this.moveInterval);
+                clearInterval(this.attackInterval);
+            }
+
+
+            moveTowardsPlayer() {
+                if (!gameActive || isGameOver || !this.element) { // Check element existence
+                    clearInterval(this.moveInterval); // Stop interval if no element
+                    return;
+                }
+                const playerRect = player.getBoundingClientRect();
+                const alienRect = this.element.getBoundingClientRect();
+                let dx = 0;
+
+                if (alienRect.left > playerRect.left) {
+                    dx = -this.speed; // Move left
+                } else if (alienRect.left < playerRect.left) {
+                    dx = this.speed;  // Move right
+                }
+
+                let newAlienLeft = parseFloat(this.element.style.left || getComputedStyle(this.element).left);
+                newAlienLeft += dx;
+                newAlienLeft = Math.max(0, Math.min(newAlienLeft, 95));
+                this.element.style.left = `${newAlienLeft}%`;
+
+                 if (isColliding(this.element, grassArea)) { // House damage check
+                    damageHouse(this.damage / 20 ); // Aliens cause house damage over time. Reduce damage as example for house vs player
+                }
+            }
+
+
+            attackPlayer() {
+                if (!this.isAttacking && gameActive && this.element && !isGameOver) { // Check element exists and game running
+                    this.isAttacking = true;
+                    this.element.classList.add('attacking'); // (If you want attack animation for aliens later - not CSS yet for enemy attacks in this version, but here for expansion)
+
+                    damagePlayer(this.damage); // Alien's damage value
+
+                    setTimeout(() => {
+                        this.element.classList.remove('attacking');
+                        this.isAttacking = false;
+                    }, 500); // Attack animation timing if we add one
+                }
+            }
+
+            takeDamage(damage) {
+                this.health -= damage;
+                if (this.health < 0) this.health = 0; // No negative health
+                this.updateHealthBar();
+
+                const healthBarElement = this.element.querySelector('.enemy-health');
+                if (healthBarElement) {
+                    healthBarElement.classList.add('damage'); // Damage color effect
+                    setTimeout(() => healthBarElement.classList.remove('damage'), 200);
+                }
+
+                if (this.health <= 0) {
+                    this.die();
+                }
+            }
+
+            updateHealthBar() {
+                const healthBarElement = this.element.querySelector('.enemy-health');
+                if (healthBarElement) {
+                    healthBarElement.style.width = `${(this.health / this.getInitialHealth(this.type)) * 100}%`;
+                     if (this.health <= this.getInitialHealth(this.type) * 0.25) { // 25% health, make bar red
+                        healthBarElement.style.backgroundColor = 'red';
+                    } else if (this.health <= this.getInitialHealth(this.type) * 0.5) { // 50% health, make bar orange
+                        healthBarElement.style.backgroundColor = 'orange';
+                    } else {
+                        healthBarElement.style.backgroundColor = 'green'; // > 50% health, green
+                    }
+                }
+            }
+
+
+            die() {
+                this.stopAI();
+                this.element.remove(); // Remove alien element from DOM
+                activeAliens = activeAliens.filter(alien => alien !== this); // Remove from active alien array
+
+                incrementUpgradePoints(1); // Award upgrade points on defeat
+
+                checkWaveClear();
+            }
+
+
+            adapt(attackType) { // Very basic adaptation
+                if (attackType === 'melee' && !this.attackPattern.includes('dodgeMelee')) {
+                    this.attackPattern.push('dodgeMelee'); // Alien "learns" to dodge melee after player uses it once.
+                    console.log(`${this.type} alien is adapting to melee attacks!`); // Basic logging
+                    // In a more complex system, adaptation might modify movement speed, attack type selection etc. This is just a placeholder for now.
+                }
+                // Expand on adaptation strategies here based on design document and game mechanics you want.
+            }
+
+            // Dodge logic (very basic example, needs more sophistication for true AI behavior)
+            tryDodge(attackType) {
+                if (attackType === 'melee' && this.attackPattern.includes('dodgeMelee') && Math.random() < 0.3) { // 30% chance to dodge if learned to dodge melee.  Probability based dodge - expand with more complex checks.
+                    // Visually indicate dodge, maybe a quick sidestep animation (CSS class for dodge). For now, console log.
+                    console.log(`${this.type} alien dodged melee!`);
+                    return true; // Dodged successfully
+                }
+                return false; // Did not dodge (or not supposed to dodge this type of attack)
+            }
+
+
+        } // End Alien Class
+
+        /* --- Player and House Objects (Basic placeholders for now) --- */
+        let houseHealth = 100; // Initialize house health. Could have visual representation for house damage in the future
+        function damageHouse(damageAmount) {
+            if (isGameOver) return;
+
+            houseHealth -= damageAmount;
+            if (houseHealth < 0) houseHealth = 0;
+            // Optionally update house visual if you want to show damage
+
+            if (houseHealth <= 0) {
+                homeDefeated();
+            } else {
+                showMessageWithText("Your house is under attack!", ['Defend!']); // House damage warning message
+            }
         }
 
-        function distanceBetweenElements(element1, element2) {
-            const rect1 = element1.getBoundingClientRect();
-            const rect2 = element2.getBoundingClientRect();
-            const distX = rect1.left + rect1.width / 2 - (rect2.left + rect2.width / 2);
-            const distY = rect1.top + rect1.height / 2 - (rect2.top + rect2.height / 2);
-            return Math.sqrt(distX * distX + distY * distY);
-        }
 
-
-        /* --- Game Logic Functions --- */
-        function updateTimeDisplay() {
+        /* --- Game Logic Functions (Modified) --- */
+        function updateTimeDisplay() { /* ... (unchanged updateTimeDisplay, changeTime) ... */
             document.querySelector('.time-value').textContent = document.body.className.charAt(0).toUpperCase() + document.body.className.slice(1);
         }
 
@@ -1157,55 +1379,97 @@
             updateTimeDisplay();
         }
 
-        function showMessage() {
+        function showMessage(messageText, options) { // Modified showMessage to accept text and options as parameters
+            gameMessageTextElement.textContent = messageText;
+            gameMessageOptionsElement.innerHTML = ''; // Clear old buttons
+
+            if (options && options.length > 0) {
+                options.forEach(option => {
+                    const button = document.createElement('button');
+                    button.className = 'message-option';
+                    button.textContent = option.text;
+                    button.onclick = option.action;
+                    gameMessageOptionsElement.appendChild(button);
+                });
+            } else { // Default "Close" if no options given
+                 const defaultButton = document.createElement('button');
+                    defaultButton.className = 'message-option';
+                    defaultButton.textContent = "Close";
+                    defaultButton.onclick = closeMessage;
+                    gameMessageOptionsElement.appendChild(defaultButton);
+            }
+
             document.querySelector('.message-box').style.display = 'block';
         }
 
-        function closeMessage() {
+
+        function closeMessage() { /* ... (unchanged closeMessage) ... */
             document.querySelector('.message-box').style.display = 'none';
-            if (!gameActive) { // Start game after closing initial message only if not already started
-                startGame();
+        }
+
+
+        function performAttack(attackType) {
+            if (!gameActive || isGameOver || !activeAliens[0]) return; // No attacks if game inactive, over, or no enemy. Currently handling one enemy at a time, activeAliens[0]
+
+            let currentAlien = activeAliens[0]; // For single enemy example
+
+             if (currentAlien.tryDodge(attackType)) { // Check if alien dodges *before* attacking
+                showMessageWithText(`${currentAlien.type} dodged your ${attackType} attack!`, ['Adapt!']); // Feedback to player
+                playerAttackHistory.push(attackType); // Still record attack history for next adaptation
+                return; // Exit attack function if dodged - attack does no damage.
+             }
+
+
+            playerAttackHistory.push(attackType); // Record attack used
+            currentAlien.adapt(attackType);      // Alien attempts to adapt *after* player's attack attempt
+
+            let damage = playerAttackDamage[attackType];
+            let visualClass;
+
+            switch (attackType) {
+                case 'melee': visualClass = 'melee-attack'; break;
+                case 'ranged': visualClass = 'ranged-attack'; break;
+                case 'special': visualClass = 'special-attack'; damage = playerAttackDamage.special; break; // Special might have separate damage
+                default: return;
+            }
+
+            const attackVisual = document.createElement('div');
+            attackVisual.classList.add('attack-visual', visualClass);
+            player.appendChild(attackVisual); // Attach to player for positioning
+
+            // Ranged attacks move towards alien, others are player-centered visuals
+            if (attackType === 'ranged') {
+                 const projectileAnimation = attackVisual.animate([ // Example direct animation manipulation. Alternative is to define keyframes and apply as CSS class animation.
+                    { transform: 'translateX(0) translateY(0)', opacity: 1 }, // Start point
+                    { transform: `translateX(${currentAlien.element.offsetLeft - player.offsetLeft + (currentAlien.element.offsetWidth /2) - (player.offsetWidth/2)}px) translateY(${currentAlien.element.offsetTop - player.offsetTop + (currentAlien.element.offsetHeight /2) - (player.offsetHeight/2) + 30 }px)`, opacity: 1 },  // Move towards alien element - adjust offset
+                    { transform: `translateX(${currentAlien.element.offsetLeft - player.offsetLeft + (currentAlien.element.offsetWidth /2) - (player.offsetWidth/2)}px) translateY(${currentAlien.element.offsetTop - player.offsetTop + (currentAlien.element.offsetHeight /2) - (player.offsetHeight/2) + 30}px)`, opacity: 0 },  // Fade out at target.  Use same transform as last step so only opacity fades at target location.
+                 ], {
+                    duration: 700, // projectile duration in ms
+                    easing: 'linear',
+                    fill: 'forwards' // Keep final state after animation
+                });
+
+                projectileAnimation.onfinish = () => {
+                    attackVisual.remove();
+                     currentAlien.takeDamage(damage); // Apply damage *after* animation completes.
+                };
+
+            } else { // Melee & Special
+                setTimeout(() => { // Timing to allow animation to play
+                    attackVisual.remove();
+                    currentAlien.takeDamage(damage); // Apply damage after animation
+                }, 500); // Match animation duration
             }
         }
 
 
-        /* --- Player and Enemy Actions --- */
-        function playerAttack() {
-            if (!isPlayerAttacking && gameActive && !isGameOver) {
-                isPlayerAttacking = true;
-                player.classList.add('attacking'); // Trigger attack animation
-
-                if (isColliding(player, enemy)) {
-                    damageEnemy(20); // Deal damage on hit
-                }
-
-                setTimeout(() => {
-                    player.classList.remove('attacking'); // End attack animation
-                    isPlayerAttacking = false;
-                }, 500); // Animation duration
-            }
-        }
-
-        function damageEnemy(damage) {
-            enemyHealth -= damage;
-            if (enemyHealth < 0) enemyHealth = 0; // Prevent negative health
-            updateHealthBar(enemyHealthBar, enemyHealth);
-
-            enemyHealthBar.classList.add('damage'); // Briefly change color when damaged
-            setTimeout(() => enemyHealthBar.classList.remove('damage'), 200);
-
-            if (enemyHealth <= 0) {
-                enemyDefeated();
-            }
-        }
-
-        function damagePlayer(damage) {
-            if (!isGameOver && gameActive) { // Only damage player if game is active and not over
+        function damagePlayer(damage) { /* ... (unchanged damagePlayer) ... */
+            if (!isGameOver && gameActive) {
                 playerHealth -= damage;
-                if (playerHealth < 0) playerHealth = 0; // Prevent negative health
+                if (playerHealth < 0) playerHealth = 0;
                 updateHealthBar(playerHealthBar, playerHealth);
 
-                playerHealthBar.classList.add('damage'); // Visual feedback for player damage
+                playerHealthBar.classList.add('damage');
                 setTimeout(() => playerHealthBar.classList.remove('damage'), 200);
 
                 if (playerHealth <= 0) {
@@ -1214,247 +1478,86 @@
             }
         }
 
-
-        function enemyAttack() {
-            if (!isEnemyAttacking && gameActive && !isGameOver) {
-                isEnemyAttacking = true;
-                enemy.classList.add('attacking'); // Trigger enemy attack animation
-
-                if (distanceBetweenElements(player, enemy) < 100) { // Attack if player is near enough - simplified range
-                    damagePlayer(10); // Enemy damage
-                }
-
-                setTimeout(() => {
-                    enemy.classList.remove('attacking');
-                    isEnemyAttacking = false;
-                }, 500);
-            }
-        }
-
-
-        /* --- Game State and Enemy AI --- */
-        function updateHealthBar(healthBarElement, currentHealth) {
+        function updateHealthBar(healthBarElement, currentHealth) { /* ... (unchanged updateHealthBar) ... */
             healthBarElement.style.width = `${currentHealth}%`;
-            if (currentHealth <= 25) {
-                healthBarElement.style.backgroundColor = 'red'; // Low health indicator
+             if (currentHealth <= 25) {
+                healthBarElement.style.backgroundColor = 'red';
             } else if (currentHealth <= 50) {
-                healthBarElement.style.backgroundColor = 'orange'; // Medium health
+                healthBarElement.style.backgroundColor = 'orange';
             } else {
-                healthBarElement.style.backgroundColor = 'green'; // Healthy
+                healthBarElement.style.backgroundColor = 'green';
             }
         }
 
-        function enemyMove() {
-            if (!gameActive || isGameOver) return; // Stop moving if game not active or over
 
-            const playerRect = player.getBoundingClientRect();
-            const enemyRect = enemy.getBoundingClientRect();
-            let dx = 0;
-
-            if (enemyRect.left > playerRect.left) {
-                dx = -enemySpeed; // Move left towards player
-            } else if (enemyRect.left < playerRect.left) {
-                dx = enemySpeed;  // Move right towards player
+        function spawnWave(waveData) {
+            if (!waveData) { // If no more waves defined, you've won.
+                gameWon();
+                return;
             }
 
-            // Simplified enemy AI - prioritize moving towards player horizontally and also towards 'home' area (grassArea)
-            let newEnemyLeft = parseFloat(enemy.style.left || getComputedStyle(enemy).left); // Handle initial 'auto' value
-            newEnemyLeft += dx;
+            currentWave = waveData.waveNumber;
+            showMessageWithText(`Wave ${currentWave} incoming! Prepare for battle!`, [{text: 'Get Ready!', action: closeMessage}]);
 
-            // Clamp enemy position to within scene boundaries (optional but good for keeping in view)
-            newEnemyLeft = Math.max(0, Math.min(newEnemyLeft, 95)); // Prevent enemy from going off screen
+            if (waveData.enemyType) { // Spawn first enemy type
+                 const newAlien = new Alien(waveData.enemyType);
+                 newAlien.startAI();
+            }
+            if (waveData.enemyType2) { // Spawn second enemy type if defined in wave config.  Expand this if needed for more types per wave.
+                const newAlien2 = new Alien(waveData.enemyType2);
+                newAlien2.startAI();
+            }
 
-            enemy.style.left = `${newEnemyLeft}%`;
         }
 
+        function checkWaveClear() {
+            if (activeAliens.length === 0) { // Wave cleared when no active aliens left
+                incrementUpgradePoints(5); // Award bonus points for wave clear
+                updateInventoryDisplay(); // Update point count display
 
-        function spawnEnemy() {
-            if (isGameOver) return; // Don't spawn if game over
-
-            enemyHealth = 100 + (enemyLevel - 1) * 20; // Increase enemy health with level
-            updateHealthBar(enemyHealthBar, enemyHealth);
-            enemy.classList.remove('level1', 'level2', 'level3', 'equipped'); // Reset levels
-            if (enemyLevel === 2) {
-                enemy.classList.add('level2'); // Example level up
-            } else if (enemyLevel >= 3) {
-                enemy.classList.add('level3'); // Even stronger level
-                if (enemyLevel % 2 === 0) { // Example: Every other level, "equip"
-                   enemy.classList.add('equipped'); // Visual indication of being equipped
+                currentWaveIndex++;
+                if (currentWaveIndex < waveConfig.length) {
+                    setTimeout(() => spawnWave(waveConfig[currentWaveIndex]), 2000); // Delay next wave slightly
+                } else {
+                    gameWon(); // All waves complete, player wins
                 }
             }
-            enemy.style.left = '75%'; // Reset enemy position
-            enemy.style.display = 'block'; // Make sure enemy is visible
-        }
-
-        function enemyDefeated() {
-            enemyLevel++; // Increase level for next spawn - basic "AI learning" progression
-            enemy.style.display = 'none'; // Hide enemy visually
-            clearInterval(enemyAttackInterval); // Stop enemy attacks while despawned
-
-            showMessageWithText(`Alien defeated! Level ${enemyLevel} approaching! Get ready!`, ['Prepare', 'Strategize']); // Provide feedback, allow brief strategizing
-
-            // New message options based on enemy defeat, as example. Expand as needed.
-            const messageBox = document.querySelector('.message-box');
-            const optionsDiv = messageBox.querySelector('.message-options');
-            optionsDiv.innerHTML = ''; // Clear existing options
-
-            const prepareButton = document.createElement('button');
-            prepareButton.className = 'message-option';
-            prepareButton.textContent = 'Prepare';
-            prepareButton.onclick = () => {
-                closeMessage();
-                setTimeout(spawnEnemy, 2000); // Spawn next enemy after a delay
-                startEnemyAI(); // Restart enemy AI intervals when next enemy spawns
-            };
-
-            const strategizeButton = document.createElement('button');
-            strategizeButton.className = 'message-option';
-            strategizeButton.textContent = 'Strategize';
-            strategizeButton.onclick = () => {
-                showMessageWithText("Think about enemy attack patterns, improve your positioning!", ['Got it!']); // Give strategic tips
-                const strategicOptionsDiv = messageBox.querySelector('.message-options');
-                strategicOptionsDiv.innerHTML = '';
-                const gotItButton = document.createElement('button');
-                gotItButton.className = 'message-option';
-                gotItButton.textContent = 'Got it!';
-                gotItButton.onclick = () => {
-                    closeMessage();
-                    setTimeout(spawnEnemy, 2000); // Spawn after strategizing
-                    startEnemyAI(); // Restart enemy AI
-                };
-                strategicOptionsDiv.appendChild(gotItButton);
-            };
-
-
-            optionsDiv.appendChild(prepareButton);
-            optionsDiv.appendChild(strategizeButton);
-
-
-        }
-
-        function showMessageWithText(text, optionsTexts) {
-            const messageBox = document.querySelector('.message-box');
-            const messageTextElement = messageBox.querySelector('.message-text');
-            const optionsDiv = messageBox.querySelector('.message-options');
-
-            messageTextElement.textContent = text;
-            optionsDiv.innerHTML = ''; // Clear existing options
-
-            optionsTexts.forEach(optionText => {
-                const optionButton = document.createElement('button');
-                optionButton.className = 'message-option';
-                optionButton.textContent = optionText;
-                optionButton.onclick = closeMessage; // Default close action for now - customize as needed
-                optionsDiv.appendChild(optionButton);
-            });
-
-            messageBox.style.display = 'block';
         }
 
 
-        function playerDefeated() {
-            isGameOver = true;
-            gameActive = false; // Stop game updates
-            clearInterval(enemyAttackInterval); // Stop enemy actions
-            clearInterval(enemyMoveInterval);
-            gameOverTextElement.textContent = "Aliens have breached your defenses!";
-            gameOverMessageElement.style.display = 'block'; // Show game over message
+        function enemyDefeated() { // Now called directly from Alien.die()
+            // (Functionality now handled in Alien.die() method.)
         }
 
-        function homeDefeated() {
-            isGameOver = true;
-            gameActive = false;
-            clearInterval(enemyAttackInterval);
-            clearInterval(enemyMoveInterval);
-            gameOverTextElement.textContent = "Your home is destroyed!";
-            gameOverMessageElement.style.display = 'block';
+        function incrementUpgradePoints(points) {
+            upgradePoints += points;
+            updateInventoryDisplay();
         }
 
-        function restartGame() {
-            isGameOver = false;
-            playerHealth = 100;
-            enemyHealth = 100;
-            enemyLevel = 1;
-            updateHealthBar(playerHealthBar, playerHealth);
-            updateHealthBar(enemyHealthBar, enemyHealth);
-            spawnEnemy(); // Spawn initial enemy for new game
-            enemy.style.display = 'block'; // Ensure enemy is visible at start
-            player.style.left = '40%';      // Reset player position
-            enemy.style.left = '75%';      // Reset enemy position
-            gameOverMessageElement.style.display = 'none';
-            startGame();  // Re-initiate game loops and intervals
-        }
-
-        function startGame() {
-            if (gameActive) return; // Prevent starting multiple times if already active
-
-            gameActive = true; // Mark game as active
-            spawnEnemy();  // Initial enemy spawn
-
-            enemyMoveInterval = setInterval(enemyMove, 150); // Enemy constantly tries to move
-            enemyAttackInterval = setInterval(() => { // Enemy tries to attack every X seconds
-                if (!isGameOver && gameActive && distanceBetweenElements(player, enemy) < 120) { // Only attack if game running, not over and in range. Adjusted range
-                    enemyAttack();
-                }
-            }, 1500); // Attack interval in milliseconds (adjust as needed)
-
-            // Start game loop for rendering, if you have more complex updates in future
-            gameLoop(); // Initiate game loop for future enhancements if needed.
-        }
-
-        function gameLoop() { // Example game loop function for more complex animation/updates in the future
-            if (!gameActive) return; // Stop loop when game is not active
-            // Here you can put any logic that needs to update each frame, if we had more dynamic elements beyond current CSS transitions.
-            requestAnimationFrame(gameLoop); // Continue loop on next frame
-        }
-
-        function startEnemyAI() {
-            if (enemyMoveInterval) clearInterval(enemyMoveInterval); // Clear existing intervals before starting new ones. Avoids multiple intervals running at once.
-            if (enemyAttackInterval) clearInterval(enemyAttackInterval);
-
-            enemyMoveInterval = setInterval(enemyMove, 150); // Restart enemy move
-            enemyAttackInterval = setInterval(() => { // Restart enemy attack interval
-                if (!isGameOver && gameActive && distanceBetweenElements(player, enemy) < 120) {
-                    enemyAttack();
-                }
-            }, 1500);
+        function updateInventoryDisplay() {
+            shellCountDisplay.textContent = `🐚 ${shells}`;
+            fishCountDisplay.textContent = `🐟 ${fishes}`;
+            upgradePointsDisplay.textContent = `Upgrade Points: ${upgradePoints}`;
         }
 
 
-        /* --- Event Listeners and Initialization --- */
-        document.addEventListener('keydown', function(event) {
-            if (!gameActive || isGameOver) return; // No controls if game isn't running or is over
-
-            let currentLeft = parseFloat(player.style.left || getComputedStyle(player).left); // Handle default 'auto' or initial number
-
-            switch (event.key) {
-                case 'ArrowLeft':
-                    currentLeft -= playerSpeed;
-                    break;
-                case 'ArrowRight':
-                    currentLeft += playerSpeed;
-                    break;
-                case ' ': // Spacebar for attack
-                    playerAttack();
-                    break;
+        function collectResource(resourceType) {
+            if (resourceType === 'shell') {
+                shells++;
+                showMessageWithText("You collected a shell! Use it to craft upgrades.", [{text: 'OK', action: closeMessage}]);
+            } else if (resourceType === 'fish') {
+                fishes++;
+                showMessageWithText("You caught a fish! Tasty and maybe useful.", [{text: 'Yum', action: closeMessage}]);
             }
+            updateInventoryDisplay();
+        }
 
-            // Keep player within bounds
-            currentLeft = Math.max(20, Math.min(currentLeft, 70)); // Example bounds based on your scene, adjust these
-            player.style.left = `${currentLeft}%`;
-
-
-            // Basic home "defense" check - very simplified. For demo purposes.
-            if (isColliding(enemy, grassArea)) { // Check for enemy at "home" area. Adjust "grassArea" selector if you use house instead.
-               // homeDefeated();  // If home is collinding - trigger home defeat, if you want to implement losing when home is attacked. Uncomment if you wish to implement home destruction as a lose condition.
-            }
-        });
-
-
-        // Make items collectible (still active but likely not the main game focus now)
+        // Modify collectible interactions to trigger collectResource()
         const collectibles = document.querySelectorAll('.shell, .fish');
         collectibles.forEach(item => {
             item.addEventListener('click', function() {
+                const resourceType = this.classList.contains('shell') ? 'shell' : 'fish'; // Determine type from class
+                collectResource(resourceType);
                 this.classList.add('collected');
                 setTimeout(() => {
                     this.style.display = 'none';
@@ -1462,18 +1565,153 @@
             });
         });
 
+
+        function playerDefeated() { /* ... (unchanged playerDefeated, homeDefeated, restartGame) ... */
+            isGameOver = true;
+            gameActive = false;
+            activeAliens.forEach(alien => alien.stopAI()); // Stop all alien AI
+
+            gameOverTextElement.textContent = "Aliens have breached your defenses!";
+            gameOverMessageElement.style.display = 'block';
+        }
+
+        function homeDefeated() {
+             isGameOver = true;
+             gameActive = false;
+             activeAliens.forEach(alien => alien.stopAI());
+             gameOverTextElement.textContent = "Your home is destroyed!";
+             gameOverMessageElement.style.display = 'block';
+         }
+
+
+        function gameWon() {
+            isGameOver = true;
+            gameActive = false;
+            activeAliens.forEach(alien => alien.stopAI()); // Stop all alien AI
+
+            gameOverTextElement.textContent = "You defended Serene Shores! Wave Complete!";
+            gameOverMessageElement.style.display = 'block';
+             // Optionally, give "Play Next Level" instead of "Play Again" if you want to add more levels/scenarios beyond waves.
+
+        }
+
+        function restartGame() {
+            isGameOver = false;
+            gameActive = true; // Set game active before calling startGame()
+            playerHealth = 100;
+            houseHealth = 100; // Reset house health too on restart
+            updateHealthBar(playerHealthBar, playerHealth);
+            shells = 0; fishes = 0; upgradePoints = 0; // Reset resources on restart.
+
+            updateInventoryDisplay();
+
+            alienContainer.innerHTML = ''; // Clear any existing aliens visually and in memory (important to clear up previous Alien instances properly).
+            activeAliens = []; // Clear the active aliens array.
+
+            currentWaveIndex = 0; // Reset wave to start at the beginning.
+            gameOverMessageElement.style.display = 'none';
+
+            startGame(); // Start game, which will trigger first wave.
+
+        }
+
+
+        function startGame() {
+            if (gameActive) return; // Prevent starting multiple times
+            gameActive = true; // Set gameActive at start of startGame
+
+             showMessageWithText("Wave 1 incoming! Prepare for battle!", [{text: 'Get Ready!', action: closeMessage}]); // Show initial wave message
+            setTimeout(() => spawnWave(waveConfig[currentWaveIndex]), 1000); // Spawn first wave slightly after message
+
+             // Set up any recurring game loops or intervals (like resource respawn etc. if adding those mechanics in the future)
+
+
+            updateInventoryDisplay(); // Initialize inventory counts display
+        }
+
+        function showUpgrades() {
+             if (upgradePoints > 0) { // Only show if there are points
+                showMessageWithText(`Upgrade Menu: Points: ${upgradePoints}. What do you want to upgrade?`, [
+                    { text: "Sword (+10 Melee Damage, 10pts)", action: () => upgradeWeapon('melee', 10) },
+                    { text: "Bow (+5 Ranged Damage, 8pts)", action: () => upgradeWeapon('ranged', 5) },
+                    { text: "Bomb (Radius++, 15pts)", action: () => upgradeSpecialAttack('radius') }, // Example - specific upgrade action
+                    { text: "Cancel", action: closeMessage} // Option to close upgrade menu.
+                ]);
+             } else {
+                showMessageWithText("Not enough Upgrade Points! Earn more by defeating waves.", [{text: 'OK', action: closeMessage}]);
+             }
+        }
+
+        function upgradeWeapon(weaponType, damageIncrease) {
+            const cost = (weaponType === 'melee') ? 10 : 8; // Example cost system - can scale by level, etc.
+
+            if (upgradePoints >= cost) {
+                upgradePoints -= cost;
+                playerAttackDamage[weaponType] += damageIncrease; // Increase player attack value
+                updateInventoryDisplay(); // Update point count display
+                showMessageWithText(`${weaponType.charAt(0).toUpperCase() + weaponType.slice(1)} upgraded! Increased damage by ${damageIncrease}.`, [{text: 'Continue', action: showUpgrades}]); // Reopen upgrade menu or just close? Reopen for multi-upgrades
+             } else {
+                showMessageWithText("Not enough Upgrade Points for this upgrade!", [{text: 'OK', action: showUpgrades}]); // Re-show menu
+             }
+        }
+         function upgradeSpecialAttack(upgradeType) { // Example special attack upgrade function
+             const cost = 15;
+
+            if (upgradePoints >= cost) {
+                upgradePoints -= cost;
+                // Example of upgrading some aspect of special attack visually or in effect - placeholder for now.
+                // Could modify the explosion animation duration, size, or even damage radius *mechanically* (beyond visual).
+
+                updateInventoryDisplay();
+                showMessageWithText(`Special Attack Radius increased! (Visual placeholder only for now, code update needed for real radius change).`, [{text: 'Continue', action: showUpgrades}]);
+            } else {
+                 showMessageWithText("Not enough Upgrade Points!", [{text: 'OK', action: showUpgrades}]);
+            }
+
+        }
+
+
+        /* --- Event Listeners and Initialization (Modified Keydown, Init Message) --- */
+        document.addEventListener('keydown', function(event) { /* ... (keydown - unchanged) ... */
+            if (!gameActive || isGameOver) return;
+
+            let currentLeft = parseFloat(player.style.left || getComputedStyle(player).left);
+
+            switch (event.key) {
+                case 'ArrowLeft':
+                case 'a': // Added WASD controls
+                    currentLeft -= playerSpeed;
+                    break;
+                case 'ArrowRight':
+                case 'd':
+                    currentLeft += playerSpeed;
+                    break;
+               // No attack control in keydown, using buttons now for attack type selection
+            }
+
+            currentLeft = Math.max(20, Math.min(currentLeft, 70));
+            player.style.left = `${currentLeft}%`;
+
+            if (isColliding(activeAliens[0]?.element, grassArea)) {  // Use optional chaining in case activeAliens[0] is null. Checks collision of first (and currently only) alien with grass area.
+              // homeDefeated();  // Home defeated condition optional
+            }
+
+        });
+
         // Boat interaction (unchanged)
-        document.querySelector('.boat').addEventListener('click', function() {
+        document.querySelector('.boat').addEventListener('click', function() { /* ... (boat click handler - unchanged) ... */
             this.style.left = '40%';
             setTimeout(() => {
                 this.style.left = '20%';
             }, 5000);
         });
 
-        // Initialize with welcome message and set up initial time
+
+        // Initial Welcome Message and setup at start
         window.onload = function() {
-            updateTimeDisplay(); // Ensure time is displayed on load.
-            setTimeout(showMessage, 1000);
+            updateTimeDisplay();
+            showMessage("Welcome to Coastal Defense! Protect your home from alien invaders. Collect resources, upgrade your weapons, and survive the waves!",
+             [{text: 'Start Game', action: startGame}]);
         };
 
     </script>
