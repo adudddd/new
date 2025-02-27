@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Coastal Defense</title>
-  <!-- Using a retro pixel font -->
+  <!-- Retro pixel font -->
   <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
   <style>
-    /* Reset and global styles */
+    /* Global reset */
     * {
       margin: 0;
       padding: 0;
@@ -16,1107 +16,171 @@
     body {
       font-family: 'Press Start 2P', cursive;
       background-color: #5c94fc;
-      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
       color: #fff;
     }
     /* Game Container */
-    #game-container {
+    #gameContainer {
       position: relative;
-      width: 100%;
-      height: 100vh;
-      background: url('images/mario-sky.png') no-repeat center center;
-      background-size: cover;
-    }
-    /* Game Area with a Mario-inspired background */
-    #game-area {
-      position: relative;
-      width: 100%;
-      height: 70vh;
-      background: url('images/mario-ground.png') repeat-x bottom;
+      width: 800px;
+      height: 600px;
+      background: linear-gradient(to bottom, #000033, #0066cc);
+      border: 4px solid #fff;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
       overflow: hidden;
     }
-    /* Ground (platform) */
-    #ground {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      height: 20%;
-      background: url('images/mario-ground-texture.png') repeat-x;
-      z-index: 5;
-    }
-    /* House styled like a castle */
-    #house {
-      position: absolute;
-      bottom: 20%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 150px;
-      height: 100px;
-      background: url('images/mario-castle.png') no-repeat center center;
-      background-size: contain;
-      z-index: 10;
-    }
-    /* Player using a Mario-style sprite */
+    /* Player styling: uses a sprite image if available, fallback to a white block */
     .player {
       position: absolute;
-      bottom: 20%;
-      left: 200px;
-      width: 40px;
-      height: 60px;
-      background: url('images/mario-player.png') no-repeat center center;
-      background-size: contain;
-      z-index: 20;
-    }
-    /* Alien enemy styling using sprites */
-    .alien {
-      position: absolute;
-      z-index: 15;
-      background-size: contain;
-      background-repeat: no-repeat;
-    }
-    .alien-drone {
-      width: 40px;
-      height: 40px;
-      background-image: url('images/enemy-drone.png');
-      animation: float 2s infinite;
-    }
-    .alien-shielded {
-      width: 60px;
-      height: 60px;
-      background-image: url('images/enemy-shielded.png');
-      animation: pulseShield 3s infinite;
-    }
-    .alien-elite {
-      width: 80px;
-      height: 80px;
-      background-image: url('images/enemy-elite.png');
-      animation: teleport 5s infinite;
-    }
-    .alien-boss {
-      width: 120px;
-      height: 120px;
-      background-image: url('images/enemy-boss.png');
-      animation: bossCharge 10s infinite;
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-    @keyframes pulseShield {
-      0%, 100% { opacity: 1; filter: drop-shadow(0 0 5px cyan); }
-      50% { opacity: 0.5; filter: drop-shadow(0 0 10px cyan); }
-    }
-    @keyframes teleport {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0; transform: scale(0.5); }
-    }
-    @keyframes bossCharge {
-      0% { transform: translateX(0); }
-      50% { transform: translateX(100px); }
-      100% { transform: translateX(0); }
-    }
-    /* Attack animations (kept simple but with retro color effects) */
-    .melee-attack {
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      background: url('images/melee-swing.png') no-repeat center center;
-      background-size: contain;
-      animation: meleeSwing 0.5s;
-      z-index: 25;
-    }
-    @keyframes meleeSwing {
-      0% { transform: rotate(0deg); }
-      50% { transform: rotate(90deg); }
-      100% { transform: rotate(0deg); }
-    }
-    .ranged-attack {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      background: url('images/fireball.png') no-repeat center center;
-      background-size: contain;
-      z-index: 25;
-    }
-    .special-attack {
-      position: absolute;
+      bottom: 20px;
+      left: 375px; /* centered horizontally */
       width: 50px;
       height: 50px;
-      background: url('images/special-attack.png') no-repeat center center;
-      background-size: contain;
-      animation: explode 1s;
-      z-index: 25;
+      background: url('player.png') no-repeat center/contain;
+      background-color: #fff;
     }
-    @keyframes explode {
-      0% { transform: scale(0); }
-      50% { transform: scale(1); }
-      100% { transform: scale(0); }
-    }
-    /* Resource styling */
-    .resource {
+    /* Bullet styling */
+    .bullet {
       position: absolute;
-      width: 20px;
-      height: 20px;
-      background-size: contain;
-      background-repeat: no-repeat;
-      z-index: 5;
+      width: 5px;
+      height: 15px;
+      background-color: yellow;
     }
-    .shell {
-      background-image: url('images/shell.png');
-    }
-    .fish {
-      background-image: url('images/fish.png');
-    }
-    /* Barrier and Turret styling */
-    .barrier {
+    /* Alien styling: uses a sprite image if available, fallback to a red block */
+    .alien {
       position: absolute;
-      width: 50px;
-      height: 30px;
-      background: url('images/barrier.png') no-repeat center center;
-      background-size: contain;
-      z-index: 12;
+      width: 40px;
+      height: 40px;
+      background: url('alien.png') no-repeat center/contain;
+      background-color: #ff0000;
     }
-    .turret {
+    /* Scoreboard */
+    #score {
       position: absolute;
-      width: 30px;
-      height: 30px;
-      background: url('images/turret.png') no-repeat center center;
-      background-size: contain;
-      z-index: 12;
+      top: 20px;
+      left: 20px;
+      font-size: 20px;
+      text-shadow: 2px 2px #000;
     }
-    /* UI Container styling with retro borders and a pixelated look */
-    #ui-container {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      height: 30vh;
-      background-color: rgba(0, 0, 0, 0.8);
-      border-top: 4px solid #fff;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-    }
-    #stats {
-      display: flex;
-      justify-content: space-around;
-      margin-bottom: 10px;
-      font-size: 12px;
-    }
-    .stat {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .bar {
-      width: 100px;
-      height: 20px;
-      background-color: #555;
-      margin-top: 5px;
-      border: 2px solid #fff;
-      position: relative;
-    }
-    .bar-fill {
-      height: 100%;
-      width: 100%;
-      background-color: #00FF00;
-    }
-    #health .bar-fill { background-color: #00FF00; }
-    #house-health .bar-fill { background-color: #0000FF; }
-    #resources .bar-fill { background-color: #FFA500; }
-    /* Controls styling */
+    /* Controls instructions overlay */
     #controls {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    button {
-      padding: 10px 15px;
-      background-color: #e63946;
-      color: #fff;
-      border: 2px solid #fff;
-      font-size: 10px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    button:hover {
-      background-color: #a8323a;
-    }
-    /* Upgrade panels */
-    #upgrades {
-      display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap;
-    }
-    .upgrade-section {
-      flex: 1;
-      margin: 5px;
-      min-width: 120px;
-      background-color: rgba(0, 0, 0, 0.7);
-      padding: 5px;
-      border: 2px solid #fff;
-    }
-    .upgrade-section h3 {
-      text-align: center;
-      margin-bottom: 5px;
-      font-size: 10px;
-    }
-    .upgrade-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-around;
-      gap: 5px;
-    }
-    .upgrade-buttons button {
-      width: 48%;
-      font-size: 8px;
-      padding: 5px;
-    }
-    /* Start and Game Over screens */
-    #start-screen, #game-over-screen {
       position: absolute;
-      top: 0;
-      left: 0;
+      bottom: 20px;
       width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.9);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 100;
       text-align: center;
-      padding: 20px;
-    }
-    #start-screen h1, #game-over-screen h1 {
-      font-size: 36px;
-      margin-bottom: 20px;
-    }
-    #start-screen p, #game-over-screen p {
       font-size: 12px;
-      margin-bottom: 20px;
-      max-width: 600px;
+      text-shadow: 1px 1px #000;
     }
-    #start-screen button, #game-over-screen button {
-      padding: 10px 20px;
-      font-size: 12px;
-      background-color: #1E90FF;
-      border: 2px solid #fff;
-      cursor: pointer;
-    }
-    #start-screen button:hover, #game-over-screen button:hover {
-      background-color: #0f74d1;
+    @media (max-width: 820px) {
+      #gameContainer {
+        width: 95vw;
+        height: 80vh;
+      }
     }
   </style>
 </head>
 <body>
-  <div id="game-container">
-    <div id="game-area">
-      <div id="ground"></div>
-      <div id="house"></div>
-      <div id="player" class="player"></div>
-    </div>
-    
-    <div id="ui-container">
-      <div id="stats">
-        <div id="health" class="stat">
-          <span>Health: <span id="health-value">100</span>/100</span>
-          <div class="bar">
-            <div class="bar-fill" style="width: 100%"></div>
-          </div>
-        </div>
-        <div id="house-health" class="stat">
-          <span>House: <span id="house-health-value">100</span>/100</span>
-          <div class="bar">
-            <div class="bar-fill" style="width: 100%"></div>
-          </div>
-        </div>
-        <div id="resources" class="stat">
-          <span>Resources: <span id="resources-value">0</span></span>
-          <div class="bar">
-            <div class="bar-fill" style="width: 0%"></div>
-          </div>
-        </div>
-        <div id="wave" class="stat">
-          <span>Wave: <span id="wave-value">0</span></span>
-        </div>
-      </div>
-      
-      <div id="message">Welcome to Coastal Defense!</div>
-      
-      <div id="controls">
-        <button id="melee-button">Melee (Q)</button>
-        <button id="ranged-button">Ranged (W)</button>
-        <button id="special-button">Special (E)</button>
-        <button id="build-barrier">Barrier (R)</button>
-        <button id="build-turret">Turret (T)</button>
-        <button id="repair">Repair (F)</button>
-      </div>
-      
-      <div id="upgrades">
-        <div class="upgrade-section">
-          <h3>Weapons</h3>
-          <div class="upgrade-buttons">
-            <button id="upgrade-melee">Sword (10)</button>
-            <button id="upgrade-ranged">Bow (15)</button>
-            <button id="upgrade-special">Bomb (20)</button>
-          </div>
-        </div>
-        <div class="upgrade-section">
-          <h3>Defenses</h3>
-          <div class="upgrade-buttons">
-            <button id="upgrade-barrier">Barriers (15)</button>
-            <button id="upgrade-turret">Turrets (20)</button>
-            <button id="upgrade-healing">Healing (25)</button>
-          </div>
-        </div>
-        <div class="upgrade-section">
-          <h3>House</h3>
-          <div class="upgrade-buttons">
-            <button id="upgrade-walls">Reinforce (20)</button>
-            <button id="upgrade-alarm">Alarm (15)</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <div id="start-screen">
-      <h1>Coastal Defense</h1>
-      <p>Protect your castle from alien invaders in a retro, Mario-inspired world!
-         Collect coins (resources), upgrade your weapons and defenses, and survive each wave.</p>
-      <p>
-        <strong>Controls:</strong><br>
-        ←/→: Move&nbsp;&nbsp;|&nbsp;&nbsp;
-        ↑/↓: Adjust Aim (between -45° and 45°)<br>
-        Q: Melee&nbsp;&nbsp;|&nbsp;&nbsp;
-        W: Ranged&nbsp;&nbsp;|&nbsp;&nbsp;
-        E: Special<br>
-        R: Build Barrier&nbsp;&nbsp;|&nbsp;&nbsp;
-        T: Build Turret&nbsp;&nbsp;|&nbsp;&nbsp;
-        F: Repair House
-      </p>
-      <button id="start-button">Start Game</button>
-    </div>
-    
-    <div id="game-over-screen" style="display: none;">
-      <h1>Game Over</h1>
-      <p>The aliens have overrun your castle. Will you try again?</p>
-      <button id="restart-button">Restart Game</button>
-    </div>
+  <div id="gameContainer">
+    <div id="score">Score: 0</div>
+    <div class="player"></div>
+    <div id="controls">← → to move | SPACE to shoot</div>
   </div>
 
   <script>
-    // Global aiming angle (in degrees; 0 = horizontal)
-    let aimAngle = 0;
+    const gameContainer = document.getElementById('gameContainer');
+    const player = document.querySelector('.player');
+    const scoreElement = document.getElementById('score');
+    let score = 0;
+    let playerX = 375; // initial horizontal position for the player
+    const containerWidth = gameContainer.clientWidth;
 
-    // Game state
-    const game = {
-      isRunning: false,
-      wave: 0,
-      player: {
-        health: 100,
-        maxHealth: 100,
-        x: 200,
-        y: 0,
-        speed: 5,
-        meleeDamage: 20,
-        rangedDamage: 15,
-        specialDamage: 30,
-        meleeRange: 50,
-        rangedRange: 300,
-        specialRange: 100,
-        meleeCooldown: 0,
-        rangedCooldown: 0,
-        specialCooldown: 0
-      },
-      house: {
-        health: 100,
-        maxHealth: 100,
-        repairAmount: 20,
-        repairCost: 5,
-        reinforcedWalls: false,
-        alarmSystem: false
-      },
-      resourceCount: 0,
-      maxResources: 100,
-      resourceTypes: ['shell', 'fish'],
-      resourceObjects: [],
-      defenses: {
-        barriers: [],
-        turrets: [],
-        barrierCost: 5,
-        turretCost: 10,
-        barrierHealth: 50,
-        turretDamage: 10,
-        turretRange: 200,
-        turretFireRate: 2000
-      },
-      upgrades: {
-        meleeLevel: 1,
-        rangedLevel: 1,
-        specialLevel: 1,
-        barrierLevel: 1,
-        turretLevel: 1,
-        healingLevel: 0,
-        wallsLevel: 1,
-        alarmLevel: 0,
-        meleeCost: 10,
-        rangedCost: 15,
-        specialCost: 20,
-        barrierCost: 15,
-        turretCost: 20,
-        healingCost: 25,
-        wallsCost: 20,
-        alarmCost: 15
-      },
-      aliens: [],
-      alienTypes: ['drone', 'shielded', 'elite', 'boss'],
-      alienSpawnRate: 3000,
-      alienSpawnTimer: 0,
-      resourceSpawnRate: 5000,
-      resourceSpawnTimer: 0,
-      lastTime: 0,
-      keys: {
-        ArrowLeft: false,
-        ArrowRight: false,
-        KeyA: false,
-        KeyD: false,
-        KeyW: false,
-        KeyS: false,
-        KeyQ: false,
-        KeyE: false,
-        KeyR: false,
-        KeyT: false,
-        KeyF: false
-      }
-    };
-
-    // DOM elements
-    const gameArea = document.getElementById('game-area');
-    const playerEl = document.getElementById('player');
-    const houseEl = document.getElementById('house');
-    const healthValue = document.getElementById('health-value');
-    const healthBar = document.getElementById('health').querySelector('.bar-fill');
-    const houseHealthValue = document.getElementById('house-health-value');
-    const houseHealthBar = document.getElementById('house-health').querySelector('.bar-fill');
-    const resourcesValue = document.getElementById('resources-value');
-    const resourcesBar = document.getElementById('resources').querySelector('.bar-fill');
-    const waveValue = document.getElementById('wave-value');
-    const message = document.getElementById('message');
-    const startScreen = document.getElementById('start-screen');
-    const gameOverScreen = document.getElementById('game-over-screen');
-    const startButton = document.getElementById('start-button');
-    const restartButton = document.getElementById('restart-button');
-
-    // Buttons
-    const meleeButton = document.getElementById('melee-button');
-    const rangedButton = document.getElementById('ranged-button');
-    const specialButton = document.getElementById('special-button');
-    const buildBarrierButton = document.getElementById('build-barrier');
-    const buildTurretButton = document.getElementById('build-turret');
-    const repairButton = document.getElementById('repair');
-    const upgradeMeleeButton = document.getElementById('upgrade-melee');
-    const upgradeRangedButton = document.getElementById('upgrade-ranged');
-    const upgradeSpecialButton = document.getElementById('upgrade-special');
-    const upgradeBarrierButton = document.getElementById('upgrade-barrier');
-    const upgradeTurretButton = document.getElementById('upgrade-turret');
-    const upgradeHealingButton = document.getElementById('upgrade-healing');
-    const upgradeWallsButton = document.getElementById('upgrade-walls');
-    const upgradeAlarmButton = document.getElementById('upgrade-alarm');
-
-    // Game dimensions
-    const gameWidth = gameArea.clientWidth;
-    const gameHeight = gameArea.clientHeight;
-    const groundHeight = gameArea.clientHeight * 0.2;
-
-    // Set player's initial position
-    playerEl.style.bottom = `${groundHeight}px`;
-
-    // Classes
-    class Alien {
-      constructor(type, x, y) {
-        this.type = type;
-        this.x = x;
-        this.y = y;
-        this.width = this.getWidth();
-        this.height = this.getHeight();
-        this.health = this.getHealth();
-        this.speed = this.getSpeed();
-        this.damage = this.getDamage();
-        this.attackRange = this.getAttackRange();
-        this.attackRate = this.getAttackRate();
-        this.attackTimer = 0;
-        this.attackPattern = [];
-        this.element = document.createElement('div');
-        this.element.className = `alien alien-${type}`;
-        this.element.style.left = `${x}px`;
-        this.element.style.bottom = `${y + groundHeight}px`;
-        gameArea.appendChild(this.element);
-      }
-      getWidth() {
-        switch (this.type) {
-          case 'drone': return 40;
-          case 'shielded': return 60;
-          case 'elite': return 80;
-          case 'boss': return 120;
-          default: return 40;
-        }
-      }
-      getHeight() {
-        return this.getWidth();
-      }
-      getHealth() {
-        let waveFactor = game.wave > 0 ? game.wave : 1;
-        switch (this.type) {
-          case 'drone': return 30 * waveFactor;
-          case 'shielded': return 50 * waveFactor;
-          case 'elite': return 80 * waveFactor;
-          case 'boss': return 150 * waveFactor;
-          default: return 30 * waveFactor;
-        }
-      }
-      getSpeed() {
-        switch (this.type) {
-          case 'drone': return 1.5;
-          case 'shielded': return 1;
-          case 'elite': return 2;
-          case 'boss': return 0.7;
-          default: return 1.5;
-        }
-      }
-      getDamage() {
-        switch (this.type) {
-          case 'drone': return 5;
-          case 'shielded': return 10;
-          case 'elite': return 15;
-          case 'boss': return 25;
-          default: return 5;
-        }
-      }
-      getAttackRange() {
-        switch (this.type) {
-          case 'drone': return 20;
-          case 'shielded': return 30;
-          case 'elite': return 50;
-          case 'boss': return 70;
-          default: return 20;
-        }
-      }
-      getAttackRate() {
-        switch (this.type) {
-          case 'drone': return 2000;
-          case 'shielded': return 3000;
-          case 'elite': return 1500;
-          case 'boss': return 4000;
-          default: return 2000;
-        }
-      }
-      update(deltaTime) {
-        const houseX = gameWidth / 2;
-        const dx = houseX - this.x;
-        const distanceToHouse = Math.abs(dx);
-        let nearBarrier = false;
-        game.defenses.barriers.forEach(barrier => {
-          const barrierX = barrier.x;
-          const distance = Math.abs(barrierX - this.x);
-          if (distance < 50 && barrier.health > 0) {
-            nearBarrier = true;
-            if (this.attackTimer <= 0) {
-              barrier.health -= this.damage;
-              this.attackTimer = this.attackRate;
-              if (barrier.health <= 0) {
-                barrier.element.remove();
-              }
-            }
-          }
-        });
-        if (!nearBarrier) {
-          if (distanceToHouse > this.attackRange) {
-            this.x += Math.sign(dx) * this.speed;
-            this.element.style.left = `${this.x}px`;
-          } else {
-            if (this.attackTimer <= 0) {
-              game.house.health -= this.damage;
-              houseHealthValue.textContent = game.house.health;
-              houseHealthBar.style.width = `${(game.house.health / game.house.maxHealth) * 100}%`;
-              this.attackTimer = this.attackRate;
-              if (game.house.health <= 0) {
-                gameOver();
-              }
-            }
-          }
-        }
-        const playerX = game.player.x;
-        const distanceToPlayer = Math.abs(playerX - this.x);
-        if (distanceToPlayer < this.attackRange) {
-          if (this.attackTimer <= 0) {
-            game.player.health -= this.damage;
-            healthValue.textContent = game.player.health;
-            healthBar.style.width = `${(game.player.health / game.player.maxHealth) * 100}%`;
-            this.attackTimer = this.attackRate;
-            if (game.player.health <= 0) {
-              gameOver();
-            }
-          }
-        }
-        if (this.attackTimer > 0) {
-          this.attackTimer -= deltaTime;
-        }
-      }
-      takeDamage(amount, attackType) {
-        if (!this.attackPattern.includes(attackType)) {
-          this.attackPattern.push(attackType);
-          this.health -= amount;
-        } else {
-          let damageReduction = 0;
-          switch (this.type) {
-            case 'drone': damageReduction = 0.1; break;
-            case 'shielded': damageReduction = attackType === 'ranged' ? 0.5 : 0.2; break;
-            case 'elite': damageReduction = 0.3; break;
-            case 'boss': damageReduction = 0.4; break;
-          }
-          this.health -= amount * (1 - damageReduction);
-        }
-        if (this.health <= 0) {
-          this.element.remove();
-          game.resourceCount += this.type === 'boss' ? 20 : this.type === 'elite' ? 10 : this.type === 'shielded' ? 5 : 2;
-          updateResourcesDisplay();
-          return true;
-        }
-        return false;
-      }
-    }
-
-    class Resource {
-      constructor(type, x, y) {
-        this.type = type;
-        this.x = x;
-        this.y = y;
-        this.value = type === 'fish' ? 3 : 1;
-        this.element = document.createElement('div');
-        this.element.className = `resource ${type}`;
-        this.element.style.left = `${x}px`;
-        this.element.style.bottom = `${y + groundHeight}px`;
-        gameArea.appendChild(this.element);
-      }
-      collect() {
-        this.element.remove();
-        game.resourceCount += this.value;
-        updateResourcesDisplay();
-        showMessage(`You collected a ${this.type}! +${this.value} resources`);
-      }
-    }
-
-    class Barrier {
-      constructor(x) {
-        this.x = x;
-        this.y = 0;
-        this.width = 50;
-        this.height = 30;
-        this.health = game.defenses.barrierHealth * game.upgrades.barrierLevel;
-        this.element = document.createElement('div');
-        this.element.className = 'barrier';
-        this.element.style.left = `${x}px`;
-        this.element.style.bottom = `${groundHeight}px`;
-        gameArea.appendChild(this.element);
-      }
-    }
-
-    class Turret {
-      constructor(x) {
-        this.x = x;
-        this.y = 0;
-        this.width = 30;
-        this.height = 30;
-        this.damage = game.defenses.turretDamage * game.upgrades.turretLevel;
-        this.range = game.defenses.turretRange;
-        this.fireRate = game.defenses.turretFireRate / game.upgrades.turretLevel;
-        this.fireTimer = 0;
-        this.element = document.createElement('div');
-        this.element.className = 'turret';
-        this.element.style.left = `${x}px`;
-        this.element.style.bottom = `${groundHeight}px`;
-        gameArea.appendChild(this.element);
-      }
-      update(deltaTime) {
-        if (this.fireTimer <= 0) {
-          let closestAlien = null;
-          let closestDistance = this.range;
-          game.aliens.forEach(alien => {
-            const distance = Math.abs(this.x - alien.x);
-            if (distance < closestDistance) {
-              closestAlien = alien;
-              closestDistance = distance;
-            }
-          });
-          if (closestAlien) {
-            const projectile = document.createElement('div');
-            projectile.className = 'ranged-attack';
-            projectile.style.left = `${this.x}px`;
-            projectile.style.bottom = `${groundHeight + this.height}px`;
-            gameArea.appendChild(projectile);
-            setTimeout(() => { projectile.remove(); }, 1000);
-            closestAlien.takeDamage(this.damage, 'ranged');
-            this.fireTimer = this.fireRate;
-          }
-        } else {
-          this.fireTimer -= deltaTime;
-        }
-      }
-    }
-
-    // Event Listeners
+    // Player Movement
     document.addEventListener('keydown', (e) => {
-      if (e.code === 'ArrowLeft') game.keys.ArrowLeft = true;
-      if (e.code === 'ArrowRight') game.keys.ArrowRight = true;
-      // Aim controls: adjust aim angle with up/down arrows (between -45° and 45°)
-      if (e.code === 'ArrowUp') aimAngle = Math.min(aimAngle + 5, 45);
-      if (e.code === 'ArrowDown') aimAngle = Math.max(aimAngle - 5, -45);
-      if (game.keys.hasOwnProperty(e.code)) game.keys[e.code] = true;
-    });
-    document.addEventListener('keyup', (e) => {
-      if (game.keys.hasOwnProperty(e.code)) game.keys[e.code] = false;
+      if (e.key === 'ArrowLeft' && playerX > 0) {
+        playerX -= 10;
+      }
+      if (e.key === 'ArrowRight' && playerX < containerWidth - 50) {
+        playerX += 10;
+      }
+      player.style.left = playerX + 'px';
     });
 
-    startButton.addEventListener('click', startGame);
-    restartButton.addEventListener('click', startGame);
-    meleeButton.addEventListener('click', () => meleeAttack());
-    rangedButton.addEventListener('click', () => rangedAttack());
-    specialButton.addEventListener('click', () => specialAttack());
-    buildBarrierButton.addEventListener('click', () => buildBarrier());
-    buildTurretButton.addEventListener('click', () => buildTurret());
-    repairButton.addEventListener('click', () => repairHouse());
-    upgradeMeleeButton.addEventListener('click', () => upgradeWeapon('melee'));
-    upgradeRangedButton.addEventListener('click', () => upgradeWeapon('ranged'));
-    upgradeSpecialButton.addEventListener('click', () => upgradeWeapon('special'));
-    upgradeBarrierButton.addEventListener('click', () => upgradeDefense('barrier'));
-    upgradeTurretButton.addEventListener('click', () => upgradeDefense('turret'));
-    upgradeHealingButton.addEventListener('click', () => upgradeDefense('healing'));
-    upgradeWallsButton.addEventListener('click', () => upgradeHouse('walls'));
-    upgradeAlarmButton.addEventListener('click', () => upgradeHouse('alarm'));
-
-    // Game functions
-    function startGame() {
-      game.isRunning = true;
-      game.wave = 0;
-      game.player.health = 100;
-      game.player.x = 200;
-      game.house.health = 100;
-      game.resourceCount = 0;
-      game.aliens = [];
-      game.resourceObjects = [];
-      game.defenses.barriers = [];
-      game.defenses.turrets = [];
-      game.upgrades.meleeLevel = 1;
-      game.upgrades.rangedLevel = 1;
-      game.upgrades.specialLevel = 1;
-      game.upgrades.barrierLevel = 1;
-      game.upgrades.turretLevel = 1;
-      game.upgrades.healingLevel = 0;
-      game.upgrades.wallsLevel = 1;
-      game.upgrades.alarmLevel = 0;
-      healthValue.textContent = game.player.health;
-      healthBar.style.width = '100%';
-      houseHealthValue.textContent = game.house.health;
-      houseHealthBar.style.width = '100%';
-      resourcesValue.textContent = game.resourceCount;
-      resourcesBar.style.width = '0%';
-      waveValue.textContent = game.wave;
-      startScreen.style.display = 'none';
-      gameOverScreen.style.display = 'none';
-      game.lastTime = 0;
-      game.alienSpawnTimer = 0;
-      game.resourceSpawnTimer = 0;
-      requestAnimationFrame(gameLoop);
-    }
-
-    function gameLoop(timestamp) {
-      if (!game.isRunning) return;
-      if (!game.lastTime) game.lastTime = timestamp;
-      let deltaTime = timestamp - game.lastTime;
-      game.lastTime = timestamp;
-      updatePlayer(deltaTime);
-      game.aliens.forEach((alien, index) => {
-        alien.update(deltaTime);
-        if (alien.health <= 0) game.aliens.splice(index, 1);
-      });
-      game.defenses.turrets.forEach(turret => turret.update(deltaTime));
-      game.alienSpawnTimer += deltaTime;
-      if (game.alienSpawnTimer >= game.alienSpawnRate) {
-        game.wave++;
-        waveValue.textContent = game.wave;
-        spawnAlienWave();
-        game.alienSpawnTimer = 0;
+    // Shooting: when spacebar is pressed, create a bullet
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        createBullet();
       }
-      game.resourceSpawnTimer += deltaTime;
-      if (game.resourceSpawnTimer >= game.resourceSpawnRate) {
-        spawnResource();
-        game.resourceSpawnTimer = 0;
-      }
-      checkResourceCollection();
-      requestAnimationFrame(gameLoop);
+    });
+
+    function createBullet() {
+      const bullet = document.createElement('div');
+      bullet.className = 'bullet';
+      // Position bullet near the center of the player
+      bullet.style.left = (playerX + 22) + 'px';
+      bullet.style.bottom = '70px';
+      gameContainer.appendChild(bullet);
+      moveBullet(bullet);
     }
 
-    function updatePlayer(deltaTime) {
-      if (game.keys.ArrowLeft) game.player.x -= game.player.speed;
-      if (game.keys.ArrowRight) game.player.x += game.player.speed;
-      game.player.x = Math.max(0, Math.min(gameWidth - 40, game.player.x));
-      playerEl.style.left = `${game.player.x}px`;
+    function moveBullet(bullet) {
+      let bulletBottom = 70;
+      const bulletInterval = setInterval(() => {
+        bulletBottom += 5;
+        bullet.style.bottom = bulletBottom + 'px';
+        detectCollision(bullet);
+        if (bulletBottom > gameContainer.clientHeight) {
+          bullet.remove();
+          clearInterval(bulletInterval);
+        }
+      }, 20);
     }
 
-    // Spawn aliens on the ground (y = 0)
-    function spawnAlienWave() {
-      for (let i = 0; i < game.wave + 2; i++) {
-        let type = game.alienTypes[Math.floor(Math.random() * game.alienTypes.length)];
-        let x = Math.random() * gameWidth;
-        let y = 0;
-        let alien = new Alien(type, x, y);
-        game.aliens.push(alien);
-      }
+    // Alien creation and movement functions
+    function createAlien() {
+      const alien = document.createElement('div');
+      alien.className = 'alien';
+      alien.style.left = Math.random() * (gameContainer.clientWidth - 40) + 'px';
+      alien.style.top = '0px';
+      gameContainer.appendChild(alien);
+      moveAlien(alien);
     }
 
-    function spawnResource() {
-      let type = game.resourceTypes[Math.floor(Math.random() * game.resourceTypes.length)];
-      let x = Math.random() * gameWidth;
-      let y = Math.random() * gameHeight * 0.3;
-      let resource = new Resource(type, x, y);
-      game.resourceObjects.push(resource);
+    function moveAlien(alien) {
+      let alienTop = 0;
+      const alienInterval = setInterval(() => {
+        alienTop += 2;
+        alien.style.top = alienTop + 'px';
+        if (alienTop > gameContainer.clientHeight) {
+          alien.remove();
+          clearInterval(alienInterval);
+        }
+      }, 50);
     }
 
-    function checkResourceCollection() {
-      game.resourceObjects.forEach((resource, index) => {
-        let rectPlayer = playerEl.getBoundingClientRect();
-        let rectResource = resource.element.getBoundingClientRect();
-        if (!(rectResource.right < rectPlayer.left ||
-              rectResource.left > rectPlayer.right ||
-              rectResource.bottom < rectPlayer.top ||
-              rectResource.top > rectPlayer.bottom)) {
-          resource.collect();
-          game.resourceObjects.splice(index, 1);
+    // Collision detection between bullet and alien
+    function detectCollision(bullet) {
+      const aliens = document.querySelectorAll('.alien');
+      aliens.forEach(alien => {
+        const bulletRect = bullet.getBoundingClientRect();
+        const alienRect = alien.getBoundingClientRect();
+        if (bulletRect.left < alienRect.right &&
+            bulletRect.right > alienRect.left &&
+            bulletRect.top < alienRect.bottom &&
+            bulletRect.bottom > alienRect.top) {
+          // Collision detected: remove both and update the score
+          alien.remove();
+          bullet.remove();
+          score += 10;
+          scoreElement.textContent = 'Score: ' + score;
         }
       });
     }
 
-    function meleeAttack() {
-      let attack = document.createElement('div');
-      attack.className = 'melee-attack';
-      attack.style.left = `${game.player.x + game.player.meleeRange}px`;
-      attack.style.bottom = `${groundHeight + game.player.meleeRange}px`;
-      gameArea.appendChild(attack);
-      game.aliens.forEach(alien => {
-        let distance = Math.abs(alien.x - game.player.x);
-        if (distance <= game.player.meleeRange) {
-          alien.takeDamage(game.player.meleeDamage, 'melee');
-        }
-      });
-      setTimeout(() => { attack.remove(); }, 500);
-    }
-
-    // Ranged attack uses the aimAngle (adjustable with Up/Down keys)
-    function rangedAttack() {
-      const projectile = document.createElement('div');
-      projectile.className = 'ranged-attack';
-      let projectileX = game.player.x + 20;
-      let projectileY = groundHeight + 30;
-      projectile.style.left = `${projectileX}px`;
-      projectile.style.bottom = `${projectileY}px`;
-      gameArea.appendChild(projectile);
-      const projectileSpeed = 0.4;
-      let lastFrameTime = null;
-      function animateProjectile(timestamp) {
-        if (!lastFrameTime) lastFrameTime = timestamp;
-        const delta = timestamp - lastFrameTime;
-        lastFrameTime = timestamp;
-        const rad = aimAngle * (Math.PI / 180);
-        projectileX += projectileSpeed * Math.cos(rad) * delta;
-        projectileY += projectileSpeed * Math.sin(rad) * delta;
-        projectile.style.left = `${projectileX}px`;
-        projectile.style.bottom = `${projectileY}px`;
-        let hit = false;
-        game.aliens.forEach(alien => {
-          let alienRect = alien.element.getBoundingClientRect();
-          let projRect = projectile.getBoundingClientRect();
-          if (!(projRect.right < alienRect.left || projRect.left > alienRect.right ||
-                projRect.bottom < alienRect.top || projRect.top > alienRect.bottom)) {
-            alien.takeDamage(game.player.rangedDamage, 'ranged');
-            hit = true;
-          }
-        });
-        if (hit || projectileX > gameWidth || projectileX < 0 || projectileY > gameHeight || projectileY < 0) {
-          projectile.remove();
-        } else {
-          requestAnimationFrame(animateProjectile);
-        }
-      }
-      requestAnimationFrame(animateProjectile);
-    }
-
-    function specialAttack() {
-      let special = document.createElement('div');
-      special.className = 'special-attack';
-      special.style.left = `${game.player.x - 25}px`;
-      special.style.bottom = `${groundHeight + 30}px`;
-      gameArea.appendChild(special);
-      game.aliens.forEach(alien => {
-        let distance = Math.abs(alien.x - game.player.x);
-        if (distance < game.player.specialRange) {
-          alien.takeDamage(game.player.specialDamage, 'special');
-        }
-      });
-      setTimeout(() => { special.remove(); }, 1000);
-    }
-
-    function buildBarrier() {
-      if (game.resourceCount >= game.defenses.barrierCost) {
-        game.resourceCount -= game.defenses.barrierCost;
-        updateResourcesDisplay();
-        let barrier = new Barrier(game.player.x);
-        game.defenses.barriers.push(barrier);
-        showMessage("Barrier built!");
-      } else {
-        showMessage("Not enough resources for barrier!");
-      }
-    }
-
-    function buildTurret() {
-      if (game.resourceCount >= game.defenses.turretCost) {
-        game.resourceCount -= game.defenses.turretCost;
-        updateResourcesDisplay();
-        let turret = new Turret(game.player.x);
-        game.defenses.turrets.push(turret);
-        showMessage("Turret built!");
-      } else {
-        showMessage("Not enough resources for turret!");
-      }
-    }
-
-    function repairHouse() {
-      if (game.resourceCount >= game.house.repairCost && game.house.health < game.house.maxHealth) {
-        game.resourceCount -= game.house.repairCost;
-        game.house.health = Math.min(game.house.health + game.house.repairAmount, game.house.maxHealth);
-        updateResourcesDisplay();
-        houseHealthValue.textContent = game.house.health;
-        houseHealthBar.style.width = `${(game.house.health / game.house.maxHealth) * 100}%`;
-        showMessage("House repaired!");
-      } else {
-        showMessage("Not enough resources or house is full health!");
-      }
-    }
-
-    function upgradeWeapon(type) {
-      let cost;
-      if (type === 'melee') {
-        cost = game.upgrades.meleeCost;
-        if (game.resourceCount >= cost) {
-          game.resourceCount -= cost;
-          game.upgrades.meleeLevel++;
-          game.player.meleeDamage += 5;
-          updateResourcesDisplay();
-          showMessage("Melee upgraded!");
-        } else {
-          showMessage("Not enough resources for melee upgrade!");
-        }
-      } else if (type === 'ranged') {
-        cost = game.upgrades.rangedCost;
-        if (game.resourceCount >= cost) {
-          game.resourceCount -= cost;
-          game.upgrades.rangedLevel++;
-          game.player.rangedDamage += 5;
-          updateResourcesDisplay();
-          showMessage("Ranged upgraded!");
-        } else {
-          showMessage("Not enough resources for ranged upgrade!");
-        }
-      } else if (type === 'special') {
-        cost = game.upgrades.specialCost;
-        if (game.resourceCount >= cost) {
-          game.resourceCount -= cost;
-          game.upgrades.specialLevel++;
-          game.player.specialDamage += 10;
-          updateResourcesDisplay();
-          showMessage("Special upgraded!");
-        } else {
-          showMessage("Not enough resources for special upgrade!");
-        }
-      }
-    }
-
-    function upgradeDefense(type) {
-      let cost;
-      if (type === 'barrier') {
-        cost = game.upgrades.barrierCost;
-        if (game.resourceCount >= cost) {
-          game.resourceCount -= cost;
-          game.upgrades.barrierLevel++;
-          updateResourcesDisplay();
-          showMessage("Barriers upgraded!");
-        } else {
-          showMessage("Not enough resources for barrier upgrade!");
-        }
-      } else if (type === 'turret') {
-        cost = game.upgrades.turretCost;
-        if (game.resourceCount >= cost) {
-          game.resourceCount -= cost;
-          game.upgrades.turretLevel++;
-          updateResourcesDisplay();
-          showMessage("Turrets upgraded!");
-        } else {
-          showMessage("Not enough resources for turret upgrade!");
-        }
-      } else if (type === 'healing') {
-        cost = game.upgrades.healingCost;
-        if (game.resourceCount >= cost) {
-          game.resourceCount -= cost;
-          game.upgrades.healingLevel++;
-          updateResourcesDisplay();
-          showMessage("Healing upgraded!");
-        } else {
-          showMessage("Not enough resources for healing upgrade!");
-        }
-      }
-    }
-
-    function upgradeHouse(type) {
-      let cost;
-      if (type === 'walls') {
-        cost = game.upgrades.wallsCost;
-        if (game.resourceCount >= cost) {
-          game.resourceCount -= cost;
-          game.upgrades.wallsLevel++;
-          updateResourcesDisplay();
-          showMessage("House walls reinforced!");
-        } else {
-          showMessage("Not enough resources for walls upgrade!");
-        }
-      } else if (type === 'alarm') {
-        cost = game.upgrades.alarmCost;
-        if (game.resourceCount >= cost) {
-          game.resourceCount -= cost;
-          game.upgrades.alarmLevel++;
-          updateResourcesDisplay();
-          showMessage("House alarm upgraded!");
-        } else {
-          showMessage("Not enough resources for alarm upgrade!");
-        }
-      }
-    }
-
-    function updateResourcesDisplay() {
-      resourcesValue.textContent = game.resourceCount;
-      resourcesBar.style.width = `${(game.resourceCount / game.maxResources) * 100}%`;
-    }
-
-    function showMessage(msg) {
-      message.textContent = msg;
-      setTimeout(() => { message.textContent = ""; }, 2000);
-    }
-
-    function gameOver() {
-      game.isRunning = false;
-      showMessage("Game Over!");
-      gameOverScreen.style.display = "flex";
-    }
+    // Spawn aliens periodically (every 2 seconds)
+    setInterval(createAlien, 2000);
   </script>
 </body>
 </html>
