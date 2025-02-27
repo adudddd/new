@@ -7,7 +7,7 @@
   <!-- Retro pixel font -->
   <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
   <style>
-    /* Global Reset */
+ /* (Your existing CSS - no changes here) */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Press Start 2P', cursive;
@@ -262,7 +262,7 @@
       </div>
     </div>
     <!-- Mini-map -->
-    <div id="miniMap">Mini-map</div>
+    <div id="miniMap"></div>
     <!-- Player Ship -->
     <div class="playerShip">
       <div class="thruster"></div>
@@ -288,9 +288,10 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      console.log("DOM fully loaded and parsed");
+
       // ===== Global Variables & Setup =====
       const gameContainer = document.getElementById('gameContainer');
-      //Removed references for start screen
       const pauseMenu = document.getElementById('pauseMenu');
       const gameOverScreen = document.getElementById('gameOverScreen');
       const restartButton = document.getElementById('restartButton');
@@ -299,8 +300,9 @@
       const miniMap = document.getElementById('miniMap');
       const playerShip = document.querySelector('.playerShip');
 
-      // Initialize player's left position from computed style or default to 375
+      // Initialize player's left position
       let playerShipX = parseInt(getComputedStyle(playerShip).left) || 375;
+      console.log("Initial playerShipX:", playerShipX);
 
       let score = 0;
       let playerHealth = 100;
@@ -309,253 +311,439 @@
       let gameInterval;
       let gamePaused = false;
 
+
+        // Function to update the mini-map
+    function updateMiniMap() {
+        try {
+            miniMap.innerHTML = ''; // Clear previous mini-map content
+
+            // Draw player on mini-map
+            const playerIcon = document.createElement('div');
+            playerIcon.style.position = 'absolute';
+            playerIcon.style.width = '5px';
+            playerIcon.style.height = '5px';
+            playerIcon.style.background = 'white';
+            // Scale player position to mini-map size
+            playerIcon.style.left = (playerShipX / gameContainer.clientWidth) * miniMap.clientWidth + 'px';
+            playerIcon.style.bottom = '5px'; // Player is always at the bottom
+            miniMap.appendChild(playerIcon);
+
+            // Draw enemies on mini-map
+            enemies.forEach(enemy => {
+                const enemyRect = enemy.getBoundingClientRect();  // Get enemy's current position.  Essential!
+                const containerRect = gameContainer.getBoundingClientRect(); // And container's
+
+                const enemyIcon = document.createElement('div');
+                enemyIcon.style.position = 'absolute';
+                enemyIcon.style.width = '3px';
+                enemyIcon.style.height = '3px';
+                enemyIcon.style.background = 'red';
+
+                // Convert game coordinates to mini-map coordinates
+                let miniMapX = (enemyRect.left - containerRect.left) / gameContainer.clientWidth * miniMap.clientWidth;
+                let miniMapY = (enemyRect.top - containerRect.top) / gameContainer.clientHeight * miniMap.clientHeight;
+
+
+                enemyIcon.style.left = miniMapX + 'px';
+                enemyIcon.style.top = miniMapY + 'px'; // Use miniMapY, *not* clientHeight
+                miniMap.appendChild(enemyIcon);
+            });
+        } catch (error) {
+            console.error("Error updating mini-map:", error);
+        }
+    }
+
+
       // ===== HUD & Feedback Functions =====
       function updateScore(newScore) {
-        score = newScore;
-        scoreDisplay.textContent = 'Score: ' + score;
-        const indicator = document.createElement('div');
-        indicator.className = 'scoreIndicator';
-        indicator.style.left = '50px';
-        indicator.style.top = '20px';
-        indicator.textContent = '+10';
-        gameContainer.appendChild(indicator);
-        setTimeout(() => indicator.remove(), 1000);
+        console.log("updateScore called with:", newScore);
+        try {
+          score = newScore;
+          scoreDisplay.textContent = 'Score: ' + score;
+
+          const indicator = document.createElement('div');
+          indicator.className = 'scoreIndicator';
+          indicator.style.left = '50px'; // Consider making this relative to the destroyed enemy
+          indicator.style.top = '20px';
+          indicator.textContent = '+10';
+          gameContainer.appendChild(indicator);
+          setTimeout(() => indicator.remove(), 1000);
+        } catch (error) {
+          console.error("Error in updateScore:", error);
+        }
       }
 
       function updateHealth(health) {
-        playerHealth = health;
-        let segmentsToFill = Math.ceil((health / 100) * 10);
-        healthSegments.forEach((seg, index) => {
-          seg.style.backgroundColor = index < segmentsToFill ? 'red' : '#333';
-        });
-        if (health < 30) {
-          gameContainer.classList.add('critical');
-        } else {
-          gameContainer.classList.remove('critical');
+        console.log("updateHealth called with:", health);
+        try {
+          playerHealth = health;
+          let segmentsToFill = Math.ceil((health / 100) * 10);
+          healthSegments.forEach((seg, index) => {
+            seg.style.backgroundColor = index < segmentsToFill ? 'red' : '#333';
+          });
+          if (health < 30) {
+            gameContainer.classList.add('critical');
+          } else {
+            gameContainer.classList.remove('critical');
+          }
+        } catch (error) {
+          console.error("Error in updateHealth:", error);
         }
       }
 
       function flashDamage() {
-        gameContainer.style.transition = 'background 0.1s';
-        gameContainer.style.background = 'red';
-        setTimeout(() => {
-          gameContainer.style.background = 'linear-gradient(to bottom, #E6E6FA, #D8BFD8)';
-        }, 100);
+        console.log("flashDamage called");
+        try {
+          gameContainer.style.transition = 'background 0.1s';
+          gameContainer.style.background = 'red';
+          setTimeout(() => {
+            gameContainer.style.background = 'linear-gradient(to bottom, #E6E6FA, #D8BFD8)';
+          }, 100);
+        } catch (error) {
+          console.error("Error in flashDamage:", error);
+        }
+      }
+      function screenShake() {
+        console.log("screenShake called");
+        try{
+            gameContainer.style.animation = 'shake 0.5s';
+            setTimeout(() => gameContainer.style.animation = '', 500);
+        } catch (error) {
+            console.error("Error in screenShake:", error);
+        }
       }
 
-      function screenShake() {
-        gameContainer.style.animation = 'shake 0.5s';
-        setTimeout(() => gameContainer.style.animation = '', 500);
-      }
+        //Inserted outside as it needs to load first before being used
       const styleSheet = document.styleSheets[0];
-      styleSheet.insertRule(`@keyframes shake {
-        0% { transform: translate(0, 0); }
-        25% { transform: translate(5px, 5px); }
-        50% { transform: translate(-5px, -5px); }
-        75% { transform: translate(5px, -5px); }
-        100% { transform: translate(0, 0); }
-      }`, styleSheet.cssRules.length);
+      try{
+        styleSheet.insertRule(`@keyframes shake {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(5px, 5px); }
+            50% { transform: translate(-5px, -5px); }
+            75% { transform: translate(5px, -5px); }
+            100% { transform: translate(0, 0); }
+        }`, styleSheet.cssRules.length);
+      } catch (error) {
+        console.error("Error in inserting rule screenShake:", error);
+      }
+
 
       function createSpark(x, y) {
-        const spark = document.createElement('div');
-        spark.style.position = 'absolute';
-        spark.style.left = x + 'px';
-        spark.style.top = y + 'px';
-        spark.style.width = '10px';
-        spark.style.height = '10px';
-        spark.style.borderRadius = '50%';
-        spark.style.background = 'yellow';
-        spark.style.opacity = '1';
-        spark.style.zIndex = 80;
-        gameContainer.appendChild(spark);
-        spark.animate([{ transform: 'scale(0)', opacity: 1 }, { transform: 'scale(1.5)', opacity: 0 }], { duration: 300, fill: 'forwards' });
-        setTimeout(() => spark.remove(), 300);
+        console.log("createSpark called at:", x, y);
+        try {
+          const spark = document.createElement('div');
+          spark.style.position = 'absolute';
+          spark.style.left = x + 'px';
+          spark.style.top = y + 'px';
+          spark.style.width = '10px';
+          spark.style.height = '10px';
+          spark.style.borderRadius = '50%';
+          spark.style.background = 'yellow';
+          spark.style.opacity = '1';
+          spark.style.zIndex = 80;
+          gameContainer.appendChild(spark);
+          spark.animate([{ transform: 'scale(0)', opacity: 1 }, { transform: 'scale(1.5)', opacity: 0 }], { duration: 300, fill: 'forwards' });
+          setTimeout(() => spark.remove(), 300);
+        } catch (error) {
+          console.error("Error in createSpark:", error);
+        }
       }
 
       function createDamageNumber(x, y, damage) {
-        const dmgNum = document.createElement('div');
-        dmgNum.style.position = 'absolute';
-        dmgNum.style.left = x + 'px';
-        dmgNum.style.top = y + 'px';
-        dmgNum.style.fontSize = '20px';
-        dmgNum.style.color = '#ff0';
-        dmgNum.style.textShadow = '2px 2px #000';
-        dmgNum.textContent = '-' + damage;
-        dmgNum.classList.add('scoreIndicator');
-        gameContainer.appendChild(dmgNum);
-        setTimeout(() => dmgNum.remove(), 1000);
+        console.log("createDamageNumber called at:", x, y, "Damage:", damage);
+        try {
+          const dmgNum = document.createElement('div');
+          dmgNum.style.position = 'absolute';
+          dmgNum.style.left = x + 'px';
+          dmgNum.style.top = y + 'px';
+          dmgNum.style.fontSize = '20px';
+          dmgNum.style.color = '#ff0';
+          dmgNum.style.textShadow = '2px 2px #000';
+          dmgNum.textContent = '-' + damage;
+          dmgNum.classList.add('scoreIndicator'); // Reuse the scoreIndicator animation
+          gameContainer.appendChild(dmgNum);
+          setTimeout(() => dmgNum.remove(), 1000);
+        } catch (error) {
+          console.error("Error in createDamageNumber:", error);
+        }
       }
 
+
       function animateStarfield() {
+        console.log("animateStarfield called");
         const starfield = document.getElementById('starfield');
+        if (!starfield) {
+            console.error("starfield element not found!");
+            return;
+        }
         let offset = 0;
         setInterval(() => {
           offset += 0.5;
           starfield.style.backgroundPosition = offset + 'px ' + offset + 'px';
         }, 50);
       }
-      animateStarfield();
+      animateStarfield(); // Call it to start the animation
 
-      function createEnemy(variant = 'basic') {
+
+    function createEnemy(variant = 'basic') {
+    console.log("createEnemy called with variant:", variant);
+    try {
         const enemy = document.createElement('div');
         enemy.classList.add('enemy');
         enemy.dataset.variant = variant;
+
         if (variant === 'basic') {
-          enemy.classList.add('basic');
-          enemy.textContent = '▾';
+            enemy.classList.add('basic');
+            enemy.textContent = '▾';
         } else if (variant === 'advanced') {
-          enemy.classList.add('advanced');
-          enemy.innerHTML = '<svg width="40" height="40"><ellipse cx="20" cy="20" rx="20" ry="10" fill="red" /><line x1="5" y1="10" x2="15" y2="0" stroke="black" stroke-width="2"/><line x1="25" y1="0" x2="35" y2="10" stroke="black" stroke-width="2"/></svg>';
+            enemy.classList.add('advanced');
+            enemy.innerHTML = '<svg width="40" height="40"><ellipse cx="20" cy="20" rx="20" ry="10" fill="red" /><line x1="5" y1="10" x2="15" y2="0" stroke="black" stroke-width="2"/><line x1="25" y1="0" x2="35" y2="10" stroke="black" stroke-width="2"/></svg>';
         } else if (variant === 'boss') {
-          enemy.classList.add('boss');
-          const bossHealth = document.createElement('div');
-          bossHealth.style.position = 'absolute';
-          bossHealth.style.bottom = '-10px';
-          bossHealth.style.left = '0';
-          bossHealth.style.width = '100%';
-          bossHealth.style.height = '5px';
-          bossHealth.style.background = 'green';
-          enemy.appendChild(bossHealth);
+            enemy.classList.add('boss');
+            const bossHealth = document.createElement('div');
+            bossHealth.style.position = 'absolute';
+            bossHealth.style.bottom = '-10px';
+            bossHealth.style.left = '0';
+            bossHealth.style.width = '100%';
+            bossHealth.style.height = '5px';
+            bossHealth.style.background = 'green';
+            enemy.appendChild(bossHealth); // Append *inside* the boss enemy
         }
-        enemy.style.left = Math.random() * (gameContainer.clientWidth - 50) + 'px';
+
+        enemy.style.left = Math.random() * (gameContainer.clientWidth - 50) + 'px'; // Subtract enemy width to prevent overflow
         enemy.style.top = '0px';
         gameContainer.appendChild(enemy);
         enemies.push(enemy);
-        moveEnemy(enemy);
-      }
+        moveEnemy(enemy); // Start moving the enemy immediately
+    } catch (error) {
+        console.error("Error in createEnemy:", error);
+    }
+}
 
-      function moveEnemy(enemy) {
+
+    function moveEnemy(enemy) {
+        console.log("moveEnemy called");
         let enemyTop = 0;
         const moveInterval = setInterval(() => {
-          enemyTop += 2;
-          enemy.style.top = enemyTop + 'px';
-          if (enemyTop > gameContainer.clientHeight) {
-            enemy.remove();
-            clearInterval(moveInterval);
-          }
-        }, 50);
-      }
+            try {
+                if (!gamePaused) {
+                  enemyTop += 2;
+                  enemy.style.top = enemyTop + 'px';
+                    if (enemyTop > gameContainer.clientHeight) {
+                      enemy.remove();
+                      clearInterval(moveInterval);
+                        console.log("Enemy removed (out of bounds)");
+                    }
 
-      function createBullet() {
-        const bullet = document.createElement('div');
-        bullet.className = 'bullet';
-        const playerRect = playerShip.getBoundingClientRect();
-        const containerRect = gameContainer.getBoundingClientRect();
-        let bulletX = playerRect.left - containerRect.left + (playerRect.width / 2) - 2.5;
-        bullet.style.left = bulletX + 'px';
-        bullet.style.bottom = '70px';
-        gameContainer.appendChild(bullet);
-        bullets.push(bullet);
-        moveBullet(bullet);
-      }
+                }
+            } catch (error) {
+                console.error("Error in moveEnemy interval:", error);
+                clearInterval(moveInterval); // Stop the interval on error
+            }
+        }, 50);
+    }
+
+
+    function createBullet() {
+        console.log("createBullet called");
+        try {
+            const bullet = document.createElement('div');
+            bullet.className = 'bullet';
+
+            const playerRect = playerShip.getBoundingClientRect();
+            const containerRect = gameContainer.getBoundingClientRect();
+             // Calculate bullet position relative to the game container
+            let bulletX = playerRect.left - containerRect.left + (playerRect.width / 2) - 2.5;
+
+            bullet.style.left = bulletX + 'px';
+            bullet.style.bottom = '70px'; // Consistent starting position
+            gameContainer.appendChild(bullet);
+            bullets.push(bullet);
+            moveBullet(bullet); // Start moving the bullet
+        } catch(error){
+            console.error("Error in createBullet:", error);
+        }
+
+    }
+
 
       function moveBullet(bullet) {
+        console.log("moveBullet called");
         let bulletBottom = 70;
         const interval = setInterval(() => {
-          bulletBottom += 5;
-          bullet.style.bottom = bulletBottom + 'px';
-          detectBulletCollision(bullet);
-          if (bulletBottom > gameContainer.clientHeight) {
-            bullet.remove();
+          try {
+             if(!gamePaused){
+                bulletBottom += 5;
+                bullet.style.bottom = bulletBottom + 'px';
+                detectBulletCollision(bullet); //Check every movement
+
+                if (bulletBottom > gameContainer.clientHeight) {
+                  bullet.remove();
+                  clearInterval(interval);
+                  console.log("Bullet removed (out of bounds)");
+                }
+            }
+          } catch (error) {
+            console.error("Error in moveBullet interval:", error);
             clearInterval(interval);
           }
         }, 20);
       }
 
-      function detectBulletCollision(bullet) {
+    function detectBulletCollision(bullet) {
+        //console.log("detectBulletCollision called"); // Log at the beginning
         enemies.forEach((enemy, index) => {
-          const bulletRect = bullet.getBoundingClientRect();
-          const enemyRect = enemy.getBoundingClientRect();
-          if (!(bulletRect.right < enemyRect.left ||
-                bulletRect.left > enemyRect.right ||
-                bulletRect.bottom < enemyRect.top ||
-                bulletRect.top > enemyRect.bottom)) {
-            createSpark(parseInt(bullet.style.left), parseInt(bullet.style.bottom));
-            createDamageNumber(parseInt(enemy.style.left), parseInt(enemy.style.top), 10);
-            updateScore(score + 10);
-            enemyDeathAnimation(enemy);
-            enemy.remove();
-            enemies.splice(index, 1);
-            bullet.remove();
-          }
-        });
-      }
+           try{
+                const bulletRect = bullet.getBoundingClientRect();
+                const enemyRect = enemy.getBoundingClientRect();
+                // Simplified collision check (Axis-Aligned Bounding Box)
+                if (!(bulletRect.right < enemyRect.left ||
+                    bulletRect.left > enemyRect.right ||
+                    bulletRect.bottom < enemyRect.top ||
+                    bulletRect.top > enemyRect.bottom)) {
 
-      function enemyDeathAnimation(enemy) {
+                        // Collision detected!
+                        console.log("Collision detected!");
+                        createSpark(parseInt(bullet.style.left), parseInt(bullet.style.bottom));  // Use style, not getBoundingClientRect
+                        createDamageNumber(parseInt(enemy.style.left),parseInt(enemy.style.top) , 10);
+                        updateScore(score + 10);
+                        enemyDeathAnimation(enemy);
+
+                        // Remove the enemy and bullet
+                        enemy.remove();
+                        enemies.splice(index, 1);
+                        bullet.remove();
+
+                }
+           } catch(error){
+            console.error("Error in detectBulletCollision:", error);
+           }
+        });
+    }
+
+    function enemyDeathAnimation(enemy) {
+    console.log("enemyDeathAnimation called");
+    try{
         const explosion = document.createElement('div');
         explosion.style.position = 'absolute';
-        explosion.style.left = enemy.style.left;
+        explosion.style.left = enemy.style.left; // Position explosion where the enemy was
         explosion.style.top = enemy.style.top;
         explosion.style.fontSize = '30px';
         explosion.style.color = '#fff';
         explosion.style.textShadow = '0 0 5px #ff0';
-        explosion.textContent = '✸★✹';
+        explosion.textContent = '✸★✹'; // Multiple explosion characters
         gameContainer.appendChild(explosion);
-        explosion.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 500, fill: 'forwards' });
+        explosion.animate([{opacity: 1}, {opacity: 0}], {duration: 500, fill: 'forwards'}); //Fade Out
         setTimeout(() => explosion.remove(), 500);
-      }
+      } catch (error){
+            console.error("Error in detectBulletCollision:", error);
+        }
+    }
 
       document.addEventListener('keydown', (e) => {
+
+        //console.log("Keydown event:", e.key, e.code); // Log the pressed key
+
         if (e.key === 'ArrowLeft') {
           playerShipX = Math.max(0, playerShipX - 10);
           playerShip.style.left = playerShipX + 'px';
+            console.log("Player moved left. New playerShipX:", playerShipX);
         }
         if (e.key === 'ArrowRight') {
-          playerShipX = Math.min(gameContainer.clientWidth - 50, playerShipX + 10);
+          playerShipX = Math.min(gameContainer.clientWidth - 50, playerShipX + 10); // 50 is the player ship's width
           playerShip.style.left = playerShipX + 'px';
+          console.log("Player moved right.  New playerShipX:", playerShipX);
         }
-        if (e.code === 'Space') { createBullet(); }
-        // Removed check for Enter key
-        if (e.key.toLowerCase() === 'p') { togglePause(); }
+        if (e.code === 'Space') {
+          createBullet();
+        }
+
+        if (e.key.toLowerCase() === 'p') {
+            console.log("P key pressed - toggling pause");
+          togglePause();
+        }
+           updateMiniMap();
       });
 
-      function startGame() {
+    function startGame() {
         console.log("startGame() invoked");
-        playerShip.style.left = playerShipX + 'px';
-        //Removed start screen trigger
-        updateHealth(100);
-        gameInterval = setInterval(() => {
-          if (Math.random() < 0.03) { createEnemy('basic'); }
-          if (Math.random() < 0.01) { createEnemy('advanced'); }
-          if (Math.random() < 0.001) { createEnemy('boss'); }
-        }, 100);
-      }
+        try {
+            //Initialize if needed here
+             playerShip.style.left = playerShipX + 'px'; // Ensure player starts at the initial position.
 
-      function togglePause() {
-        gamePaused = !gamePaused;
-        if (gamePaused) {
-          clearInterval(gameInterval);
-          pauseMenu.style.display = 'block';
-        } else {
-          pauseMenu.style.display = 'none';
-          startGame();
+            updateHealth(100); // Reset health
+            updateMiniMap();
+            // Main game loop
+            gameInterval = setInterval(() => {
+              if(!gamePaused){ // Add check
+                // Enemy spawning logic
+                if (Math.random() < 0.03) {
+                  createEnemy('basic');
+                }
+                if (Math.random() < 0.01) {
+                  createEnemy('advanced');
+                }
+                if (Math.random() < 0.001) {
+                  createEnemy('boss');
+                }
+                   updateMiniMap(); // Update mini-map every frame
+              }
+            }, 100);
+
+
+        } catch (error) {
+            console.error("Error in startGame:", error);
         }
-      }
+    }
+    function togglePause() {
+        console.log("togglePause called.  Current gamePaused state:", gamePaused);
+        gamePaused = !gamePaused; // Toggle the pause state
 
-      restartButton.addEventListener('click', () => location.reload());
-      // Removed start button click handler
+        if (gamePaused) {
+            clearInterval(gameInterval); // Stop the game loop
+            pauseMenu.style.display = 'block';
+            console.log("Game paused");
+        } else {
+            pauseMenu.style.display = 'none';
+             //Restart
+            startGame();
+            console.log("Game resumed");
+        }
+    }
+    restartButton.addEventListener('click', () => {
+        console.log("Restart button clicked");
+        location.reload()
+    });
 
-      let konamiCode = [38,38,40,40,37,39,37,39,66,65];
+
+      let konamiCode = [38,38,40,40,37,39,37,39,66,65]; // Up, Up, Down, Down, Left, Right, Left, Right, B, A
       let konamiIndex = 0;
+
       document.addEventListener('keydown', (e) => {
+        // Check for Konami Code
         if (e.keyCode === konamiCode[konamiIndex]) {
           konamiIndex++;
           if (konamiIndex === konamiCode.length) {
             activateEasterEgg();
-            konamiIndex = 0;
+            konamiIndex = 0; // Reset for next attempt
           }
-        } else { konamiIndex = 0; }
+        } else {
+          konamiIndex = 0; // Reset if incorrect key
+        }
       });
 
       function activateEasterEgg() {
-        gameContainer.style.background = 'linear-gradient(45deg, #dda0dd, #e6e6fa, #9370db)';
+          console.log("Konami Code Activated!");
+        gameContainer.style.background = 'linear-gradient(45deg, #dda0dd, #e6e6fa, #9370db)'; // Example effect
       }
+
 
       // Call startGame() directly to start the game immediately
       startGame();
       console.log("Game script loaded and event listeners attached.");
 
     });
+
   </script>
 </body>
 </html>
