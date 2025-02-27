@@ -316,7 +316,6 @@
   </div>
 
   <script>
-    // Wrap all code to ensure DOM is fully loaded
     document.addEventListener('DOMContentLoaded', () => {
       // ===== Global Variables & Setup =====
       const gameContainer = document.getElementById('gameContainer');
@@ -344,7 +343,6 @@
       function updateScore(newScore) {
         score = newScore;
         scoreDisplay.textContent = 'Score: ' + score;
-        // Floating +10 indicator
         const indicator = document.createElement('div');
         indicator.className = 'scoreIndicator';
         indicator.style.left = '50px';
@@ -367,7 +365,6 @@
         }
       }
       
-      // Red flash on damage
       function flashDamage() {
         gameContainer.style.transition = 'background 0.1s';
         gameContainer.style.background = 'red';
@@ -376,12 +373,10 @@
         }, 100);
       }
       
-      // Screen shake effect
       function screenShake() {
         gameContainer.style.animation = 'shake 0.5s';
         setTimeout(() => gameContainer.style.animation = '', 500);
       }
-      // Inject shake keyframes
       const styleSheet = document.styleSheets[0];
       styleSheet.insertRule(`@keyframes shake {
         0% { transform: translate(0, 0); }
@@ -391,7 +386,6 @@
         100% { transform: translate(0, 0); }
       }`, styleSheet.cssRules.length);
       
-      // Bullet impact spark effect
       function createSpark(x, y) {
         const spark = document.createElement('div');
         spark.style.position = 'absolute';
@@ -408,7 +402,6 @@
         setTimeout(() => spark.remove(), 300);
       }
       
-      // Floating damage number
       function createDamageNumber(x, y, damage) {
         const dmgNum = document.createElement('div');
         dmgNum.style.position = 'absolute';
@@ -423,7 +416,6 @@
         setTimeout(() => dmgNum.remove(), 1000);
       }
       
-      // ===== Dynamic Background Animation =====
       function animateStarfield() {
         const starfield = document.getElementById('starfield');
         let offset = 0;
@@ -434,7 +426,6 @@
       }
       animateStarfield();
       
-      // ===== Enemy Creation & Movement =====
       function createEnemy(variant = 'basic') {
         const enemy = document.createElement('div');
         enemy.classList.add('enemy');
@@ -475,7 +466,6 @@
         }, 50);
       }
       
-      // ===== Shooting: Bullet Creation & Movement =====
       function createBullet() {
         const bullet = document.createElement('div');
         bullet.className = 'bullet';
@@ -521,7 +511,6 @@
         });
       }
       
-      // ===== Enemy Death Animation =====
       function enemyDeathAnimation(enemy) {
         const explosion = document.createElement('div');
         explosion.style.position = 'absolute';
@@ -536,7 +525,6 @@
         setTimeout(() => explosion.remove(), 500);
       }
       
-      // ===== Keyboard Controls =====
       document.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowLeft') {
           playerShipX = Math.max(0, playerShipX - 10);
@@ -547,21 +535,20 @@
           playerShip.style.left = playerShipX + 'px';
         }
         if (e.code === 'Space') { createBullet(); }
-        if ((e.key === 'Enter' || e.key === 'Return') && startScreen.style.display !== 'none') {
+        // Use getComputedStyle to check startScreen's display property
+        if ((e.key === 'Enter' || e.key === 'Return') && window.getComputedStyle(startScreen).display !== 'none') {
+          console.log("Enter key pressed - starting game.");
           startGame();
         }
         if (e.key.toLowerCase() === 'p') { togglePause(); }
       });
       
-      // ===== Game Control Functions =====
       function startGame() {
         console.log("startGame() invoked");
-        // Ensure player's inline left is set
         playerShip.style.left = playerShipX + 'px';
         startScreen.style.display = 'none';
         updateHealth(100);
         gameInterval = setInterval(() => {
-          // Random enemy spawns based on probabilities
           if (Math.random() < 0.03) { createEnemy('basic'); }
           if (Math.random() < 0.01) { createEnemy('advanced'); }
           if (Math.random() < 0.001) { createEnemy('boss'); }
@@ -580,9 +567,11 @@
       }
       
       restartButton.addEventListener('click', () => location.reload());
-      startButton.addEventListener('click', startGame);
+      startButton.addEventListener('click', () => {
+        console.log("Start button clicked.");
+        startGame();
+      });
       
-      // ===== Easter Egg: Konami Code =====
       let konamiCode = [38,38,40,40,37,39,37,39,66,65];
       let konamiIndex = 0;
       document.addEventListener('keydown', (e) => {
