@@ -133,7 +133,6 @@
       height: 10px;
       background: blue;
       border-radius: 50%;
-      animation: shoot 1s linear;
       z-index: 25;
     }
     
@@ -151,11 +150,6 @@
       0% { transform: rotate(0deg); }
       50% { transform: rotate(90deg); }
       100% { transform: rotate(0deg); }
-    }
-    
-    @keyframes shoot {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(200px); }
     }
     
     @keyframes explode {
@@ -407,6 +401,17 @@
     <div id="start-screen">
       <h1>Coastal Defense</h1>
       <p>Protect your home from alien invaders. Collect resources, upgrade your weapons, and survive the waves!</p>
+      <p>
+        <strong>Controls:</strong><br>
+        Arrow Left/Right: Move&nbsp;&nbsp;|&nbsp;&nbsp;
+        Arrow Up/Down: Adjust Aim (between -45° and 45°)<br>
+        Q: Melee Attack&nbsp;&nbsp;|&nbsp;&nbsp;
+        W: Ranged Attack&nbsp;&nbsp;|&nbsp;&nbsp;
+        E: Special Attack<br>
+        R: Build Barrier&nbsp;&nbsp;|&nbsp;&nbsp;
+        T: Build Turret&nbsp;&nbsp;|&nbsp;&nbsp;
+        F: Repair House
+      </p>
       <button id="start-button">Start Game</button>
     </div>
     
@@ -418,6 +423,9 @@
   </div>
 
   <script>
+    // Global aiming angle (in degrees; 0 = horizontal)
+    let aimAngle = 0;
+
     // Game state
     const game = {
       isRunning: false,
@@ -488,8 +496,7 @@
       keys: {
         ArrowLeft: false,
         ArrowRight: false,
-        ArrowUp: false,
-        ArrowDown: false,
+        // ArrowUp and ArrowDown now adjust aim, so they are not used for movement
         KeyA: false,
         KeyD: false,
         KeyW: false,
@@ -780,6 +787,21 @@
 
     // Event Listeners
     document.addEventListener('keydown', (e) => {
+      // Movement controls (left/right)
+      if (e.code === 'ArrowLeft') {
+        game.keys.ArrowLeft = true;
+      }
+      if (e.code === 'ArrowRight') {
+        game.keys.ArrowRight = true;
+      }
+      // Aim controls (up/down)
+      if (e.code === 'ArrowUp') {
+        aimAngle = Math.min(aimAngle + 5, 45);
+      }
+      if (e.code === 'ArrowDown') {
+        aimAngle = Math.max(aimAngle - 5, -45);
+      }
+      // Other keys for attacks and actions
       if (game.keys.hasOwnProperty(e.code)) {
         game.keys[e.code] = true;
       }
@@ -873,21 +895,22 @@
     }
 
     function updatePlayer(deltaTime) {
-      if (game.keys.ArrowLeft || game.keys.KeyA) {
+      if (game.keys.ArrowLeft) {
         game.player.x -= game.player.speed;
       }
-      if (game.keys.ArrowRight || game.keys.KeyD) {
+      if (game.keys.ArrowRight) {
         game.player.x += game.player.speed;
       }
       game.player.x = Math.max(0, Math.min(gameWidth - 40, game.player.x));
       player.style.left = `${game.player.x}px`;
     }
 
+    // Enemies now spawn on the ground (y = 0)
     function spawnAlienWave() {
       for (let i = 0; i < game.wave + 2; i++) {
         let type = game.alienTypes[Math.floor(Math.random() * game.alienTypes.length)];
         let x = Math.random() * gameWidth;
-        let y = gameHeight * 0.5;
+        let y = 0;
         let alien = new Alien(type, x, y);
         game.aliens.push(alien);
       }
@@ -932,28 +955,41 @@
       }, 500);
     }
 
+    // Ranged attack now uses the aimAngle (adjustable with Up/Down keys)
     function rangedAttack() {
-      let projectile = document.createElement('div');
+      const projectile = document.createElement('div');
       projectile.className = 'ranged-attack';
-      projectile.style.left = `${game.player.x}px`;
-      projectile.style.bottom = `${groundHeight + 60}px`;
+      // Start at player's center
+      let projectileX = game.player.x + 20;
+      let projectileY = groundHeight + 30;
+      projectile.style.left = `${projectileX}px`;
+      projectile.style.bottom = `${projectileY}px`;
       gameArea.appendChild(projectile);
-      let startTime = null;
+      const projectileSpeed = 0.4; // pixels per ms
+      let lastFrameTime = null;
       function animateProjectile(timestamp) {
-        if (!startTime) startTime = timestamp;
-        let progress = timestamp - startTime;
-        projectile.style.left = `${game.player.x + progress * 0.2}px`;
+        if (!lastFrameTime) lastFrameTime = timestamp;
+        const delta = timestamp - lastFrameTime;
+        lastFrameTime = timestamp;
+        const rad = aimAngle * (Math.PI / 180);
+        projectileX += projectileSpeed * Math.cos(rad) * delta;
+        projectileY += projectileSpeed * Math.sin(rad) * delta;
+        projectile.style.left = `${projectileX}px`;
+        projectile.style.bottom = `${projectileY}px`;
+        let hit = false;
         game.aliens.forEach(alien => {
-          let distance = Math.abs(alien.x - (game.player.x + progress * 0.2));
-          if (distance < 30) {
+          let alienRect = alien.element.getBoundingClientRect();
+          let projRect = projectile.getBoundingClientRect();
+          if (!(projRect.right < alienRect.left || projRect.left > alienRect.right ||
+                projRect.bottom < alienRect.top || projRect.top > alienRect.bottom)) {
             alien.takeDamage(game.player.rangedDamage, 'ranged');
-            projectile.remove();
+            hit = true;
           }
         });
-        if (progress < 1000 && document.body.contains(projectile)) {
-          requestAnimationFrame(animateProjectile);
-        } else {
+        if (hit || projectileX > gameWidth || projectileX < 0 || projectileY > gameHeight || projectileY < 0) {
           projectile.remove();
+        } else {
+          requestAnimationFrame(animateProjectile);
         }
       }
       requestAnimationFrame(animateProjectile);
