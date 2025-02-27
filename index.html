@@ -176,31 +176,7 @@
       100% { opacity: 0; transform: translateY(-30px); }
     }
     /* Start Screen */
-    #startScreen {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.9);
-      z-index: 200;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 20px;
-    }
-    #startScreen h1 {
-      font-size: 48px;
-      text-shadow: 3px 3px #dda0dd, -3px -3px #dda0dd;
-      margin-bottom: 20px;
-    }
-    #startScreen button {
-      font-size: 24px;
-      padding: 10px 20px;
-      background: #dda0dd;
-      border: 2px solid #fff;
-      cursor: pointer;
-    }
+    /* Removed Start Screen */
     /* Pause Menu */
     #pauseMenu {
       position: absolute;
@@ -296,12 +272,7 @@
       <div class="powerUpIcon"></div>
       <div class="powerUpIcon"></div>
     </div>
-    <!-- Start Screen -->
-    <div id="startScreen">
-      <h1>COASTAL DEFENSE</h1>
-      <p>Press Enter or click the button to start</p>
-      <button id="startButton">Start Game</button>
-    </div>
+    <!-- Removed Start Screen -->
     <!-- Pause Menu -->
     <div id="pauseMenu">
       <h1>Paused</h1>
@@ -319,8 +290,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       // ===== Global Variables & Setup =====
       const gameContainer = document.getElementById('gameContainer');
-      const startScreen = document.getElementById('startScreen');
-      const startButton = document.getElementById('startButton');
+      //Removed references for start screen
       const pauseMenu = document.getElementById('pauseMenu');
       const gameOverScreen = document.getElementById('gameOverScreen');
       const restartButton = document.getElementById('restartButton');
@@ -328,17 +298,17 @@
       const healthSegments = document.querySelectorAll('.healthSegment');
       const miniMap = document.getElementById('miniMap');
       const playerShip = document.querySelector('.playerShip');
-      
+
       // Initialize player's left position from computed style or default to 375
       let playerShipX = parseInt(getComputedStyle(playerShip).left) || 375;
-      
+
       let score = 0;
       let playerHealth = 100;
       let enemies = [];
       let bullets = [];
       let gameInterval;
       let gamePaused = false;
-      
+
       // ===== HUD & Feedback Functions =====
       function updateScore(newScore) {
         score = newScore;
@@ -351,7 +321,7 @@
         gameContainer.appendChild(indicator);
         setTimeout(() => indicator.remove(), 1000);
       }
-      
+
       function updateHealth(health) {
         playerHealth = health;
         let segmentsToFill = Math.ceil((health / 100) * 10);
@@ -364,7 +334,7 @@
           gameContainer.classList.remove('critical');
         }
       }
-      
+
       function flashDamage() {
         gameContainer.style.transition = 'background 0.1s';
         gameContainer.style.background = 'red';
@@ -372,7 +342,7 @@
           gameContainer.style.background = 'linear-gradient(to bottom, #E6E6FA, #D8BFD8)';
         }, 100);
       }
-      
+
       function screenShake() {
         gameContainer.style.animation = 'shake 0.5s';
         setTimeout(() => gameContainer.style.animation = '', 500);
@@ -385,7 +355,7 @@
         75% { transform: translate(5px, -5px); }
         100% { transform: translate(0, 0); }
       }`, styleSheet.cssRules.length);
-      
+
       function createSpark(x, y) {
         const spark = document.createElement('div');
         spark.style.position = 'absolute';
@@ -401,7 +371,7 @@
         spark.animate([{ transform: 'scale(0)', opacity: 1 }, { transform: 'scale(1.5)', opacity: 0 }], { duration: 300, fill: 'forwards' });
         setTimeout(() => spark.remove(), 300);
       }
-      
+
       function createDamageNumber(x, y, damage) {
         const dmgNum = document.createElement('div');
         dmgNum.style.position = 'absolute';
@@ -415,7 +385,7 @@
         gameContainer.appendChild(dmgNum);
         setTimeout(() => dmgNum.remove(), 1000);
       }
-      
+
       function animateStarfield() {
         const starfield = document.getElementById('starfield');
         let offset = 0;
@@ -425,7 +395,7 @@
         }, 50);
       }
       animateStarfield();
-      
+
       function createEnemy(variant = 'basic') {
         const enemy = document.createElement('div');
         enemy.classList.add('enemy');
@@ -453,7 +423,7 @@
         enemies.push(enemy);
         moveEnemy(enemy);
       }
-      
+
       function moveEnemy(enemy) {
         let enemyTop = 0;
         const moveInterval = setInterval(() => {
@@ -465,7 +435,7 @@
           }
         }, 50);
       }
-      
+
       function createBullet() {
         const bullet = document.createElement('div');
         bullet.className = 'bullet';
@@ -478,7 +448,7 @@
         bullets.push(bullet);
         moveBullet(bullet);
       }
-      
+
       function moveBullet(bullet) {
         let bulletBottom = 70;
         const interval = setInterval(() => {
@@ -491,7 +461,7 @@
           }
         }, 20);
       }
-      
+
       function detectBulletCollision(bullet) {
         enemies.forEach((enemy, index) => {
           const bulletRect = bullet.getBoundingClientRect();
@@ -510,7 +480,7 @@
           }
         });
       }
-      
+
       function enemyDeathAnimation(enemy) {
         const explosion = document.createElement('div');
         explosion.style.position = 'absolute';
@@ -524,7 +494,7 @@
         explosion.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 500, fill: 'forwards' });
         setTimeout(() => explosion.remove(), 500);
       }
-      
+
       document.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowLeft') {
           playerShipX = Math.max(0, playerShipX - 10);
@@ -535,18 +505,14 @@
           playerShip.style.left = playerShipX + 'px';
         }
         if (e.code === 'Space') { createBullet(); }
-        // Use getComputedStyle to check startScreen's display property
-        if ((e.key === 'Enter' || e.key === 'Return') && window.getComputedStyle(startScreen).display !== 'none') {
-          console.log("Enter key pressed - starting game.");
-          startGame();
-        }
+        // Removed check for Enter key
         if (e.key.toLowerCase() === 'p') { togglePause(); }
       });
-      
+
       function startGame() {
         console.log("startGame() invoked");
         playerShip.style.left = playerShipX + 'px';
-        startScreen.style.display = 'none';
+        //Removed start screen trigger
         updateHealth(100);
         gameInterval = setInterval(() => {
           if (Math.random() < 0.03) { createEnemy('basic'); }
@@ -554,7 +520,7 @@
           if (Math.random() < 0.001) { createEnemy('boss'); }
         }, 100);
       }
-      
+
       function togglePause() {
         gamePaused = !gamePaused;
         if (gamePaused) {
@@ -565,13 +531,10 @@
           startGame();
         }
       }
-      
+
       restartButton.addEventListener('click', () => location.reload());
-      startButton.addEventListener('click', () => {
-        console.log("Start button clicked.");
-        startGame();
-      });
-      
+      // Removed start button click handler
+
       let konamiCode = [38,38,40,40,37,39,37,39,66,65];
       let konamiIndex = 0;
       document.addEventListener('keydown', (e) => {
@@ -583,12 +546,15 @@
           }
         } else { konamiIndex = 0; }
       });
-      
+
       function activateEasterEgg() {
         gameContainer.style.background = 'linear-gradient(45deg, #dda0dd, #e6e6fa, #9370db)';
       }
-      
+
+      // Call startGame() directly to start the game immediately
+      startGame();
       console.log("Game script loaded and event listeners attached.");
+
     });
   </script>
 </body>
