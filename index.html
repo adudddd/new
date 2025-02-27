@@ -200,6 +200,7 @@
       background: #dda0dd;
       border: 2px solid #fff;
       cursor: pointer;
+      color: black; /* Added text color for button */
     }
     /* Pause Menu */
     #pauseMenu {
@@ -327,7 +328,7 @@
     const healthSegments = document.querySelectorAll('.healthSegment');
     const miniMap = document.getElementById('miniMap');
     const playerShip = document.querySelector('.playerShip');
-    
+
     // Initialize player's left position from computed style
     let playerShipX = parseInt(getComputedStyle(playerShip).left) || 375;
     
@@ -335,9 +336,9 @@
     let playerHealth = 100;
     let enemies = [];
     let bullets = [];
-    let gameInterval;
+    let gameInterval;  // Declare here for access in both start and pause
     let gamePaused = false;
-    
+
     // ===== HUD & Feedback Functions =====
     function updateScore(newScore) {
       score = newScore;
@@ -351,7 +352,7 @@
       gameContainer.appendChild(indicator);
       setTimeout(() => indicator.remove(), 1000);
     }
-    
+
     function updateHealth(health) {
       playerHealth = health;
       let segmentsToFill = Math.ceil((health / 100) * 10);
@@ -364,7 +365,7 @@
         gameContainer.classList.remove('critical');
       }
     }
-    
+
     // Red flash on damage
     function flashDamage() {
       gameContainer.style.transition = 'background 0.1s';
@@ -373,13 +374,13 @@
         gameContainer.style.background = 'linear-gradient(to bottom, #E6E6FA, #D8BFD8)';
       }, 100);
     }
-    
+
     // Screen shake effect
     function screenShake() {
       gameContainer.style.animation = 'shake 0.5s';
       setTimeout(() => gameContainer.style.animation = '', 500);
     }
-    // Inject shake keyframes
+    // Inject shake keyframes  (Good placement! Keeps CSS clean)
     const styleSheet = document.styleSheets[0];
     styleSheet.insertRule(`@keyframes shake {
       0% { transform: translate(0, 0); }
@@ -388,7 +389,7 @@
       75% { transform: translate(5px, -5px); }
       100% { transform: translate(0, 0); }
     }`, styleSheet.cssRules.length);
-    
+
     // Bullet impact spark effect
     function createSpark(x, y) {
       const spark = document.createElement('div');
@@ -405,7 +406,7 @@
       spark.animate([{ transform: 'scale(0)', opacity: 1 }, { transform: 'scale(1.5)', opacity: 0 }], { duration: 300, fill: 'forwards' });
       setTimeout(() => spark.remove(), 300);
     }
-    
+
     // Floating damage number
     function createDamageNumber(x, y, damage) {
       const dmgNum = document.createElement('div');
@@ -420,7 +421,7 @@
       gameContainer.appendChild(dmgNum);
       setTimeout(() => dmgNum.remove(), 1000);
     }
-    
+
     // ===== Dynamic Background Animation =====
     function animateStarfield() {
       const starfield = document.getElementById('starfield');
@@ -431,12 +432,13 @@
       }, 50);
     }
     animateStarfield();
-    
+
     // ===== Enemy Creation & Movement =====
     function createEnemy(variant = 'basic') {
       const enemy = document.createElement('div');
       enemy.classList.add('enemy');
-      enemy.dataset.variant = variant;
+      enemy.dataset.variant = variant;  // Good use of data attributes
+
       if (variant === 'basic') {
         enemy.classList.add('basic');
         enemy.textContent = '▾';
@@ -454,13 +456,13 @@
         bossHealth.style.background = 'green';
         enemy.appendChild(bossHealth);
       }
-      enemy.style.left = Math.random() * (gameContainer.clientWidth - 50) + 'px';
+      enemy.style.left = Math.random() * (gameContainer.clientWidth - 50) + 'px'; // Keep within bounds
       enemy.style.top = '0px';
       gameContainer.appendChild(enemy);
       enemies.push(enemy);
-      moveEnemy(enemy);
+      moveEnemy(enemy); // Start moving immediately
     }
-    
+
     function moveEnemy(enemy) {
       let enemyTop = 0;
       const moveInterval = setInterval(() => {
@@ -468,22 +470,56 @@
         enemy.style.top = enemyTop + 'px';
         if (enemyTop > gameContainer.clientHeight) {
           enemy.remove();
-          clearInterval(moveInterval);
+          clearInterval(moveInterval); // Clear interval when enemy leaves screen
+          enemies = enemies.filter(e => e !== enemy); // Remove from the array
         }
+          checkPlayerCollision(enemy);  // Moved collision detection HERE
       }, 50);
     }
-    
+
+     function checkPlayerCollision(enemy) {
+       const playerRect = playerShip.getBoundingClientRect();
+       const enemyRect = enemy.getBoundingClientRect();
+
+       if (!(playerRect.right < enemyRect.left ||
+            playerRect.left > enemyRect.right ||
+            playerRect.bottom < enemyRect.top ||
+            playerRect.top > enemyRect.bottom)) {
+
+         // Collision detected!
+         enemy.remove();  //Remove enemy
+         enemies = enemies.filter(e => e !== enemy);
+
+         updateHealth(playerHealth - 20);  //reduce by 20
+          flashDamage();   //flash the background red
+          screenShake();    //screenshake on damage
+
+          if(playerHealth <= 0){
+              gameOver();   // Call gameOver if player's health is zero
+          }
+       }
+    }
+
+     //GAME OVER FUNCTION
+     function gameOver(){
+      clearInterval(gameInterval);
+      gameOverScreen.style.display = 'flex';   //show game over screen
+    }
+
     // ===== Shooting: Bullet Creation & Movement =====
     function createBullet() {
       const bullet = document.createElement('div');
       bullet.className = 'bullet';
       const playerRect = playerShip.getBoundingClientRect();
       const containerRect = gameContainer.getBoundingClientRect();
-      let bulletX = playerRect.left - containerRect.left + (playerRect.width / 2) - 2.5;
+
+      // Correctly calculate the bullet's starting position
+      let bulletX = playerRect.left - containerRect.left + (playerRect.width / 2) - 2.5; // 2.5 is half the bullet width
       bullet.style.left = bulletX + 'px';
-      bullet.style.bottom = '70px';
+      bullet.style.bottom = '70px';  // Start just above the ship
+
       gameContainer.appendChild(bullet);
-      bullets.push(bullet);
+      bullets.push(bullet);  // Add to bullets array
       moveBullet(bullet);
     }
     
@@ -492,111 +528,176 @@
       const interval = setInterval(() => {
         bulletBottom += 5;
         bullet.style.bottom = bulletBottom + 'px';
+
         detectBulletCollision(bullet);
+
+        // Remove bullet if it goes off-screen
         if (bulletBottom > gameContainer.clientHeight) {
           bullet.remove();
           clearInterval(interval);
+            bullets = bullets.filter(b => b!== bullet);
         }
       }, 20);
     }
-    
     function detectBulletCollision(bullet) {
-      enemies.forEach((enemy, index) => {
-        const bulletRect = bullet.getBoundingClientRect();
-        const enemyRect = enemy.getBoundingClientRect();
-        if (!(bulletRect.right < enemyRect.left ||
-              bulletRect.left > enemyRect.right ||
-              bulletRect.bottom < enemyRect.top ||
-              bulletRect.top > enemyRect.bottom)) {
-          createSpark(parseInt(bullet.style.left), parseInt(bullet.style.bottom));
-          createDamageNumber(parseInt(enemy.style.left), parseInt(enemy.style.top), 10);
-          updateScore(score + 10);
-          enemyDeathAnimation(enemy);
-          enemy.remove();
-          enemies.splice(index, 1);
-          bullet.remove();
+        for (let i = enemies.length - 1; i >= 0; i--) { // Iterate backwards!
+            const enemy = enemies[i];
+            const bulletRect = bullet.getBoundingClientRect();
+            const enemyRect = enemy.getBoundingClientRect();
+
+            if (!(bulletRect.right < enemyRect.left ||
+                bulletRect.left > enemyRect.right ||
+                bulletRect.bottom < enemyRect.top ||
+                bulletRect.top > enemyRect.bottom)) {
+
+                // Collision!
+                createSpark(bulletRect.left, bulletRect.top);  // Sparks!
+                createDamageNumber(enemyRect.left, enemyRect.top, 10); // Damage Numbers
+                updateScore(score + 10);
+                enemyDeathAnimation(enemy); // Enemy explodes!
+                enemy.remove();
+                enemies.splice(i, 1); // Remove the enemy from the array
+                bullet.remove();
+                bullets = bullets.filter(b => b !== bullet);
+                return; // Exit the function -  bullet can only hit ONE enemy
+            }
         }
-      });
     }
-    
+
+
     // ===== Enemy Death Animation =====
     function enemyDeathAnimation(enemy) {
       const explosion = document.createElement('div');
       explosion.style.position = 'absolute';
-      explosion.style.left = enemy.style.left;
-      explosion.style.top = enemy.style.top;
+      explosion.style.left = enemy.style.left;  // Use the enemy's position
+      explosion.style.top = enemy.style.top;    // Use the enemy's position
       explosion.style.fontSize = '30px';
       explosion.style.color = '#fff';
-      explosion.style.textShadow = '0 0 5px #ff0';
-      explosion.textContent = '✸★✹';
+      explosion.style.textShadow = '0 0 5px #ff0'; // Glow effect
+      explosion.textContent = '✸★✹';  // Asterisk explosion!
       gameContainer.appendChild(explosion);
+
+      // Animation (using animate API, for better performance than setTimeout)
       explosion.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 500, fill: 'forwards' });
-      setTimeout(() => explosion.remove(), 500);
+      setTimeout(() => explosion.remove(), 500); // Remove after animation
+
     }
-    
+
+
+
     // ===== Keyboard Controls =====
     document.addEventListener('keydown', (e) => {
+      if (gamePaused) return; // Don't process input if paused.
+
       if (e.key === 'ArrowLeft') {
-        playerShipX = Math.max(0, playerShipX - 10);
+        playerShipX = Math.max(0, playerShipX - 10); // Prevent going off-screen
         playerShip.style.left = playerShipX + 'px';
       }
       if (e.key === 'ArrowRight') {
-        playerShipX = Math.min(gameContainer.clientWidth - 50, playerShipX + 10);
+        playerShipX = Math.min(gameContainer.clientWidth - 50, playerShipX + 10); // Prevent going off-screen (50 is player width)
         playerShip.style.left = playerShipX + 'px';
       }
-      if (e.code === 'Space') { createBullet(); }
-      if ((e.key === 'Enter' || e.key === 'Return') && startScreen.style.display !== 'none') {
-        startGame();
+
+      if (e.code === 'Space') { // Use 'code' for consistent spacebar across layouts
+          createBullet();
       }
-      if (e.key.toLowerCase() === 'p') { togglePause(); }
+      if (e.key === 'Enter' || e.key === 'Return' ) { // Correct "Enter" key
+        if(startScreen.style.display !== "none"){
+          startGame();  //only start the game from the main menu
+        }
+        
+      }
+       if (e.key.toLowerCase() === 'p') { togglePause(); }  // Moved here
     });
-    
-    // ===== Game Control Functions =====
-    function startGame() {
-      console.log("startGame() invoked"); // Test log to verify event listener attachment
-      // Ensure player's inline left is set
-      playerShip.style.left = playerShipX + 'px';
-      startScreen.style.display = 'none';
-      updateHealth(100);
-      gameInterval = setInterval(() => {
-        // Random enemy spawns based on probabilities
-        if (Math.random() < 0.03) { createEnemy('basic'); }
+
+
+
+
+   // ===== Game Control Functions =====
+function startGame() {
+    console.log("startGame() invoked");
+    //Ensure proper display none
+    startScreen.style.display = 'none';
+    //Initialize or Reset Key game states
+     score = 0;
+     updateScore(0);  //reset the score for restart.
+    playerHealth = 100;
+    updateHealth(100); //initialize the health segments at full
+
+    //Clear the pre existing enemes when restarted.
+    enemies.forEach(enemy => enemy.remove());  //Remove the element from DOM.
+    enemies = []; //reset enemies array.
+
+     bullets.forEach(bullet => bullet.remove());
+    bullets = [];
+
+    //Clear any exisiting game Interval
+     if (gameInterval) {   //clear interval in start also.
+        clearInterval(gameInterval);
+    }
+
+    gameInterval = setInterval(() => {
+        //Game logic goes here, for exmple enemy
+        //spawn based on probalitlites
+        if(Math.random() < 0.03) createEnemy("basic");
         if (Math.random() < 0.01) { createEnemy('advanced'); }
         if (Math.random() < 0.001) { createEnemy('boss'); }
-      }, 100);
-    }
-    
+    }, 100); // Adjust enemy spawn rate as needed.
+}
+
+
     function togglePause() {
-      gamePaused = !gamePaused;
+      gamePaused = !gamePaused; // Toggle the pause state
+
       if (gamePaused) {
-        clearInterval(gameInterval);
+        clearInterval(gameInterval); // Stop the game loop
         pauseMenu.style.display = 'block';
       } else {
         pauseMenu.style.display = 'none';
-        startGame();
+
+          if (gameInterval) {   //Check and clear to prevent mutltiple starts.
+             clearInterval(gameInterval);
+        }
+        //Restart Game loop, without reseting parameters, by resuming.
+          gameInterval = setInterval(() => {
+              //Game logic goes here, for exmple enemy
+               //spawn based on probalitlites
+            if(Math.random() < 0.03) createEnemy("basic");
+             if (Math.random() < 0.01) { createEnemy('advanced'); }
+           if (Math.random() < 0.001) { createEnemy('boss'); }
+       }, 100);
+
       }
     }
     
-    restartButton.addEventListener('click', () => location.reload());
+    restartButton.addEventListener('click', startGame); //CHANGED THIS SO IT RESTARTS THE GAME.
+
+     // Add event listener for the start button (OUTSIDE of startGame())
     startButton.addEventListener('click', startGame);
-    
+
+
+
+
     // ===== Easter Egg: Konami Code =====
-    let konamiCode = [38,38,40,40,37,39,37,39,66,65];
+    let konamiCode = [38,38,40,40,37,39,37,39,66,65]; // Up, Up, Down, Down, Left, Right, Left, Right, B, A
     let konamiIndex = 0;
+
     document.addEventListener('keydown', (e) => {
       if (e.keyCode === konamiCode[konamiIndex]) {
         konamiIndex++;
         if (konamiIndex === konamiCode.length) {
           activateEasterEgg();
-          konamiIndex = 0;
+          konamiIndex = 0; // Reset for next attempt
         }
-      } else { konamiIndex = 0; }
+      } else {
+        konamiIndex = 0; // Reset if incorrect key pressed
+      }
     });
-    
+
     function activateEasterEgg() {
-      gameContainer.style.background = 'linear-gradient(45deg, #dda0dd, #e6e6fa, #9370db)';
+      // Change the game background for the Easter Egg
+      gameContainer.style.background = 'linear-gradient(45deg, #dda0dd, #e6e6fa, #9370db)'; // Rainbow gradient!
     }
-    
   </script>
 </body>
 </html>
