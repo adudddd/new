@@ -328,6 +328,9 @@
     const miniMap = document.getElementById('miniMap');
     const playerShip = document.querySelector('.playerShip');
     
+    // Initialize player's left position from computed style
+    let playerShipX = parseInt(getComputedStyle(playerShip).left) || 375;
+    
     let score = 0;
     let playerHealth = 100;
     let enemies = [];
@@ -534,12 +537,12 @@
     // ===== Keyboard Controls =====
     document.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowLeft') {
-        let currentLeft = parseInt(playerShip.style.left);
-        playerShip.style.left = Math.max(0, currentLeft - 10) + 'px';
+        playerShipX = Math.max(0, playerShipX - 10);
+        playerShip.style.left = playerShipX + 'px';
       }
       if (e.key === 'ArrowRight') {
-        let currentLeft = parseInt(playerShip.style.left);
-        playerShip.style.left = Math.min(gameContainer.clientWidth - 50, currentLeft + 10) + 'px';
+        playerShipX = Math.min(gameContainer.clientWidth - 50, playerShipX + 10);
+        playerShip.style.left = playerShipX + 'px';
       }
       if (e.code === 'Space') { createBullet(); }
       if ((e.key === 'Enter' || e.key === 'Return') && startScreen.style.display !== 'none') {
@@ -550,7 +553,9 @@
     
     // ===== Game Control Functions =====
     function startGame() {
-      // Hide the start screen and begin enemy spawns
+      console.log("startGame() invoked"); // Test log to verify event listener attachment
+      // Ensure player's inline left is set
+      playerShip.style.left = playerShipX + 'px';
       startScreen.style.display = 'none';
       updateHealth(100);
       gameInterval = setInterval(() => {
