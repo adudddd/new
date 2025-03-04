@@ -1,0 +1,246 @@
+/* Enhanced UI Styles */
+:root {
+  --primary-color: #1a1a1a;
+  --secondary-color: #4a90e2;
+  --accent-color: #e63946;
+  --text-color: #ffffff;
+  --success-color: #2ecc71;
+  --warning-color: #f1c40f;
+  --danger-color: #e74c3c;
+  --ui-border: 4px solid rgba(255, 255, 255, 0.2);
+  --ui-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Improved Game Container */
+#game-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(to bottom, #5c94fc, #3c74dc);
+  font-family: 'Press Start 2P', cursive;
+}
+
+/* Enhanced UI Container */
+#ui-container {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 30vh;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(5px);
+  border-top: var(--ui-border);
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Improved Stats Display */
+#stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.stat span {
+  font-size: 0.8rem;
+  color: var(--text-color);
+  text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Enhanced Progress Bars */
+.bar {
+  height: 15px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.bar-fill {
+  height: 100%;
+  transition: width 0.3s ease-out;
+  position: relative;
+}
+
+.bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.1) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.1) 75%,
+    transparent 75%
+  );
+  background-size: 15px 15px;
+  animation: bar-animation 1s linear infinite;
+}
+
+/* Improved Controls Section */
+#controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 10px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+/* Enhanced Buttons */
+button {
+  padding: 12px;
+  background: var(--secondary-color);
+  color: var(--text-color);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--ui-shadow);
+  background: var(--accent-color);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+button::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transform: rotate(45deg);
+  transition: all 0.3s ease;
+}
+
+button:hover::after {
+  transform: rotate(45deg) translateX(50%);
+}
+
+/* Improved Upgrade Panels */
+#upgrades {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  padding: 10px;
+}
+
+.upgrade-section {
+  background: rgba(255, 255, 255, 0.05);
+  border: var(--ui-border);
+  border-radius: 8px;
+  padding: 15px;
+  transition: all 0.3s ease;
+}
+
+.upgrade-section:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--ui-shadow);
+}
+
+.upgrade-section h3 {
+  color: var(--secondary-color);
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+}
+
+.upgrade-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 8px;
+}
+
+/* Animations */
+@keyframes bar-animation {
+  0% { background-position: 0 0; }
+  100% { background-position: 15px 0; }
+}
+
+/* Message Display */
+#message {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: var(--text-color);
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1000;
+}
+
+#message.show {
+  opacity: 1;
+}
+
+/* Responsive Design Improvements */
+@media (max-width: 768px) {
+  #ui-container {
+    height: 40vh;
+  }
+  
+  #controls {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .upgrade-section {
+    padding: 10px;
+  }
+  
+  button {
+    padding: 8px;
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  #stats {
+    grid-template-columns: 1fr;
+  }
+  
+  #controls {
+    grid-template-columns: 1fr;
+  }
+  
+  #upgrades {
+    grid-template-columns: 1fr;
+  }
+}
